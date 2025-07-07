@@ -5,13 +5,24 @@ using CarServ.API.Configuration;
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 
-// Add services to the container.
+// Configure Serilog
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(config)
+    .CreateLogger();
+
 builder.Logging.AddSerilog();
+builder.Services.AddSingleton(Log.Logger);
+builder.Services.AddSingleton<Serilog.Extensions.Hosting.DiagnosticContext>();
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddControllers(options =>
 {
     options.SuppressAsyncSuffixInActionNames = false;
 });
+
+builder.Services.AddDatabaseConfiguration(config);
+builder.Services.AddServiceConfiguration(config);
+builder.Services.AddRepositoryConfiguration(config);
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
