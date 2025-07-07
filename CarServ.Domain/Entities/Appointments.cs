@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace CarServ.Domain.Entities;
 
-public partial class Appointment
+public partial class Appointments
 {
     public int AppointmentId { get; set; }
 
@@ -21,15 +21,15 @@ public partial class Appointment
 
     public int? PromotionId { get; set; }
 
-    public virtual Customer Customer { get; set; }
+    public virtual Customers Customer { get; set; }
 
-    public virtual ServicePackage Package { get; set; }
+    public virtual ServicePackages Package { get; set; }
 
-    public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
+    public virtual ICollection<Payments> Payments { get; set; } = new List<Payments>();
 
-    public virtual Promotion Promotion { get; set; }
+    public virtual Promotions Promotion { get; set; }
 
     public virtual ServiceHistory ServiceHistory { get; set; }
 
-    public virtual Vehicle Vehicle { get; set; }
+    public virtual Vehicles Vehicle { get; set; }
 }

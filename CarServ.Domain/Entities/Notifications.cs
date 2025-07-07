@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace CarServ.Domain.Entities;
 
-public partial class Notification
+public partial class Notifications
 {
     public int NotificationId { get; set; }
 
@@ -17,5 +17,5 @@ public partial class Notification
 
     public bool? IsRead { get; set; }
 
-    public virtual User User { get; set; }
+    public virtual Users User { get; set; }
 }

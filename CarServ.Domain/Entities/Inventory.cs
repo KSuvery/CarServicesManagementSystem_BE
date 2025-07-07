@@ -19,7 +19,7 @@ public partial class Inventory
 
     public int? WarrantyMonths { get; set; }
 
-    public virtual ICollection<PartsUsed> PartsUseds { get; set; } = new List<PartsUsed>();
+    public virtual ICollection<PartsUsed> PartsUsed { get; set; } = new List<PartsUsed>();
 
-    public virtual ICollection<WarrantyClaim> WarrantyClaims { get; set; } = new List<WarrantyClaim>();
+    public virtual ICollection<WarrantyClaims> WarrantyClaims { get; set; } = new List<WarrantyClaims>();
 }
