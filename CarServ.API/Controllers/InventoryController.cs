@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CarServ.Domain.Entities;
+using CarServ.Service.Services.Interfaces;
 
 namespace CarServ.API.Controllers
 {
@@ -13,95 +14,85 @@ namespace CarServ.API.Controllers
     [ApiController]
     public class InventoryController : ControllerBase
     {
-        private readonly CarServicesManagementSystemContext _context;
+        private readonly IInventoryServices _inventoryServices;
 
-        public InventoryController(CarServicesManagementSystemContext context)
+        public InventoryController(IInventoryServices inventoryServices)
         {
-            _context = context;
+            _inventoryServices = inventoryServices;
         }
 
-        // GET: api/Inventory
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Inventory>>> GetInventory()
+        public async Task<ActionResult<IEnumerable<Inventory>>> GetInventoryItems()
         {
-            return await _context.Inventory.ToListAsync();
+            return await _inventoryServices.GetAllInventoryItemsAsync();
         }
 
-        // GET: api/Inventory/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Inventory>> GetInventory(int id)
+        public async Task<ActionResult<Inventory>> GetInventoryItemById(int id)
         {
-            var inventory = await _context.Inventory.FindAsync(id);
-
-            if (inventory == null)
+            var inventoryItem = await _inventoryServices.GetInventoryItemByIdAsync(id);
+            if (inventoryItem == null)
             {
                 return NotFound();
             }
-
-            return inventory;
+            return inventoryItem;
         }
 
-        // PUT: api/Inventory/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutInventory(int id, Inventory inventory)
+        [HttpGet("GetByName/{partName}")]
+        public async Task<ActionResult<IEnumerable<Inventory>>> GetInventoryItemsByName(string partName)
         {
-            if (id != inventory.PartId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(inventory).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!InventoryExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/Inventory
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Inventory>> PostInventory(Inventory inventory)
-        {
-            _context.Inventory.Add(inventory);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetInventory", new { id = inventory.PartId }, inventory);
-        }
-
-        // DELETE: api/Inventory/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteInventory(int id)
-        {
-            var inventory = await _context.Inventory.FindAsync(id);
-            if (inventory == null)
+            var inventoryItems = await _inventoryServices.GetInventoryItemsByNameAsync(partName);
+            if (inventoryItems == null || !inventoryItems.Any())
             {
                 return NotFound();
             }
-
-            _context.Inventory.Remove(inventory);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            return inventoryItems;
         }
 
-        private bool InventoryExists(int id)
+        [HttpPost("Create")]
+        public async Task<ActionResult<Inventory>> CreateInventoryItem(
+            string partName,
+            int? quantity,
+            decimal? unitPrice,
+            DateOnly? expiryDate,
+            int? warrantyMonths)
         {
-            return _context.Inventory.Any(e => e.PartId == id);
+            var newInventoryItem = await _inventoryServices.CreateInventoryItemAsync(
+                partName, quantity, unitPrice, expiryDate, warrantyMonths);
+            if (newInventoryItem == null)
+            {
+                return BadRequest("Failed to create inventory item.");
+            }
+
+            return CreatedAtAction(nameof(GetInventoryItemById), new { id = newInventoryItem.PartId }, newInventoryItem);
+        }
+
+        [HttpPut("Update/{id}")]
+        public async Task<ActionResult<Inventory>> UpdateInventoryItem(
+            int id,
+            string partName,
+            int? quantity,
+            decimal? unitPrice,
+            DateOnly? expiryDate,
+            int? warrantyMonths)
+        {
+            if (!await InventoryExists(id))
+            {
+                return NotFound();
+            }
+            var updatedInventoryItem = await _inventoryServices.UpdateInventoryItemAsync(
+                id, partName, quantity, unitPrice, expiryDate, warrantyMonths);
+            if (updatedInventoryItem == null)
+            {
+                return BadRequest("Failed to update inventory item.");
+            }
+            return Ok(updatedInventoryItem);
+        }
+
+
+        private async Task<bool> InventoryExists(int id)
+        {
+            return await _inventoryServices.GetInventoryItemByIdAsync(id) != null;
         }
     }
 }

@@ -9,5 +9,22 @@ namespace CarServ.Repository.Repositories.Interfaces
 {
     public interface IInventoryRepository : IGenericRepository<Inventory>
     {
+        Task<List<Inventory>> GetAllInventoryItemsAsync();
+        Task<Inventory> GetInventoryItemByIdAsync(int partId);
+        Task<List<Inventory>> GetInventoryItemsByNameAsync(string partName);
+        Task<Inventory> CreateInventoryItemAsync(
+            string partName,
+            int? quantity,
+            decimal? unitPrice,
+            DateOnly? expiryDate,
+            int? warrantyMonths);
+        Task<Inventory> UpdateInventoryItemAsync(
+            int partId,
+            string partName,
+            int? quantity,
+            decimal? unitPrice,
+            DateOnly? expiryDate,
+            int? warrantyMonths);
+        Task<bool> RemoveInventoryItemAsync(int partId);
     }
 }

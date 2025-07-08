@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CarServ.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,22 @@ namespace CarServ.Service.Services.Interfaces
 {
     public interface IInventoryServices
     {
+        Task<List<Inventory>> GetAllInventoryItemsAsync();
+        Task<Inventory> GetInventoryItemByIdAsync(int partId);
+        Task<List<Inventory>> GetInventoryItemsByNameAsync(string partName);
+        Task<Inventory> CreateInventoryItemAsync(
+            string partName,
+            int? quantity,
+            decimal? unitPrice,
+            DateOnly? expiryDate,
+            int? warrantyMonths);
+        Task<Inventory> UpdateInventoryItemAsync(
+            int partId,
+            string partName,
+            int? quantity,
+            decimal? unitPrice,
+            DateOnly? expiryDate,
+            int? warrantyMonths);
+        Task<bool> RemoveInventoryItemAsync(int partId);
     }
 }
