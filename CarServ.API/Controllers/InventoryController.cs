@@ -94,5 +94,25 @@ namespace CarServ.API.Controllers
         {
             return await _inventoryServices.GetInventoryItemByIdAsync(id) != null;
         }
+
+        [HttpGet("revenueReport")]
+        public async Task<IActionResult> GetRevenueReport(
+        [FromQuery] DateTime startDate,
+        [FromQuery] DateTime endDate)
+        {
+            try
+            {
+                var report = await _inventoryServices.GenerateRevenueReport(startDate, endDate);
+                return Ok(report);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Something is wrong while generating the report");
+            }
+        }
     }
 }

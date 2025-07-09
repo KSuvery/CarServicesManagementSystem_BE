@@ -39,6 +39,7 @@ public partial class CarServicesManagementSystemContext : DbContext
     public virtual DbSet<ServiceHistory> ServiceHistory { get; set; }
 
     public virtual DbSet<ServicePackages> ServicePackages { get; set; }
+    public virtual DbSet<PromotionServicePackage> PromotionServicePackages { get; set; }
 
     public virtual DbSet<ServiceStaff> ServiceStaff { get; set; }
 
@@ -245,6 +246,19 @@ public partial class CarServicesManagementSystemContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.Price).HasColumnType("decimal(10, 2)");
         });
+
+        // Configure composite primary key
+        modelBuilder.Entity<PromotionServicePackage>()
+            .HasKey(psp => new { psp.PromotionID, psp.PackageID });
+        // Configure relationships
+        modelBuilder.Entity<PromotionServicePackage>()
+            .HasOne(psp => psp.Promotion)
+            .WithMany(p => p.PromotionServicePackages)
+            .HasForeignKey(psp => psp.PromotionID);
+        modelBuilder.Entity<PromotionServicePackage>()
+            .HasOne(psp => psp.ServicePackage)
+            .WithMany(sp => sp.PromotionServicePackages)
+            .HasForeignKey(psp => psp.PackageID);
 
         modelBuilder.Entity<ServiceStaff>(entity =>
         {

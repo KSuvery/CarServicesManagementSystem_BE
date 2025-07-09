@@ -1,5 +1,6 @@
 ﻿using CarServ.Service.Services.Interfaces;
 using CarServ.Service.Services;
+using CarServ.Service;
 
 namespace CarServ.API.Configuration
 {
@@ -9,6 +10,8 @@ namespace CarServ.API.Configuration
         {
             services.AddScoped<IAppointmentServices, AppointmentServices>();
             services.AddScoped<IInventoryServices, InventoryServices>();
+            services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IPackageServices, PackageServices>();
             return services;
         }
     }

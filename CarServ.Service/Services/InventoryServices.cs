@@ -1,4 +1,5 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO.RevenueReport;
 using CarServ.Repository.Repositories.Interfaces;
 using CarServ.Service.Services.Interfaces;
 using System;
@@ -59,6 +60,17 @@ namespace CarServ.Service.Services
         public async Task<bool> RemoveInventoryItemAsync(int partId)
         {
             return await _inventoryRepository.RemoveInventoryItemAsync(partId);
+        }
+
+        //This is revenue report
+        public async Task<RevenueReportDto> GenerateRevenueReport(DateTime startDate, DateTime endDate)
+        {
+            // Validate date range
+            if (startDate > endDate)
+            {
+                throw new ArgumentException("Start date must be before end date");
+            }
+            return await _inventoryRepository.GenerateRevenueReport(startDate, endDate);
         }
     }
 }
