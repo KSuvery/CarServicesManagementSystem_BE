@@ -78,5 +78,19 @@ namespace CarServ.Repository.Repositories
                 Items = userListTmp
             };
         }
+
+        public async Task<Users> Login(string username, string password)
+        {
+            return await _context.Users
+                .FirstOrDefaultAsync(x => x.Email == username && x.PasswordHash == password);
+            //return await _context.Users
+            //    .FirstOrDefaultAsync(x => x.Phone == username && x.Password == password);
+
+            //return await _context.Users
+            //    .FirstOrDefaultAsync(x => x.id == username && x.Password == password);
+
+            //return await _context.Users
+            //    .FirstOrDefaultAsync(x => x.username == username && x.Password == password && x.IsActive);
+        }
     }
 }

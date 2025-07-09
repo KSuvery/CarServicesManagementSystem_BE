@@ -9,6 +9,10 @@ using CarServ.Domain.Entities;
 using CarServ.Service.Services.Interfaces;
 using CarServ.Repository.Repositories.DTO;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace CarServ.API.Controllers
 {
@@ -16,14 +20,50 @@ namespace CarServ.API.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
+        private readonly IConfiguration _config;
         private readonly IAccountService _accService;
 
-        public AccountController(IAccountService accService)
+        public AccountController(IConfiguration config, IAccountService accService)
         {
+            _config = config;
             _accService = accService;
         }
+        [HttpPost("Login")]
+        public IActionResult Login([FromBody] LoginRequest request)
+        {
+            var user = _accService.Login(request.UserName, request.Password);
 
-        
+            if (user == null || user.Result == null)
+                return Unauthorized();
+
+            var token = GenerateJSONWebToken(user.Result);
+
+            return Ok(token);
+        }
+
+        private string GenerateJSONWebToken(Users user)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(_config["Jwt:Issuer"]
+                    , _config["Jwt:Audience"]
+                    , new Claim[]
+                    {
+                new(ClaimTypes.Email, user.Email),
+                new(ClaimTypes.Role, user.RoleId.ToString()),
+                    },
+                    expires: DateTime.Now.AddMinutes(120),
+                    signingCredentials: credentials
+                );
+
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return tokenString;
+        }
+
+        public sealed record LoginRequest(string UserName, string Password);
+
         [HttpGet]
         public async Task<PaginationResult<List<GetAllUserDTO>>> Get(int currentPage = 1, int pageSize = 5)
         {

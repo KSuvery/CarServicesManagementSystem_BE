@@ -15,5 +15,6 @@ namespace CarServ.Service.Services.Interfaces
         Task<Users> GetAccountById(int Id);
         Task<Users> GetAccountByMail(string mail);
         Task<List<Users>> GetAccountByRole(int roleID);
+        Task<Users> Login(string username, string password);
     }
 }

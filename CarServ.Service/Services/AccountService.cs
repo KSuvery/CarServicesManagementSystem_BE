@@ -42,5 +42,10 @@ namespace CarServ.Service.Services
         {
             return await _accRepository.GetAllAccountWithPaging(currentPage, pageSize);
         }
+
+        public async Task<Users> Login(string username, string password)
+        {
+            return await _accRepository.Login(username, password);
+        }
     }
 }

@@ -17,5 +17,6 @@ namespace CarServ.Repository.Repositories.Interfaces
         Task<List<Users>> GetAccountByRole(int roleID);
 
         Task<bool> DisableAccount(int Id);
+        Task<Users> Login(string username, string password);
     }
 }

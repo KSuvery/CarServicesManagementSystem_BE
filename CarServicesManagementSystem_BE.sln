@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarServ.Service", "CarServ.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarServ.API", "CarServ.API\CarServ.API.csproj", "{7C32F597-0283-48E0-8088-CBE64DF50409}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmokingCessationSP.APIServices.BE.KietPHG", "..\..\PRN211\SU25_PRN231_SE1723_ASM1_SS150331_KietPHG\SmokingCessationSP.APIServices.BE.KietPHG\SmokingCessationSP.APIServices.BE.KietPHG.csproj", "{3A18FCDF-81BA-42F2-91CE-91036D036E9F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{7C32F597-0283-48E0-8088-CBE64DF50409}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C32F597-0283-48E0-8088-CBE64DF50409}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C32F597-0283-48E0-8088-CBE64DF50409}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A18FCDF-81BA-42F2-91CE-91036D036E9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A18FCDF-81BA-42F2-91CE-91036D036E9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A18FCDF-81BA-42F2-91CE-91036D036E9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A18FCDF-81BA-42F2-91CE-91036D036E9F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
