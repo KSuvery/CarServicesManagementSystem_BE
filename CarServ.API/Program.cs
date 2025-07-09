@@ -5,11 +5,6 @@ using CarServ.API.Configuration;
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 
-// Configure Serilog
-Log.Logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(config)
-    .CreateLogger();
-
 builder.Logging.AddSerilog();
 builder.Services.AddSingleton(Log.Logger);
 builder.Services.AddSingleton<Serilog.Extensions.Hosting.DiagnosticContext>();
