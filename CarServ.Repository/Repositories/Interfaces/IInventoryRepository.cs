@@ -1,4 +1,5 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO.RevenueReport;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,5 +27,8 @@ namespace CarServ.Repository.Repositories.Interfaces
             DateOnly? expiryDate,
             int? warrantyMonths);
         Task<bool> RemoveInventoryItemAsync(int partId);
+
+        //This is revenue report, i just put it here 'cause dont know wwhere to put this func
+        Task<RevenueReportDto> GenerateRevenueReport(DateTime startDate, DateTime endDate);
     }
 }
