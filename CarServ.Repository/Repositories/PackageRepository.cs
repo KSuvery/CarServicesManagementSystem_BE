@@ -48,7 +48,7 @@ namespace CarServ.Repository.Repositories
             return new ServicePackageListDto
             {
                 Packages = packages,
-                CurrentDate = currentDate
+                CurrentDate = DateTime.Now
             };
         }
 
