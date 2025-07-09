@@ -89,6 +89,20 @@ namespace CarServ.API.Controllers
             return Ok(updatedInventoryItem);
         }
 
+        [HttpDelete("Delete/{id}")]
+        public async Task<IActionResult> RemoveInventoryItem(int id)
+        {
+            if (!await InventoryExists(id))
+            {
+                return NotFound();
+            }
+            var result = await _inventoryServices.RemoveInventoryItemAsync(id);
+            if (!result)
+            {
+                return BadRequest("Failed to delete inventory item.");
+            }
+            return NoContent();
+        }
 
         private async Task<bool> InventoryExists(int id)
         {

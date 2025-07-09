@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarServ.Service
+namespace CarServ.Service.Services
 {
     public class PackageServices : IPackageServices
     {

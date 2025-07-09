@@ -11,6 +11,7 @@ namespace CarServ.API.Configuration
             services.AddScoped<IInventoryRepository, InventoryRepository>();
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<IPackageRepository, PackageRepository>();
+            services.AddScoped<INotificationRepository, NotificationRepository>();
             return services;
         }
     }
