@@ -22,10 +22,11 @@ builder.Services.AddControllers(options =>
 builder.Services.AddDatabaseConfiguration(config);
 builder.Services.AddServiceConfiguration(config);
 builder.Services.AddRepositoryConfiguration(config);
+builder.Services.AddJwtAuthenticationService(config);
+builder.Services.AddSwaggerService();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
