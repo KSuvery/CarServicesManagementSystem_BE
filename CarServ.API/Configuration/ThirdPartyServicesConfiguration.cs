@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Options;
-using static CarServ.Service.Services.Configuration.SystemSettingModel;
+﻿using CarServ.Service.Services.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace CarServ.API.Configuration
 {
@@ -22,6 +22,7 @@ namespace CarServ.API.Configuration
                 options.CurrCode = GetEnvironmentVariableOrThrow("VNPAY_CURR_CODE");
                 options.Locale = GetEnvironmentVariableOrThrow("VNPAY_LOCALE");
             });
+            VnPaySetting.Instance = services.BuildServiceProvider().GetService<IOptions<VnPaySetting>>().Value;
 
             services.Configure<CloudinarySetting>(options =>
             {

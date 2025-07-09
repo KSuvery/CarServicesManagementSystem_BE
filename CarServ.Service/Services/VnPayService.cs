@@ -6,11 +6,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static CarServ.Service.Services.Configuration.SystemSettingModel;
 using CarServ.Repository.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
 using CarServ.Service.Services.ApiModels.VNPay;
 using CarServ.Domain.Entities;
+using Microsoft.Extensions.DependencyInjection;
 
 
 namespace CarServ.Service.Services
@@ -20,10 +20,10 @@ namespace CarServ.Service.Services
         private readonly VnPaySetting _vnPaySetting;
         private readonly IPaymentRepository _paymentRepository;
 
-        public VnPayService(VnPaySetting vnPaySetting, IPaymentRepository paymentRepository)
+        public VnPayService(IServiceProvider serviceProvider)
         {
-            _vnPaySetting = vnPaySetting;
-            _paymentRepository = paymentRepository;
+            _vnPaySetting = VnPaySetting.Instance;
+            _paymentRepository = serviceProvider.GetRequiredService<IPaymentRepository>();
         }
 
         public async Task<string> CreatePaymentUrl(HttpContext context, VnPaymentRequest request)

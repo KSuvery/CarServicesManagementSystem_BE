@@ -1,8 +1,10 @@
 using Serilog;
 using CarServ.API.Configuration;
+using DotNetEnv;
 
 
 var builder = WebApplication.CreateBuilder(args);
+Env.Load();
 var config = builder.Configuration;
 
 builder.Logging.AddSerilog();

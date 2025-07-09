@@ -41,15 +41,14 @@ namespace CarServ.Repository.Repositories
 
         public async Task<List<Payments>> GetAllPaymentsAsync()
         {
-            return await _context.Payments
-                .Include(p => p.Appointment)
-                .ToListAsync();
+            return await _context.Payments.ToListAsync();
         }
 
         public async Task<List<Payments>> GetPaymentsByMethodAsync(string method)
         {
             return await _context.Payments
-                .Where(p => p.PaymentMethod.Equals(method, StringComparison.OrdinalIgnoreCase))
+                .Where(p => p.PaymentMethod != null && 
+                    p.PaymentMethod.ToLower().Contains(method.ToLower()))
                 .ToListAsync();
         }
 
