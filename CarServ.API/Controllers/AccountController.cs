@@ -64,6 +64,21 @@ namespace CarServ.API.Controllers
 
         public sealed record LoginRequest(string UserName, string Password);
 
+        [HttpPost("Signup")]
+        public async Task<IActionResult> Signup([FromBody] SignupRequest request)
+        {
+            try
+            {
+                var user = await _accService.SignupNewCustomer(request.FullName, request.Email, request.PhoneNumber, request.Password);
+                return CreatedAtAction(nameof(Login), new { email = user.Email }, user);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        public sealed record SignupRequest(string FullName, string Email, string PhoneNumber, string Password);
+
         [HttpGet]
         public async Task<PaginationResult<List<GetAllUserDTO>>> Get(int currentPage = 1, int pageSize = 5)
         {

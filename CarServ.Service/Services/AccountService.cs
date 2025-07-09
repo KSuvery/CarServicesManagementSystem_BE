@@ -2,6 +2,7 @@
 using CarServ.Repository.Repositories.DTO;
 using CarServ.Repository.Repositories.Interfaces;
 using CarServ.Service.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,6 +47,10 @@ namespace CarServ.Service.Services
         public async Task<Users> Login(string username, string password)
         {
             return await _accRepository.Login(username, password);
+        }
+        public async Task<Users> SignupNewCustomer(string fullName, string email, string phoneNumber, string password)
+        {
+           return await _accRepository.SignupNewCustomer(fullName, email, phoneNumber, password);
         }
     }
 }

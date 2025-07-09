@@ -92,5 +92,30 @@ namespace CarServ.Repository.Repositories
             //return await _context.Users
             //    .FirstOrDefaultAsync(x => x.username == username && x.Password == password && x.IsActive);
         }
+
+        public async Task<Users> SignupNewCustomer(string fullName, string email, string phoneNumber, string password)
+        {
+            if (await _context.Users.AnyAsync(x => x.Email == email))
+            {
+                throw new Exception("Email already exists.");
+            }
+            var passwordHash = HashPassword(password);
+            var newUser = new Users
+            {
+                FullName = fullName,
+                Email = email,
+                PhoneNumber = phoneNumber,
+                PasswordHash = passwordHash,
+                RoleId = 4 // New user is a customer
+            };
+            _context.Users.Add(newUser);
+            await _context.SaveChangesAsync();
+            return newUser;
+        }
+        private string HashPassword(string password)
+        {
+            //...
+            return password;
+        }
     }
 }
