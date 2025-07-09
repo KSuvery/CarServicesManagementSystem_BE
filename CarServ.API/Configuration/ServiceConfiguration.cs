@@ -15,6 +15,7 @@ namespace CarServ.API.Configuration
             services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<ICloudinaryService, CloudinaryService>();
             services.AddScoped<IVnPayService, VnPayService>();
+            services.AddScoped<IWarrantyClaimService, WarrantyClaimService>();
             return services;
         }
     }
