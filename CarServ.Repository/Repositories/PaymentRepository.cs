@@ -1,5 +1,4 @@
 ﻿using CarServ.Domain.Entities;
-using CarServ.Repository.Repositories.DTO.PayOS;
 using CarServ.Repository.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -47,10 +46,10 @@ namespace CarServ.Repository.Repositories
                 .ToListAsync();
         }
 
-        public async Task<List<Payments>> GetPaymentsByMethodAsync()
+        public async Task<List<Payments>> GetPaymentsByMethodAsync(string method)
         {
             return await _context.Payments
-                .Include(p => p.PaymentMethod)
+                .Where(p => p.PaymentMethod.Equals(method, StringComparison.OrdinalIgnoreCase))
                 .ToListAsync();
         }
 
@@ -75,23 +74,11 @@ namespace CarServ.Repository.Repositories
                 .ToListAsync();
         }
 
-        //public async Task<PayOSPaymentResponse> CreateOnlinePaymentAsync(PayOSPaymentRequest request)
-        //{
-        //    using var httpClient = new HttpClient();
-        //    var apiKey = "YOUR_PAYOS_API_KEY";
-
-        //    httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
-
-        //    var response = await httpClient.PostAsJsonAsync("payOsEndpoint", request);
-
-        //    if (!response.IsSuccessStatusCode)
-        //    {
-        //        var error = await response.Content.ReadAsStringAsync();
-        //        throw new Exception($"PayOS payment failed: {error}");
-        //    }
-
-        //    var payOsResponse = await response.Content.ReadFromJsonAsync<PayOSPaymentResponse>();
-        //    return payOsResponse!;
-        //}
+        public async Task<Payments> CreatePayment(Payments payment)
+        {
+            _context.Payments.Add(payment);
+            await _context.SaveChangesAsync();
+            return payment;
+        }
     }
 }

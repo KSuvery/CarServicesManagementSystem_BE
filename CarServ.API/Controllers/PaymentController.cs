@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CarServ.Domain.Entities;
 using CarServ.Service.Services.Interfaces;
-using CarServ.Repository.Repositories.DTO.PayOS;
+using Service.ApiModels.VNPay;
 
 namespace CarServ.API.Controllers
 {
@@ -16,10 +16,12 @@ namespace CarServ.API.Controllers
     public class PaymentController : ControllerBase
     {
         private readonly IPaymentService _paymentService;
+        private readonly IVnPayService _vnPayService;
 
-        public PaymentController(IPaymentService paymentService)
+        public PaymentController(IPaymentService paymentService, IVnPayService vnPayService)
         {
             _paymentService = paymentService;
+            _vnPayService = vnPayService;
         }
 
         [HttpGet]
@@ -62,22 +64,75 @@ namespace CarServ.API.Controllers
             return Ok(payments);
         }
 
-        //[HttpPost]
-        //public async Task<ActionResult<Payments>> CreateOnlinePayment(PayOSPaymentRequest request)
-        //{
-        //    if (request == null)
-        //    {
-        //        return BadRequest("Payment request cannot be null.");
-        //    }
+        [HttpGet("method")]
+        public async Task<ActionResult<IEnumerable<Payments>>> GetPaymentsByMethod([FromQuery] string method)
+        {
+            var payments = await _paymentService.GetPaymentsByMethodAsync(method);
+            if (payments == null || !payments.Any())
+            {
+                return NotFound();
+            }
+            return Ok(payments);
+        }
 
-        //    var payment = await _paymentService.CreateOnlinePaymentAsync(request);
-        //    if (payment == null)
-        //    {
-        //        return BadRequest("Failed to create payment.");
-        //    }
+        [HttpGet("sort/method")]
+        public async Task<ActionResult<IEnumerable<Payments>>> SortPaymentsByMethod()
+        {
+            var payments = await _paymentService.SortPaymentsByMethodAsync();
+            if (payments == null || !payments.Any())
+            {
+                return NotFound();
+            }
+            return Ok(payments);
+        }
 
-        //    return CreatedAtAction(nameof(GetPaymentById), new { id = payment.PaymentId }, payment);
-        //}
+        [HttpGet("amount-range")]
+        public async Task<ActionResult<IEnumerable<Payments>>> GetPaymentsByAmountRange([FromQuery] decimal minAmount, [FromQuery] decimal maxAmount)
+        {
+            var payments = await _paymentService.GetPaymentsByAmountRangeAsync(minAmount, maxAmount);
+            if (payments == null || !payments.Any())
+            {
+                return NotFound();
+            }
+            return Ok(payments);
+        }
+
+        [HttpGet("paid-date")]
+        public async Task<ActionResult<IEnumerable<Payments>>> GetPaymentsByPaidDate([FromQuery] DateTime paidDate)
+        {
+            var payments = await _paymentService.GetPaymentsByPaidDateAsync(paidDate);
+            if (payments == null || !payments.Any())
+            {
+                return NotFound();
+            }
+            return Ok(payments);
+        }
+
+        [HttpPost("create")]
+        public async Task<ActionResult<Payments>> CreatePayment([FromBody] Payments payment)
+        {
+            if (payment == null)
+            {
+                return BadRequest("Payment cannot be null.");
+            }
+            var createdPayment = await _paymentService.CreatePayment(payment);
+            return CreatedAtAction(nameof(GetPaymentById), new { id = createdPayment.PaymentId }, createdPayment);
+        }
+
+        [HttpPost("payment/vnpay/payment-url")]
+        public async Task<IActionResult> VnPayCreatePaymentUrl([FromBody] VnPaymentRequest request)
+        {
+            var response = await _vnPayService.CreatePaymentUrl(HttpContext, request);
+            return Ok(response);
+        }
+
+        [HttpPost("payment/vnpay/payment-execute")]
+        public async Task<IActionResult> VnPayPaymentExecute()
+        {
+            var response = await _vnPayService.PaymentExecute(HttpContext);
+
+            return Ok(response);
+        }
 
         private async Task<bool> PaymentsExists(int id)
         {
