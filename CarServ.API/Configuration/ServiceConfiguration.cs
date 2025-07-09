@@ -9,6 +9,7 @@ namespace CarServ.API.Configuration
         {
             services.AddScoped<IAppointmentServices, AppointmentServices>();
             services.AddScoped<IInventoryServices, InventoryServices>();
+            services.AddScoped<IAccountService, AccountService>();
             return services;
         }
     }
