@@ -19,6 +19,7 @@ namespace CarServ.Repository.Repositories.Interfaces
 
         Task<bool> DisableAccount(int Id);
         Task<Users> Login(string username, string password);
-        Task<UserDTO> SignupNewCustomer(string fullName, string email, string phoneNumber, string password, string address);
+        Task<CustomerDTO> SignupNewCustomer(string fullName, string email, string phoneNumber, string password, string address);
+        Task<StaffDTO> AddingNewStaff(string fullName, string email, string phoneNumber, string password);
     }
 }

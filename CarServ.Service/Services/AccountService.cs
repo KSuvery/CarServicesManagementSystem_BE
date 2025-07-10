@@ -49,9 +49,13 @@ namespace CarServ.Service.Services
         {
             return await _accRepository.Login(username, password);
         }
-        public async Task<UserDTO> SignupNewCustomer(string fullName, string email, string phoneNumber, string password, string address)
+        public async Task<CustomerDTO> SignupNewCustomer(string fullName, string email, string phoneNumber, string password, string address)
         {
            return await _accRepository.SignupNewCustomer(fullName, email, phoneNumber, password, address);
+        }
+        public async Task<StaffDTO> AddingNewStaff(string fullName, string email, string phoneNumber, string password)
+        {
+            return await _accRepository.AddingNewStaff(fullName, email, phoneNumber, password);
         }
     }
 }

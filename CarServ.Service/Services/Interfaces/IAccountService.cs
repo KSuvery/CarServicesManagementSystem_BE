@@ -17,6 +17,7 @@ namespace CarServ.Service.Services.Interfaces
         Task<Users> GetAccountByMail(string mail);
         Task<List<Users>> GetAccountByRole(int roleID);
         Task<Users> Login(string username, string password);
-        Task<UserDTO> SignupNewCustomer(string fullName, string email, string phoneNumber, string password, string address);
+        Task<CustomerDTO> SignupNewCustomer(string fullName, string email, string phoneNumber, string password, string address);
+        Task<StaffDTO> AddingNewStaff(string fullName, string email, string phoneNumber, string password);
     }
 }

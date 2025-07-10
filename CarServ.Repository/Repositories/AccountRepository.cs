@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reflection.Metadata;
 using CarServ.Repository.Repositories.DTO.User_return_DTO;
+using System.Net;
 
 namespace CarServ.Repository.Repositories
 {
@@ -19,6 +20,7 @@ namespace CarServ.Repository.Repositories
         {
             _context = context;
         }
+
 
         public async Task<bool> DisableAccount(int Id)
         {
@@ -101,7 +103,7 @@ namespace CarServ.Repository.Repositories
             return null;
         }
 
-        public async Task<UserDTO> SignupNewCustomer(string fullName, string email, string phoneNumber, string password, string address)
+        public async Task<CustomerDTO> SignupNewCustomer(string fullName, string email, string phoneNumber, string password, string address)
         {
             if (await _context.Users.AnyAsync(x => x.Email == email))
             {
@@ -128,7 +130,7 @@ namespace CarServ.Repository.Repositories
             await _context.SaveChangesAsync();
 
             var newlyCreatedCustomer = await this.GetAccountById(customer.CustomerId);
-            var userDTO = new UserDTO
+            var userDTO = new CustomerDTO
             {
                 UserID = newlyCreatedCustomer.UserId,
                 FullName = newlyCreatedCustomer.FullName,
@@ -139,6 +141,47 @@ namespace CarServ.Repository.Repositories
             };
             return userDTO;
         }
+
+
+        public async Task<StaffDTO> AddingNewStaff(string fullName, string email, string phoneNumber, string password)
+        {
+            if (await _context.Users.AnyAsync(x => x.Email == email))
+            {
+                throw new Exception("Email already exists.");
+            }
+            var passwordHash = HashPassword(password);
+            var newUser = new Users
+            {
+                FullName = fullName,
+                Email = email,
+                PhoneNumber = phoneNumber,
+                PasswordHash = passwordHash,
+                RoleId = 2 // New user is a service staff
+            };
+            _context.Users.Add(newUser);
+            await _context.SaveChangesAsync();
+            var staff = new ServiceStaff
+            {
+                StaffId = newUser.UserId
+                
+            };
+
+            _context.ServiceStaff.Add(staff);
+            await _context.SaveChangesAsync();
+
+            var newlyCreatedStaff = await this.GetAccountById(staff.StaffId);
+            var staffDTO = new StaffDTO
+            {
+                UserID = newlyCreatedStaff.UserId,
+                FullName = newlyCreatedStaff.FullName,
+                Email = newlyCreatedStaff.Email,
+                PhoneNumber = newlyCreatedStaff.PhoneNumber,                
+                RoleName = newlyCreatedStaff.Role.RoleName
+            };
+            return staffDTO;
+        }
+
+
         private string HashPassword(string password)
         {
             return BCrypt.Net.BCrypt.HashPassword(password);
