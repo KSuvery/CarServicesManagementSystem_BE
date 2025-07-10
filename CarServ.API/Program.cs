@@ -6,10 +6,11 @@ using System.Text.Json.Serialization;
 using System.Text;
 using Microsoft.OpenApi.Models;
 
+using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
+Env.Load();
 var config = builder.Configuration;
-
 // Configure Serilog
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(config)
