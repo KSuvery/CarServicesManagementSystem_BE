@@ -1,5 +1,6 @@
 ﻿using CarServ.Domain.Entities;
 using CarServ.Repository.Repositories.DTO;
+using CarServ.Repository.Repositories.DTO.User_return_DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,6 @@ namespace CarServ.Repository.Repositories.Interfaces
 
         Task<bool> DisableAccount(int Id);
         Task<Users> Login(string username, string password);
-        Task<Users> SignupNewCustomer(string fullName, string email, string phoneNumber, string password);
+        Task<UserDTO> SignupNewCustomer(string fullName, string email, string phoneNumber, string password, string address);
     }
 }

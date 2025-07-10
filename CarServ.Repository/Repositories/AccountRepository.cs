@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Reflection.Metadata;
+using CarServ.Repository.Repositories.DTO.User_return_DTO;
 
 namespace CarServ.Repository.Repositories
 {
@@ -100,7 +101,7 @@ namespace CarServ.Repository.Repositories
             return null;
         }
 
-        public async Task<Users> SignupNewCustomer(string fullName, string email, string phoneNumber, string password)
+        public async Task<UserDTO> SignupNewCustomer(string fullName, string email, string phoneNumber, string password, string address)
         {
             if (await _context.Users.AnyAsync(x => x.Email == email))
             {
@@ -117,7 +118,26 @@ namespace CarServ.Repository.Repositories
             };
             _context.Users.Add(newUser);
             await _context.SaveChangesAsync();
-            return newUser;
+            var customer = new Customers
+            {   
+                CustomerId = newUser.UserId,
+                Address = address
+            };
+            
+            _context.Customers.Add(customer);
+            await _context.SaveChangesAsync();
+
+            var newlyCreatedCustomer = await this.GetAccountById(customer.CustomerId);
+            var userDTO = new UserDTO
+            {
+                UserID = newlyCreatedCustomer.UserId,
+                FullName = newlyCreatedCustomer.FullName,
+                Email = newlyCreatedCustomer.Email,
+                PhoneNumber = newlyCreatedCustomer.PhoneNumber,
+                Address = newlyCreatedCustomer.Customers.Address,
+                RoleName = newlyCreatedCustomer.Role.RoleName
+            };
+            return userDTO;
         }
         private string HashPassword(string password)
         {

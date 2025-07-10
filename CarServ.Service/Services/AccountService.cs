@@ -1,5 +1,6 @@
 ﻿using CarServ.Domain.Entities;
 using CarServ.Repository.Repositories.DTO;
+using CarServ.Repository.Repositories.DTO.User_return_DTO;
 using CarServ.Repository.Repositories.Interfaces;
 using CarServ.Service.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -48,9 +49,9 @@ namespace CarServ.Service.Services
         {
             return await _accRepository.Login(username, password);
         }
-        public async Task<Users> SignupNewCustomer(string fullName, string email, string phoneNumber, string password)
+        public async Task<UserDTO> SignupNewCustomer(string fullName, string email, string phoneNumber, string password, string address)
         {
-           return await _accRepository.SignupNewCustomer(fullName, email, phoneNumber, password);
+           return await _accRepository.SignupNewCustomer(fullName, email, phoneNumber, password, address);
         }
     }
 }

@@ -9,11 +9,13 @@ using CarServ.Domain.Entities;
 using CarServ.Service.Services.Interfaces;
 using CarServ.Service.Services;
 using CarServ.Repository.Repositories.DTO.Logging_part_usage;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CarServ.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class InventoryController : ControllerBase
     {
         private readonly IInventoryServices _inventoryServices;
@@ -24,12 +26,14 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "1,3")]
         public async Task<ActionResult<IEnumerable<Inventory>>> GetInventoryItems()
         {
             return await _inventoryServices.GetAllInventoryItemsAsync();
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "1,3")]
         public async Task<ActionResult<Inventory>> GetInventoryItemById(int id)
         {
             var inventoryItem = await _inventoryServices.GetInventoryItemByIdAsync(id);
@@ -41,6 +45,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("GetByName/{partName}")]
+        [Authorize(Roles = "1,3")]
         public async Task<ActionResult<IEnumerable<Inventory>>> GetInventoryItemsByName(string partName)
         {
             var inventoryItems = await _inventoryServices.GetInventoryItemsByNameAsync(partName);
@@ -52,6 +57,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpPost("Create")]
+        [Authorize(Roles = "1,3")]
         public async Task<ActionResult<Inventory>> CreateInventoryItem(
             string partName,
             int? quantity,
@@ -70,6 +76,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpPut("Update/{id}")]
+        [Authorize(Roles = "1,3")]
         public async Task<ActionResult<Inventory>> UpdateInventoryItem(
             int id,
             string partName,
@@ -98,6 +105,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("revenueReport")]
+        [Authorize(Roles = "1")]
         public async Task<IActionResult> GetRevenueReport(
         [FromQuery] DateTime startDate,
         [FromQuery] DateTime endDate)
@@ -118,6 +126,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpPost("track-parts-used")]
+        [Authorize(Roles = "1,2,3")]
         public IActionResult TrackPartsUsed([FromBody] PartUsageDto partsUsedDTO)
         {
             if (partsUsedDTO == null)
