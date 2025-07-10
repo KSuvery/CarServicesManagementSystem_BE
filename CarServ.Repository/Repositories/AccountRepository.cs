@@ -81,16 +81,23 @@ namespace CarServ.Repository.Repositories
 
         public async Task<Users> Login(string username, string password)
         {
-            return await _context.Users
-                .FirstOrDefaultAsync(x => x.Email == username && x.PasswordHash == password);
-            //return await _context.Users
+            
+            // await _context.Users
             //    .FirstOrDefaultAsync(x => x.Phone == username && x.Password == password);
 
-            //return await _context.Users
+            // await _context.Users
             //    .FirstOrDefaultAsync(x => x.id == username && x.Password == password);
 
-            //return await _context.Users
+            // await _context.Users
             //    .FirstOrDefaultAsync(x => x.username == username && x.Password == password && x.IsActive);
+            
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == username);
+            
+            if (user != null && BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
+            {
+                return user;
+            }
+            return null;
         }
 
         public async Task<Users> SignupNewCustomer(string fullName, string email, string phoneNumber, string password)
@@ -114,8 +121,7 @@ namespace CarServ.Repository.Repositories
         }
         private string HashPassword(string password)
         {
-            //...
-            return password;
+            return BCrypt.Net.BCrypt.HashPassword(password);
         }
     }
 }

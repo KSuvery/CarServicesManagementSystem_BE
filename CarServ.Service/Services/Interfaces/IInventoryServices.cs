@@ -1,4 +1,5 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO.Logging_part_usage;
 using CarServ.Repository.Repositories.DTO.RevenueReport;
 using System;
 using System.Collections.Generic;
@@ -30,5 +31,10 @@ namespace CarServ.Service.Services.Interfaces
         
         //This is revenue report, i just put it here 'cause dont know wwhere to put this func
         Task<RevenueReportDto> GenerateRevenueReport(DateTime startDate, DateTime endDate);
+        void TrackPartsUsed(PartUsageDto partUsage);
+
+
+
+
     }
 }

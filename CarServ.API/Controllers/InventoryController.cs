@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CarServ.Domain.Entities;
 using CarServ.Service.Services.Interfaces;
+using CarServ.Service.Services;
+using CarServ.Repository.Repositories.DTO.Logging_part_usage;
 
 namespace CarServ.API.Controllers
 {
@@ -113,6 +115,17 @@ namespace CarServ.API.Controllers
             {
                 return StatusCode(500, "Something is wrong while generating the report");
             }
+        }
+
+        [HttpPost("track-parts-used")]
+        public IActionResult TrackPartsUsed([FromBody] PartUsageDto partsUsedDTO)
+        {
+            if (partsUsedDTO == null)
+            {
+                return BadRequest("Invalid data.");
+            }
+            _inventoryServices.TrackPartsUsed(partsUsedDTO);
+            return Ok("Parts used added successfully.");
         }
     }
 }

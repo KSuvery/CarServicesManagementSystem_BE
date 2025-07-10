@@ -1,4 +1,5 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO.Logging_part_usage;
 using CarServ.Repository.Repositories.DTO.RevenueReport;
 using CarServ.Repository.Repositories.Interfaces;
 using CarServ.Service.Services.Interfaces;
@@ -13,10 +14,12 @@ namespace CarServ.Service.Services
     public class InventoryServices : IInventoryServices
     {
         private readonly IInventoryRepository _inventoryRepository;
+        private readonly IAppointmentRepository _appointmentRepository;
 
-        public InventoryServices(IInventoryRepository inventoryRepository)
+        public InventoryServices(IInventoryRepository inventoryRepository, IAppointmentRepository appointmentRepository)
         {
             _inventoryRepository = inventoryRepository;
+            _appointmentRepository = appointmentRepository;
         }
 
         public async Task<List<Inventory>> GetAllInventoryItemsAsync()
@@ -71,6 +74,12 @@ namespace CarServ.Service.Services
                 throw new ArgumentException("Start date must be before end date");
             }
             return await _inventoryRepository.GenerateRevenueReport(startDate, endDate);
+        }
+
+        public void TrackPartsUsed(PartUsageDto partsUsedDTO)
+        {
+            // You can add any additional business logic here if needed
+            _inventoryRepository.TrackPartsUsed(partsUsedDTO);
         }
     }
 }

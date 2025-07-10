@@ -14,6 +14,7 @@ public partial class ServiceHistory
     public string Description { get; set; }
 
     public string Review { get; set; }
+    public string Notes { get; set; }
 
     public decimal? LaborHours { get; set; }
 
