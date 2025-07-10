@@ -1,20 +1,27 @@
 using Serilog;
 using CarServ.API.Configuration;
+<<<<<<< HEAD
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text.Json.Serialization;
 using System.Text;
 using Microsoft.OpenApi.Models;
+=======
+using DotNetEnv;
+>>>>>>> eae9772817b769d48a608fa1835c204332259c5c
 
 using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
 Env.Load();
 var config = builder.Configuration;
+<<<<<<< HEAD
 // Configure Serilog
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(config)
     .CreateLogger();
+=======
+>>>>>>> eae9772817b769d48a608fa1835c204332259c5c
 
 builder.Logging.AddSerilog();
 builder.Services.AddSingleton(Log.Logger);
@@ -28,6 +35,9 @@ builder.Services.AddControllers(options =>
 builder.Services.AddDatabaseConfiguration(config);
 builder.Services.AddServiceConfiguration(config);
 builder.Services.AddRepositoryConfiguration(config);
+builder.Services.AddJwtAuthenticationService(config);
+builder.Services.AddThirdPartyServices(config);
+builder.Services.AddSwaggerService();
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -56,6 +66,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+<<<<<<< HEAD
 builder.Services.AddSwaggerGen(option =>
 {
     option.DescribeAllParametersInCamelCase();
@@ -84,6 +95,8 @@ builder.Services.AddSwaggerGen(option =>
         }
     });
 });
+=======
+>>>>>>> eae9772817b769d48a608fa1835c204332259c5c
 
 var app = builder.Build();
 
