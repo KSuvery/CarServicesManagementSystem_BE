@@ -1,4 +1,5 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO.Logging_part_usage;
 using CarServ.Repository.Repositories.DTO.RevenueReport;
 using CarServ.Repository.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -175,6 +176,29 @@ namespace CarServ.Repository.Repositories
                 .ToListAsync();
 
             return report;
+        }
+
+
+        public void TrackPartsUsed(PartUsageDto partsUsedDTO)
+        {
+            // Create a new PartsUsed entity
+            var partsUsed = new PartsUsed
+            {
+                ServiceId = partsUsedDTO.ServiceID,
+                PartId = partsUsedDTO.PartID,
+                QuantityUsed = partsUsedDTO.QuantityUsed
+            };
+            // Add to the PartsUsed table
+            _context.PartsUsed.Add(partsUsed);
+            // Update the inventory stock level
+            var inventoryItem = _context.Inventory.Find(partsUsedDTO.PartID);
+            if (inventoryItem != null)
+            {
+                inventoryItem.Quantity -= partsUsedDTO.QuantityUsed;
+                _context.Inventory.Update(inventoryItem);
+            }
+            // Save changes to the database
+            _context.SaveChanges();
         }
 
     }

@@ -1,5 +1,6 @@
 ﻿using CarServ.Domain.Entities;
 using CarServ.Repository.Repositories.DTO;
+using CarServ.Repository.Repositories.DTO.User_return_DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace CarServ.Service.Services.Interfaces
         Task<Users> GetAccountByMail(string mail);
         Task<List<Users>> GetAccountByRole(int roleID);
         Task<Users> Login(string username, string password);
-        Task<Users> SignupNewCustomer(string fullName, string email, string phoneNumber, string password);
+        Task<CustomerDTO> SignupNewCustomer(string fullName, string email, string phoneNumber, string password, string address);
+        Task<StaffDTO> AddingNewStaff(string fullName, string email, string phoneNumber, string password);
     }
 }

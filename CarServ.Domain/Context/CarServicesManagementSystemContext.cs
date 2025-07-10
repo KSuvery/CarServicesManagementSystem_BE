@@ -162,7 +162,7 @@ public partial class CarServicesManagementSystemContext : DbContext
             entity.HasKey(e => e.UsedId).HasName("PK__PartsUse__0BF8B83108F8972D");
 
             entity.Property(e => e.UsedId).HasColumnName("UsedID");
-            entity.Property(e => e.PartId).HasColumnName("PartID");
+            entity.Property(e => e.PartId).HasColumnName("PartID");            
             entity.Property(e => e.ServiceId).HasColumnName("ServiceID");
 
             entity.HasOne(d => d.Part).WithMany(p => p.PartsUsed)
@@ -221,6 +221,7 @@ public partial class CarServicesManagementSystemContext : DbContext
                 .ValueGeneratedNever()
                 .HasColumnName("ServiceID");
             entity.Property(e => e.Description).HasColumnType("text");
+            entity.Property(e => e.Notes).HasColumnType("text");
             entity.Property(e => e.LaborHours).HasColumnType("decimal(5, 2)");
             entity.Property(e => e.Review).HasColumnType("text");
             entity.Property(e => e.ServiceDate).HasColumnType("datetime");

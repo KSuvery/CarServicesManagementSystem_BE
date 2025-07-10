@@ -13,7 +13,7 @@ public partial class PartsUsed
 
     public int? PartId { get; set; }
 
-    public int? QuantityUsed { get; set; }
+    public int? QuantityUsed { get; set; }   
 
     public virtual Inventory Part { get; set; }
 
