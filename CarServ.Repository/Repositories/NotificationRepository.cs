@@ -33,6 +33,7 @@ namespace CarServ.Repository.Repositories
 
         public async Task<Notifications> CreateNotificationAsync(
             int userId,
+            string title,
             string message,
             DateTime? sentAt = null,
             bool isRead = false)
@@ -40,7 +41,7 @@ namespace CarServ.Repository.Repositories
             var notification = new Notifications
             {
                 UserId = userId,
-                Message = message,
+                Message = $"{title}: {message}",
                 SentAt = sentAt ?? DateTime.Now,
                 IsRead = isRead
             };

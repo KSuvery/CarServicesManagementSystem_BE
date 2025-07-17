@@ -20,12 +20,13 @@ namespace CarServ.Service.Services
 
         public async Task<Notifications> CreateNotificationAsync(
             int userId,
+            string title,
             string message,
             DateTime? sentAt,
             bool isRead = false)
         {
             sentAt ??= DateTime.UtcNow;
-            return await _notificationRepository.CreateNotificationAsync(userId, message, sentAt, isRead);
+            return await _notificationRepository.CreateNotificationAsync(userId, title, message, sentAt, isRead);
         }
 
         public async Task<bool> DeleteNotificationAsync(int notificationId)
