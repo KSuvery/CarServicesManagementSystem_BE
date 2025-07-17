@@ -9,7 +9,9 @@ using Microsoft.OpenApi.Models;
 
 using DotNetEnv;
 using CarServ.Repository.Repositories.DTO;
-using CarServ.Service;
+using CarServ.Service.WorkerService;
+using CarServ.Service.Services.Interfaces;
+using CarServ.Service.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,7 +39,7 @@ builder.Services.AddJwtAuthenticationService(config);
 /*builder.Services.AddThirdPartyServices(config);*/
 /*builder.Services.AddSwaggerService();*/
 builder.Services.Configure<AdminSettings>(builder.Configuration.GetSection("AdminCredentials"));
-builder.Services.AddScoped<AdminSeederService>();
+
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {

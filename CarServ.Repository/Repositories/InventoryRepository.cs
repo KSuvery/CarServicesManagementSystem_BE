@@ -7,16 +7,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CarServ.Repository.Repositories
 {
     public class InventoryRepository : GenericRepository<Inventory>, IInventoryRepository
     {
-        private readonly CarServicesManagementSystemContext _context;
+        private readonly CarServicesManagementSystemContext _context;        
+
+
         public InventoryRepository(CarServicesManagementSystemContext context) : base(context)
         {
             _context = context;
+            
         }
 
         public async Task<List<Inventory>> GetAllInventoryItemsAsync()
@@ -179,27 +183,57 @@ namespace CarServ.Repository.Repositories
         }
 
 
-        public void TrackPartsUsed(PartUsageDto partsUsedDTO)
+        public async Task TrackPartsUsed(PartUsageDto partsUsedDTO)
         {
-            // Create a new PartsUsed entity
             var partsUsed = new PartsUsed
             {
                 ServiceId = partsUsedDTO.ServiceID,
                 PartId = partsUsedDTO.PartID,
                 QuantityUsed = partsUsedDTO.QuantityUsed
             };
-            // Add to the PartsUsed table
+
             _context.PartsUsed.Add(partsUsed);
+
             // Update the inventory stock level
             var inventoryItem = _context.Inventory.Find(partsUsedDTO.PartID);
             if (inventoryItem != null)
             {
                 inventoryItem.Quantity -= partsUsedDTO.QuantityUsed;
                 _context.Inventory.Update(inventoryItem);
+                await _context.SaveChangesAsync();
+                
             }
-            // Save changes to the database
-            _context.SaveChanges();
+
+            await CheckAndNotifyLowStock(inventoryItem);
         }
+
+        private async Task CheckAndNotifyLowStock(Inventory item)
+        {
+            if (item != null && item.Quantity < 3)
+            {
+                var message = $"Low stock alert: {item.PartName} (ID: {item.PartId}) " +
+                              $"has only {item.Quantity} units remaining!";
+
+                var managers = await _context.InventoryManagers
+                    .Include(m => m.Manager)
+                    .ToListAsync();
+
+                foreach (var manager in managers)
+                {
+                    var notification = new Notifications
+                    {
+                        UserId = manager.ManagerId,
+                        Message = $"Low Stock Alert: {message}",
+                        SentAt = DateTime.Now,
+                        IsRead = false
+                    };
+
+                    _context.Notifications.Add(notification);
+                    _context.SaveChanges();
+                }
+            }
+        }
+
 
     }
 }

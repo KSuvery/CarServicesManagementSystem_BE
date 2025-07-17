@@ -99,6 +99,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpDelete("Delete/{id}")]
+        [Authorize(Roles = "1,3")]
         public async Task<IActionResult> RemoveInventoryItem(int id)
         {
             if (!await InventoryExists(id))
