@@ -8,9 +8,9 @@ using System.Text;
 using Microsoft.OpenApi.Models;
 
 using DotNetEnv;
+using CarServ.Repository.Repositories.DTO;
+using CarServ.Service;
 
-
-using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
 Env.Load();
@@ -34,8 +34,10 @@ builder.Services.AddDatabaseConfiguration(config);
 builder.Services.AddServiceConfiguration(config);
 builder.Services.AddRepositoryConfiguration(config);
 builder.Services.AddJwtAuthenticationService(config);
-builder.Services.AddThirdPartyServices(config);
-builder.Services.AddSwaggerService();
+/*builder.Services.AddThirdPartyServices(config);*/
+/*builder.Services.AddSwaggerService();*/
+builder.Services.Configure<AdminSettings>(builder.Configuration.GetSection("AdminCredentials"));
+builder.Services.AddScoped<AdminSeederService>();
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -43,22 +45,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.Never;
 });
 
-//JWT Config
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
-            // ClockSkew = TimeSpan.Zero
-        };
-    });
+
 
 
 
@@ -96,6 +83,13 @@ builder.Services.AddSwaggerGen(option =>
 
 
 var app = builder.Build();
+
+//Auto-generate new admin with admin credentials is in appsetting
+using (var scope = app.Services.CreateScope())
+{
+    var seeder = scope.ServiceProvider.GetRequiredService<AdminSeederService>();
+    await seeder.SeedAdminAsync();
+}
 
 app.UseSerilogRequestLogging();
 
