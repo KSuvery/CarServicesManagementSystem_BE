@@ -8,7 +8,6 @@ namespace CarServ.API.Configuration
         public static IServiceCollection AddServiceConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IAppointmentServices, AppointmentServices>();
-            services.AddScoped<IInventoryServices, InventoryServices>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IPackageServices, PackageServices>();
             services.AddScoped<INotificationService, NotificationService>();

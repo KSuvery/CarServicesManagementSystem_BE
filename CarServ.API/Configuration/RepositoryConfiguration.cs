@@ -8,7 +8,6 @@ namespace CarServ.API.Configuration
         public static IServiceCollection AddRepositoryConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IAppointmentRepository, AppointmentRepository>();
-            services.AddScoped<IInventoryRepository, InventoryRepository>();
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<IPackageRepository, PackageRepository>();
             services.AddScoped<INotificationRepository, NotificationRepository>();

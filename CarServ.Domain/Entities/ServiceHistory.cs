@@ -19,8 +19,6 @@ public partial class ServiceHistory
 
     public DateTime? ServiceDate { get; set; }
 
-    public virtual ICollection<PartsUsed> PartsUsed { get; set; } = new List<PartsUsed>();
-
     public virtual Appointments Service { get; set; }
 
     public virtual ServiceStaff Staff { get; set; }
