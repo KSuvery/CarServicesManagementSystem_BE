@@ -17,6 +17,7 @@ namespace CarServ.API.Configuration
             services.AddScoped<IWarrantyClaimService, WarrantyClaimService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IPartsService, PartsService>();
+            services.AddScoped<ICarTypesService, CarTypesService>();
             return services;
         }
     }
