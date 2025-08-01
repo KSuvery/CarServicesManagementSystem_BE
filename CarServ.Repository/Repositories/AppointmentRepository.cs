@@ -50,7 +50,6 @@ namespace CarServ.Repository.Repositories
             string status = "Pending",
             int? promotionId = null)
         {
-            appointmentDate = DateTime.UtcNow;
             var appointment = new Appointments
             {
                 CustomerId = customerId,
@@ -69,12 +68,7 @@ namespace CarServ.Repository.Repositories
 
         public async Task<Appointments> UpdateAppointmentAsync(
             int appointmentId,
-            int customerId,
-            int vehicleId,
-            int packageId,
-            DateTime appointmentDate,
-            string status,
-            int? promotionId)
+            string status)
         {
             var appointment = await GetAppointmentByIdAsync(appointmentId);
 
@@ -82,12 +76,7 @@ namespace CarServ.Repository.Repositories
             {
                 throw new KeyNotFoundException($"Appointment with ID {appointmentId} not found.");
             }
-            appointment.CustomerId = customerId;
-            appointment.VehicleId = vehicleId;
-            appointment.PackageId = packageId;
-            appointment.AppointmentDate = appointmentDate;
             appointment.Status = status;
-            appointment.PromotionId = promotionId;
             await UpdateAsync(appointment);
             await _context.SaveChangesAsync();
             return appointment;

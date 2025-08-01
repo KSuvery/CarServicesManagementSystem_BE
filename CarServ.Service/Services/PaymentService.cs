@@ -23,11 +23,6 @@ namespace CarServ.Service.Services
             return await _paymentRepository.GetPaymentByIdAsync(paymentId);
         }
 
-        public async Task<Payments> GetPaymentByOrderIdAsync(int orderId)
-        {
-            return await _paymentRepository.GetPaymentByOrderIdAsync(orderId);
-        }
-
         public async Task<List<Payments>> GetPaymentsByAppointmentIdAsync(int appointmentId)
         {
             return await _paymentRepository.GetPaymentsByAppointmentIdAsync(appointmentId);

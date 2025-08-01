@@ -25,12 +25,6 @@ namespace CarServ.Repository.Repositories
                 .FirstOrDefaultAsync(p => p.PaymentId == paymentId);
         }
 
-        public async Task<Payments> GetPaymentByOrderIdAsync(int orderId)
-        {
-            return await _context.Payments
-                .FirstOrDefaultAsync(p => p.OrderId == orderId);
-        }
-
         public async Task<List<Payments>> GetPaymentsByAppointmentIdAsync(int appointmentId)
         {
             return await _context.Payments

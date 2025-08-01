@@ -13,17 +13,17 @@ public partial class Vehicles
 
     public string LicensePlate { get; set; }
 
-    public string Make { get; set; }
+    public string Brand { get; set; }
 
     public string Model { get; set; }
 
+    public string Type { get; set; }
+
+    public string Garage { get; set; }
+
     public int? Year { get; set; }
 
-    public int? CarTypeId { get; set; }
-
     public virtual ICollection<Appointments> Appointments { get; set; } = new List<Appointments>();
-
-    public virtual CarTypes CarType { get; set; }
 
     public virtual Customers Customer { get; set; }
 }

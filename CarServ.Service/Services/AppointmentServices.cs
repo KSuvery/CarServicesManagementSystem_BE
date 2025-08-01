@@ -57,21 +57,9 @@ namespace CarServ.Service.Services
 
         public async Task<Appointments> UpdateAppointmentAsync(
             int appointmentId,
-            int customerId,
-            int vehicleId,
-            int packageId,
-            DateTime appointmentDate,
-            string status,
-            int? promotionId)
+            string status)
         {
-            return await _appointmentRepository.UpdateAppointmentAsync(
-                appointmentId,
-                customerId,
-                vehicleId,
-                packageId,
-                appointmentDate,
-                status,
-                promotionId);
+            return await _appointmentRepository.UpdateAppointmentAsync(appointmentId, status);
         }
     }
 }

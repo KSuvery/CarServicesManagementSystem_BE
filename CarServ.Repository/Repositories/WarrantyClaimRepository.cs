@@ -67,7 +67,6 @@ namespace CarServ.Repository.Repositories
             )
         {
             status = "Pending";
-            claimDate = DateOnly.FromDateTime(DateTime.Now);
             var warrantyClaim = new WarrantyClaims
             {
                 PartId = partId,
@@ -108,7 +107,7 @@ namespace CarServ.Repository.Repositories
             var warrantyClaim = await GetWarrantyClaimByIdAsync(claimId);
             if (warrantyClaim == null)
                 return null;
-            warrantyClaim.Status = "Rejected";
+            warrantyClaim.Status = "Deactivated";
             _context.WarrantyClaims.Update(warrantyClaim);
             await _context.SaveChangesAsync();
             return warrantyClaim;

@@ -10,7 +10,6 @@ namespace CarServ.Service.Services.Interfaces
     public interface IPaymentService
     {
         Task<Payments> GetPaymentByIdAsync(int paymentId);
-        Task<Payments> GetPaymentByOrderIdAsync(int orderId);
         Task<List<Payments>> GetPaymentsByAppointmentIdAsync(int appointmentId);
         Task<List<Payments>> GetPaymentsByCustomerIdAsync(int customerId);
         Task<List<Payments>> GetAllPaymentsAsync();

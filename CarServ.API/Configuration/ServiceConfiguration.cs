@@ -10,6 +10,7 @@ namespace CarServ.API.Configuration
         public static IServiceCollection AddServiceConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IAppointmentServices, AppointmentServices>();
+            services.AddScoped<IInventoryServices, InventoryServices>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IPackageServices, PackageServices>();
             services.AddScoped<INotificationService, NotificationService>();
@@ -17,12 +18,9 @@ namespace CarServ.API.Configuration
             services.AddScoped<ICloudinaryService, CloudinaryService>();
             services.AddScoped<IVnPayService, VnPayService>();
             services.AddScoped<IWarrantyClaimService, WarrantyClaimService>();
-            services.AddScoped<IOrderService, OrderService>();
-            services.AddScoped<IPartsService, PartsService>();
-            services.AddScoped<ICarTypesService, CarTypesService>();
-            services.AddScoped<IVehicleService, VehicleService>();
             services.AddScoped<AdminSeederService>();
             
+
             return services;
         }
     }

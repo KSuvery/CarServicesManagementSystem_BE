@@ -18,6 +18,5 @@ public partial class Promotions
     public DateOnly? EndDate { get; set; }
 
     public virtual ICollection<Appointments> Appointments { get; set; } = new List<Appointments>();
-
-    public virtual ICollection<Orders> Orders { get; set; } = new List<Orders>();
+    public virtual ICollection<PromotionServicePackage> PromotionServicePackages { get; set; }
 }

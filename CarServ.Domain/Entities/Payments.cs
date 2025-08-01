@@ -17,9 +17,5 @@ public partial class Payments
 
     public DateTime? PaidAt { get; set; }
 
-    public int? OrderId { get; set; }
-
     public virtual Appointments Appointment { get; set; }
-
-    public virtual Orders Order { get; set; }
 }

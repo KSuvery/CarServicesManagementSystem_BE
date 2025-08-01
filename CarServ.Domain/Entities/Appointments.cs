@@ -23,8 +23,6 @@ public partial class Appointments
 
     public virtual Customers Customer { get; set; }
 
-    public virtual Orders Orders { get; set; }
-
     public virtual ServicePackages Package { get; set; }
 
     public virtual ICollection<Payments> Payments { get; set; } = new List<Payments>();
@@ -32,8 +30,6 @@ public partial class Appointments
     public virtual Promotions Promotion { get; set; }
 
     public virtual ServiceHistory ServiceHistory { get; set; }
-
-    public virtual ICollection<ServiceProgress> ServiceProgress { get; set; } = new List<ServiceProgress>();
 
     public virtual Vehicles Vehicle { get; set; }
 }

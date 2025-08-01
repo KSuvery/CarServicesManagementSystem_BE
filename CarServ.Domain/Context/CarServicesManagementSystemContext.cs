@@ -20,21 +20,15 @@ public partial class CarServicesManagementSystemContext : DbContext
 
     public virtual DbSet<Appointments> Appointments { get; set; }
 
-    public virtual DbSet<CarTypes> CarTypes { get; set; }
-
     public virtual DbSet<Customers> Customers { get; set; }
+
+    public virtual DbSet<Inventory> Inventory { get; set; }
 
     public virtual DbSet<InventoryManagers> InventoryManagers { get; set; }
 
     public virtual DbSet<Notifications> Notifications { get; set; }
 
-    public virtual DbSet<OrderDetails> OrderDetails { get; set; }
-
-    public virtual DbSet<Orders> Orders { get; set; }
-
-    public virtual DbSet<PartPrices> PartPrices { get; set; }
-
-    public virtual DbSet<Parts> Parts { get; set; }
+    public virtual DbSet<PartsUsed> PartsUsed { get; set; }
 
     public virtual DbSet<Payments> Payments { get; set; }
 
@@ -45,14 +39,9 @@ public partial class CarServicesManagementSystemContext : DbContext
     public virtual DbSet<ServiceHistory> ServiceHistory { get; set; }
 
     public virtual DbSet<ServicePackages> ServicePackages { get; set; }
-
-    public virtual DbSet<ServiceParts> ServiceParts { get; set; }
-
-    public virtual DbSet<ServiceProgress> ServiceProgress { get; set; }
+    public virtual DbSet<PromotionServicePackage> PromotionServicePackages { get; set; }
 
     public virtual DbSet<ServiceStaff> ServiceStaff { get; set; }
-
-    public virtual DbSet<Services> Services { get; set; }
 
     public virtual DbSet<Suppliers> Suppliers { get; set; }
 
@@ -80,7 +69,7 @@ public partial class CarServicesManagementSystemContext : DbContext
     {
         modelBuilder.Entity<Appointments>(entity =>
         {
-            entity.HasKey(e => e.AppointmentId).HasName("PK__Appointm__8ECDFCA25B8E7E42");
+            entity.HasKey(e => e.AppointmentId).HasName("PK__Appointm__8ECDFCA26EAFDB71");
 
             entity.Property(e => e.AppointmentId).HasColumnName("AppointmentID");
             entity.Property(e => e.AppointmentDate).HasColumnType("datetime");
@@ -94,36 +83,24 @@ public partial class CarServicesManagementSystemContext : DbContext
 
             entity.HasOne(d => d.Customer).WithMany(p => p.Appointments)
                 .HasForeignKey(d => d.CustomerId)
-                .HasConstraintName("FK__Appointme__Custo__6A30C649");
+                .HasConstraintName("FK__Appointme__Custo__4D94879B");
 
             entity.HasOne(d => d.Package).WithMany(p => p.Appointments)
                 .HasForeignKey(d => d.PackageId)
-                .HasConstraintName("FK__Appointme__Packa__6B24EA82");
+                .HasConstraintName("FK__Appointme__Packa__4F7CD00D");
 
             entity.HasOne(d => d.Promotion).WithMany(p => p.Appointments)
                 .HasForeignKey(d => d.PromotionId)
-                .HasConstraintName("FK__Appointme__Promo__6C190EBB");
+                .HasConstraintName("FK__Appointme__Promo__5070F446");
 
             entity.HasOne(d => d.Vehicle).WithMany(p => p.Appointments)
                 .HasForeignKey(d => d.VehicleId)
-                .HasConstraintName("FK__Appointme__Vehic__6D0D32F4");
-        });
-
-        modelBuilder.Entity<CarTypes>(entity =>
-        {
-            entity.HasKey(e => e.CarTypeId).HasName("PK__CarTypes__2B2E84BD960F0F41");
-
-            entity.Property(e => e.CarTypeId).HasColumnName("CarTypeID");
-            entity.Property(e => e.Description).HasColumnType("text");
-            entity.Property(e => e.TypeName)
-                .IsRequired()
-                .HasMaxLength(100)
-                .IsUnicode(false);
+                .HasConstraintName("FK__Appointme__Vehic__4E88ABD4");
         });
 
         modelBuilder.Entity<Customers>(entity =>
         {
-            entity.HasKey(e => e.CustomerId).HasName("PK__Customer__A4AE64B82DD1BA22");
+            entity.HasKey(e => e.CustomerId).HasName("PK__Customer__A4AE64B8A3853FE0");
 
             entity.Property(e => e.CustomerId)
                 .ValueGeneratedNever()
@@ -135,12 +112,23 @@ public partial class CarServicesManagementSystemContext : DbContext
             entity.HasOne(d => d.Customer).WithOne(p => p.Customers)
                 .HasForeignKey<Customers>(d => d.CustomerId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Customers__Custo__6E01572D");
+                .HasConstraintName("FK__Customers__Custo__3E52440B");
+        });
+
+        modelBuilder.Entity<Inventory>(entity =>
+        {
+            entity.HasKey(e => e.PartId).HasName("PK__Inventor__7C3F0D302046D415");
+
+            entity.Property(e => e.PartId).HasColumnName("PartID");
+            entity.Property(e => e.PartName)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.UnitPrice).HasColumnType("decimal(10, 2)");
         });
 
         modelBuilder.Entity<InventoryManagers>(entity =>
         {
-            entity.HasKey(e => e.ManagerId).HasName("PK__Inventor__3BA2AA81C16D50F5");
+            entity.HasKey(e => e.ManagerId).HasName("PK__Inventor__3BA2AA81D8C6D423");
 
             entity.Property(e => e.ManagerId)
                 .ValueGeneratedNever()
@@ -149,12 +137,12 @@ public partial class CarServicesManagementSystemContext : DbContext
             entity.HasOne(d => d.Manager).WithOne(p => p.InventoryManagers)
                 .HasForeignKey<InventoryManagers>(d => d.ManagerId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Inventory__Manag__6EF57B66");
+                .HasConstraintName("FK__Inventory__Manag__440B1D61");
         });
 
         modelBuilder.Entity<Notifications>(entity =>
         {
-            entity.HasKey(e => e.NotificationId).HasName("PK__Notifica__20CF2E32EE2D6258");
+            entity.HasKey(e => e.NotificationId).HasName("PK__Notifica__20CF2E3296D7A116");
 
             entity.Property(e => e.NotificationId).HasColumnName("NotificationID");
             entity.Property(e => e.IsRead).HasDefaultValue(false);
@@ -166,95 +154,33 @@ public partial class CarServicesManagementSystemContext : DbContext
 
             entity.HasOne(d => d.User).WithMany(p => p.Notifications)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__Notificat__UserI__6FE99F9F");
+                .HasConstraintName("FK__Notificat__UserI__656C112C");
         });
 
-        modelBuilder.Entity<OrderDetails>(entity =>
+        modelBuilder.Entity<PartsUsed>(entity =>
         {
-            entity.HasKey(e => e.OrderDetailId).HasName("PK__OrderDet__D3B9D30CE9471D15");
+            entity.HasKey(e => e.UsedId).HasName("PK__PartsUse__0BF8B83108F8972D");
 
-            entity.Property(e => e.OrderDetailId).HasColumnName("OrderDetailID");
-            entity.Property(e => e.LineTotal)
-                .HasComputedColumnSql("([Quantity]*[UnitPrice])", true)
-                .HasColumnType("decimal(21, 2)");
-            entity.Property(e => e.OrderId).HasColumnName("OrderID");
-            entity.Property(e => e.PackageId).HasColumnName("PackageID");
-            entity.Property(e => e.Quantity).HasDefaultValue(1);
             entity.Property(e => e.UsedId).HasColumnName("UsedID");
             entity.Property(e => e.PartId).HasColumnName("PartID");            
             entity.Property(e => e.ServiceId).HasColumnName("ServiceID");
-            entity.Property(e => e.UnitPrice).HasColumnType("decimal(10, 2)");
 
-            entity.HasOne(d => d.Order).WithMany(p => p.OrderDetails)
-                .HasForeignKey(d => d.OrderId)
-                .HasConstraintName("FK__OrderDeta__Order__70DDC3D8");
-
-            entity.HasOne(d => d.Package).WithMany(p => p.OrderDetails)
-                .HasForeignKey(d => d.PackageId)
-                .HasConstraintName("FK__OrderDeta__Packa__71D1E811");
-
-            entity.HasOne(d => d.Service).WithMany(p => p.OrderDetails)
-                .HasForeignKey(d => d.ServiceId)
-                .HasConstraintName("FK__OrderDeta__Servi__72C60C4A");
-        });
-
-        modelBuilder.Entity<Orders>(entity =>
-        {
-            entity.HasKey(e => e.OrderId).HasName("PK__Orders__C3905BAF46F91766");
-
-            entity.HasIndex(e => e.AppointmentId, "UQ__Orders__8ECDFCA3FA94364E").IsUnique();
-
-            entity.Property(e => e.OrderId).HasColumnName("OrderID");
-            entity.Property(e => e.AppointmentId).HasColumnName("AppointmentID");
-            entity.Property(e => e.CreatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
-            entity.Property(e => e.PromotionId).HasColumnName("PromotionID");
-
-            entity.HasOne(d => d.Appointment).WithOne(p => p.Orders)
-                .HasForeignKey<Orders>(d => d.AppointmentId)
-                .HasConstraintName("FK__Orders__Appointm__73BA3083");
-
-            entity.HasOne(d => d.Promotion).WithMany(p => p.Orders)
-                .HasForeignKey(d => d.PromotionId)
-                .HasConstraintName("FK__Orders__Promotio__74AE54BC");
-        });
-
-        modelBuilder.Entity<PartPrices>(entity =>
-        {
-            entity.HasKey(e => e.PriceId).HasName("PK__PartPric__4957584F0AD35D18");
-
-            entity.Property(e => e.PriceId).HasColumnName("PriceID");
-            entity.Property(e => e.EffectiveFrom)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
-            entity.Property(e => e.PartId).HasColumnName("PartID");
-            entity.Property(e => e.Price).HasColumnType("decimal(10, 2)");
-
-            entity.HasOne(d => d.Part).WithMany(p => p.PartPrices)
+            entity.HasOne(d => d.Part).WithMany(p => p.PartsUsed)
                 .HasForeignKey(d => d.PartId)
-                .HasConstraintName("FK__PartPrice__PartI__778AC167");
-        });
+                .HasConstraintName("FK__PartsUsed__PartI__59FA5E80");
 
-        modelBuilder.Entity<Parts>(entity =>
-        {
-            entity.HasKey(e => e.PartId).HasName("PK__Parts__7C3F0D302B2E7AE6");
-
-            entity.Property(e => e.PartId).HasColumnName("PartID");
-            entity.Property(e => e.PartName)
-                .HasMaxLength(100)
-                .IsUnicode(false);
-            entity.Property(e => e.UnitPrice).HasColumnType("decimal(10, 2)");
+            entity.HasOne(d => d.Service).WithMany(p => p.PartsUsed)
+                .HasForeignKey(d => d.ServiceId)
+                .HasConstraintName("FK__PartsUsed__Servi__59063A47");
         });
 
         modelBuilder.Entity<Payments>(entity =>
         {
-            entity.HasKey(e => e.PaymentId).HasName("PK__Payments__9B556A5885ECE850");
+            entity.HasKey(e => e.PaymentId).HasName("PK__Payments__9B556A5858571BD2");
 
             entity.Property(e => e.PaymentId).HasColumnName("PaymentID");
             entity.Property(e => e.Amount).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.AppointmentId).HasColumnName("AppointmentID");
-            entity.Property(e => e.OrderId).HasColumnName("OrderID");
             entity.Property(e => e.PaidAt).HasColumnType("datetime");
             entity.Property(e => e.PaymentMethod)
                 .HasMaxLength(50)
@@ -262,16 +188,12 @@ public partial class CarServicesManagementSystemContext : DbContext
 
             entity.HasOne(d => d.Appointment).WithMany(p => p.Payments)
                 .HasForeignKey(d => d.AppointmentId)
-                .HasConstraintName("FK__Payments__Appoin__787EE5A0");
-
-            entity.HasOne(d => d.Order).WithMany(p => p.Payments)
-                .HasForeignKey(d => d.OrderId)
-                .HasConstraintName("FK__Payments__OrderI__797309D9");
+                .HasConstraintName("FK__Payments__Appoin__628FA481");
         });
 
         modelBuilder.Entity<Promotions>(entity =>
         {
-            entity.HasKey(e => e.PromotionId).HasName("PK__Promotio__52C42F2FFB6B00C6");
+            entity.HasKey(e => e.PromotionId).HasName("PK__Promotio__52C42F2FC866448D");
 
             entity.Property(e => e.PromotionId).HasColumnName("PromotionID");
             entity.Property(e => e.DiscountPercentage).HasColumnType("decimal(5, 2)");
@@ -282,7 +204,7 @@ public partial class CarServicesManagementSystemContext : DbContext
 
         modelBuilder.Entity<Roles>(entity =>
         {
-            entity.HasKey(e => e.RoleId).HasName("PK__Roles__8AFACE3A8F0CA27E");
+            entity.HasKey(e => e.RoleId).HasName("PK__Roles__8AFACE3A3982B354");
 
             entity.Property(e => e.RoleId).HasColumnName("RoleID");
             entity.Property(e => e.RoleName)
@@ -293,7 +215,7 @@ public partial class CarServicesManagementSystemContext : DbContext
 
         modelBuilder.Entity<ServiceHistory>(entity =>
         {
-            entity.HasKey(e => e.ServiceId).HasName("PK__ServiceH__C51BB0EA6F9C5086");
+            entity.HasKey(e => e.ServiceId).HasName("PK__ServiceH__C51BB0EA2484319A");
 
             entity.Property(e => e.ServiceId)
                 .ValueGeneratedNever()
@@ -307,16 +229,16 @@ public partial class CarServicesManagementSystemContext : DbContext
 
             entity.HasOne(d => d.Service).WithOne(p => p.ServiceHistory)
                 .HasForeignKey<ServiceHistory>(d => d.ServiceId)
-                .HasConstraintName("FK__ServiceHi__Servi__7A672E12");
+                .HasConstraintName("FK__ServiceHi__Servi__5441852A");
 
             entity.HasOne(d => d.Staff).WithMany(p => p.ServiceHistory)
                 .HasForeignKey(d => d.StaffId)
-                .HasConstraintName("FK__ServiceHi__Staff__7B5B524B");
+                .HasConstraintName("FK__ServiceHi__Staff__534D60F1");
         });
 
         modelBuilder.Entity<ServicePackages>(entity =>
         {
-            entity.HasKey(e => e.PackageId).HasName("PK__ServiceP__322035EC8849DC92");
+            entity.HasKey(e => e.PackageId).HasName("PK__ServiceP__322035ECF525B77C");
 
             entity.Property(e => e.PackageId).HasColumnName("PackageID");
             entity.Property(e => e.Description).HasColumnType("text");
@@ -324,67 +246,24 @@ public partial class CarServicesManagementSystemContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false);
             entity.Property(e => e.Price).HasColumnType("decimal(10, 2)");
-
-            entity.HasMany(d => d.Service).WithMany(p => p.Package)
-                .UsingEntity<Dictionary<string, object>>(
-                    "PackageServices",
-                    r => r.HasOne<Services>().WithMany()
-                        .HasForeignKey("ServiceId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__PackageSe__Servi__76969D2E"),
-                    l => l.HasOne<ServicePackages>().WithMany()
-                        .HasForeignKey("PackageId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__PackageSe__Packa__75A278F5"),
-                    j =>
-                    {
-                        j.HasKey("PackageId", "ServiceId").HasName("PK__PackageS__8E718EE2CE1F7480");
-                        j.IndexerProperty<int>("PackageId").HasColumnName("PackageID");
-                        j.IndexerProperty<int>("ServiceId").HasColumnName("ServiceID");
-                    });
         });
 
-        modelBuilder.Entity<ServiceParts>(entity =>
-        {
-            entity.HasKey(e => new { e.ServiceId, e.PartId }).HasName("PK__ServiceP__D2D84039FE299B29");
-
-            entity.Property(e => e.ServiceId).HasColumnName("ServiceID");
-            entity.Property(e => e.PartId).HasColumnName("PartID");
-
-            entity.HasOne(d => d.Part).WithMany(p => p.ServiceParts)
-                .HasForeignKey(d => d.PartId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__ServicePa__PartI__7C4F7684");
-
-            entity.HasOne(d => d.Service).WithMany(p => p.ServiceParts)
-                .HasForeignKey(d => d.ServiceId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__ServicePa__Servi__7D439ABD");
-        });
-
-        modelBuilder.Entity<ServiceProgress>(entity =>
-        {
-            entity.HasKey(e => e.ProgressId).HasName("PK__ServiceP__BAE29C8505E2039F");
-
-            entity.Property(e => e.ProgressId).HasColumnName("ProgressID");
-            entity.Property(e => e.AppointmentId).HasColumnName("AppointmentID");
-            entity.Property(e => e.Note).HasColumnType("text");
-            entity.Property(e => e.Status)
-                .IsRequired()
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.UpdatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
-
-            entity.HasOne(d => d.Appointment).WithMany(p => p.ServiceProgress)
-                .HasForeignKey(d => d.AppointmentId)
-                .HasConstraintName("FK__ServicePr__Appoi__7E37BEF6");
-        });
+        // Configure composite primary key
+        modelBuilder.Entity<PromotionServicePackage>()
+            .HasKey(psp => new { psp.PromotionID, psp.PackageID });
+        // Configure relationships
+        modelBuilder.Entity<PromotionServicePackage>()
+            .HasOne(psp => psp.Promotion)
+            .WithMany(p => p.PromotionServicePackages)
+            .HasForeignKey(psp => psp.PromotionID);
+        modelBuilder.Entity<PromotionServicePackage>()
+            .HasOne(psp => psp.ServicePackage)
+            .WithMany(sp => sp.PromotionServicePackages)
+            .HasForeignKey(psp => psp.PackageID);
 
         modelBuilder.Entity<ServiceStaff>(entity =>
         {
-            entity.HasKey(e => e.StaffId).HasName("PK__ServiceS__96D4AAF780C0D93D");
+            entity.HasKey(e => e.StaffId).HasName("PK__ServiceS__96D4AAF701A58BAA");
 
             entity.Property(e => e.StaffId)
                 .ValueGeneratedNever()
@@ -394,25 +273,12 @@ public partial class CarServicesManagementSystemContext : DbContext
             entity.HasOne(d => d.Staff).WithOne(p => p.ServiceStaff)
                 .HasForeignKey<ServiceStaff>(d => d.StaffId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__ServiceSt__Staff__7F2BE32F");
-        });
-
-        modelBuilder.Entity<Services>(entity =>
-        {
-            entity.HasKey(e => e.ServiceId).HasName("PK__Services__C51BB0EA8B85E219");
-
-            entity.Property(e => e.ServiceId).HasColumnName("ServiceID");
-            entity.Property(e => e.Description).HasColumnType("text");
-            entity.Property(e => e.EstimatedLaborHours).HasColumnType("decimal(5, 2)");
-            entity.Property(e => e.Name)
-                .IsRequired()
-                .HasMaxLength(100)
-                .IsUnicode(false);
+                .HasConstraintName("FK__ServiceSt__Staff__412EB0B6");
         });
 
         modelBuilder.Entity<Suppliers>(entity =>
         {
-            entity.HasKey(e => e.SupplierId).HasName("PK__Supplier__4BE66694B473EA1C");
+            entity.HasKey(e => e.SupplierId).HasName("PK__Supplier__4BE66694D6CEB32D");
 
             entity.Property(e => e.SupplierId).HasColumnName("SupplierID");
             entity.Property(e => e.ContactInfo)
@@ -425,9 +291,9 @@ public partial class CarServicesManagementSystemContext : DbContext
 
         modelBuilder.Entity<Users>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__Users__1788CCACE35D77BC");
+            entity.HasKey(e => e.UserId).HasName("PK__Users__1788CCAC9A56015F");
 
-            entity.HasIndex(e => e.Email, "UQ__Users__A9D10534B4E11DB9").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__Users__A9D10534A8D39B01").IsUnique();
 
             entity.Property(e => e.UserId).HasColumnName("UserID");
             entity.Property(e => e.CreatedAt)
@@ -447,38 +313,39 @@ public partial class CarServicesManagementSystemContext : DbContext
 
             entity.HasOne(d => d.Role).WithMany(p => p.Users)
                 .HasForeignKey(d => d.RoleId)
-                .HasConstraintName("FK__Users__RoleID__00200768");
+                .HasConstraintName("FK__Users__RoleID__3A81B327");
         });
 
         modelBuilder.Entity<Vehicles>(entity =>
         {
-            entity.HasKey(e => e.VehicleId).HasName("PK__Vehicles__476B54B25479A612");
+            entity.HasKey(e => e.VehicleId).HasName("PK__Vehicles__476B54B2AFDF3EEC");
 
             entity.Property(e => e.VehicleId).HasColumnName("VehicleID");
-            entity.Property(e => e.CarTypeId).HasColumnName("CarTypeID");
+            entity.Property(e => e.Brand)
+                .HasMaxLength(50)
+                .IsUnicode(false);
             entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+            entity.Property(e => e.Garage)
+                .HasMaxLength(50)
+                .IsUnicode(false);
             entity.Property(e => e.LicensePlate)
                 .HasMaxLength(20)
-                .IsUnicode(false);
-            entity.Property(e => e.Make)
-                .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.Model)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-
-            entity.HasOne(d => d.CarType).WithMany(p => p.Vehicles)
-                .HasForeignKey(d => d.CarTypeId)
-                .HasConstraintName("FK__Vehicles__CarTyp__01142BA1");
+            entity.Property(e => e.Type)
+                .HasMaxLength(50)
+                .IsUnicode(false);
 
             entity.HasOne(d => d.Customer).WithMany(p => p.Vehicles)
                 .HasForeignKey(d => d.CustomerId)
-                .HasConstraintName("FK__Vehicles__Custom__02084FDA");
+                .HasConstraintName("FK__Vehicles__Custom__46E78A0C");
         });
 
         modelBuilder.Entity<WarrantyClaims>(entity =>
         {
-            entity.HasKey(e => e.ClaimId).HasName("PK__Warranty__EF2E13BB463D2C52");
+            entity.HasKey(e => e.ClaimId).HasName("PK__Warranty__EF2E13BBED2E8BC6");
 
             entity.Property(e => e.ClaimId).HasColumnName("ClaimID");
             entity.Property(e => e.Notes).HasColumnType("text");
@@ -490,11 +357,11 @@ public partial class CarServicesManagementSystemContext : DbContext
 
             entity.HasOne(d => d.Part).WithMany(p => p.WarrantyClaims)
                 .HasForeignKey(d => d.PartId)
-                .HasConstraintName("FK__WarrantyC__PartI__02FC7413");
+                .HasConstraintName("FK__WarrantyC__PartI__5EBF139D");
 
             entity.HasOne(d => d.Supplier).WithMany(p => p.WarrantyClaims)
                 .HasForeignKey(d => d.SupplierId)
-                .HasConstraintName("FK__WarrantyC__Suppl__03F0984C");
+                .HasConstraintName("FK__WarrantyC__Suppl__5FB337D6");
         });
 
         OnModelCreatingPartial(modelBuilder);

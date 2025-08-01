@@ -22,11 +22,6 @@ namespace CarServ.Repository.Repositories.Interfaces
             int? promotionId = null);
         Task<Appointments> UpdateAppointmentAsync(
             int appointmentId,
-            int customerId,
-            int vehicleId,
-            int packageId,
-            DateTime appointmentDate,
-            string status,
-            int? promotionId);
+            string status);
     }
 }

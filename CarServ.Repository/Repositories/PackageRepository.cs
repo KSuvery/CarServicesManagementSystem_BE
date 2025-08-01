@@ -3,7 +3,6 @@ using CarServ.Repository.Repositories.DTO;
 using CarServ.Repository.Repositories.DTO.Booking_A_Service;
 using CarServ.Repository.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,8 +23,6 @@ namespace CarServ.Repository.Repositories
         {
             var currentDate = DateOnly.FromDateTime(DateTime.Now);
 
-            // PLEASE FIX YOUR CODE BLOCK BELOW (NEW DB DOESN'T HAVE "PromotionServicePackages") AND I DON'T KNOW WHAT TO PUT IN
-
             var packages = await _context.ServicePackages.Include(c => c.Appointments)
                 .Select(sp => new ServicePackageDto
                 {
@@ -33,18 +30,18 @@ namespace CarServ.Repository.Repositories
                     Name = sp.Name,
                     Description = sp.Description,
                     Price = (decimal)sp.Price,
-                    //DiscountedPrice = _context.Promotions
-                    //.Where(p => p.StartDate <= currentDate &&
-                    //           p.EndDate >= currentDate &&
-                    //           p.PromotionServicePackages.Any(psp => psp.PackageID == sp.PackageId))
-                    //.Select(p => sp.Price * (1 - (p.DiscountPercentage / 100)))
-                    //.FirstOrDefault(),
-                    //PromotionTitle = _context.Promotions
-                    //.Where(p => p.StartDate <= currentDate &&
-                    //           p.EndDate >= currentDate &&
-                    //           p.PromotionServicePackages.Any(psp => psp.PackageID == sp.PackageId))
-                    //.Select(p => p.Title)
-                    //.FirstOrDefault()
+                    DiscountedPrice = _context.Promotions
+                    .Where(p => p.StartDate <= currentDate &&
+                               p.EndDate >= currentDate &&
+                               p.PromotionServicePackages.Any(psp => psp.PackageID == sp.PackageId))
+                    .Select(p => sp.Price * (1 - (p.DiscountPercentage / 100)))
+                    .FirstOrDefault(),
+                                    PromotionTitle = _context.Promotions
+                    .Where(p => p.StartDate <= currentDate &&
+                               p.EndDate >= currentDate &&
+                               p.PromotionServicePackages.Any(psp => psp.PackageID == sp.PackageId))
+                    .Select(p => p.Title)
+                    .FirstOrDefault()
                 })
                 .ToListAsync();
 
@@ -53,8 +50,6 @@ namespace CarServ.Repository.Repositories
                 Packages = packages,
                 CurrentDate = DateTime.Now
             };
-
-
         }
 
 

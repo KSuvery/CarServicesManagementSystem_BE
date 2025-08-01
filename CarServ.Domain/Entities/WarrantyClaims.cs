@@ -19,7 +19,7 @@ public partial class WarrantyClaims
 
     public string Notes { get; set; }
 
-    public virtual Parts Part { get; set; }
+    public virtual Inventory Part { get; set; }
 
     public virtual Suppliers Supplier { get; set; }
 }

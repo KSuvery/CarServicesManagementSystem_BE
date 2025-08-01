@@ -20,11 +20,11 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[CarTypes]",
+         "Name": "[dbo].[Customers]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Customers]",
+         "Name": "[dbo].[Inventory]",
          "ObjectType": 0
       },
       {
@@ -36,23 +36,7 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[OrderDetails]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Orders]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[PackageServices]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[PartPrices]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Parts]",
+         "Name": "[dbo].[PartsUsed]",
          "ObjectType": 0
       },
       {
@@ -73,18 +57,6 @@
       },
       {
          "Name": "[dbo].[ServicePackages]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[ServiceParts]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[ServiceProgress]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Services]",
          "ObjectType": 0
       },
       {
