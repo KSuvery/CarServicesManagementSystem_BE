@@ -43,7 +43,7 @@ namespace CarServ.API.Controllers
             return Ok(orders);
         }
 
-        [HttpPost]
+        [HttpPost("create")]
         public async Task<ActionResult<Orders>> CreateOrder(
             int appointmentId,
             int? promotionId,
@@ -57,7 +57,7 @@ namespace CarServ.API.Controllers
             return CreatedAtAction(nameof(GetOrderById), new { id = createdOrder.OrderId }, createdOrder);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("update")]
         public async Task<IActionResult> UpdateOrder(
             int orderId,
             int appointmentId,
