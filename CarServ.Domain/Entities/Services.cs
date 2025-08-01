@@ -5,19 +5,19 @@ using System.Collections.Generic;
 
 namespace CarServ.Domain.Entities;
 
-public partial class ServicePackages
+public partial class Services
 {
-    public int PackageId { get; set; }
+    public int ServiceId { get; set; }
 
     public string Name { get; set; }
 
     public string Description { get; set; }
 
-    public decimal? Price { get; set; }
-
-    public virtual ICollection<Appointments> Appointments { get; set; } = new List<Appointments>();
+    public decimal? EstimatedLaborHours { get; set; }
 
     public virtual ICollection<OrderDetails> OrderDetails { get; set; } = new List<OrderDetails>();
 
-    public virtual ICollection<Services> Service { get; set; } = new List<Services>();
+    public virtual ICollection<ServiceParts> ServiceParts { get; set; } = new List<ServiceParts>();
+
+    public virtual ICollection<ServicePackages> Package { get; set; } = new List<ServicePackages>();
 }

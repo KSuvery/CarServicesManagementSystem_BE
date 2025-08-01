@@ -95,13 +95,14 @@ namespace CarServ.API.Controllers
 
         [HttpPut("{appointmentId}")]
         /*[Authorize(Roles = "1,2")]*/
-        public async Task<ActionResult<Appointments>> UpdateAppointment(int appointmentId, string status)
+        public async Task<ActionResult<Appointments>> UpdateAppointment(
+            int appointmentId, int customerId, int vehicleId, int packageId, DateTime appointmentDate, string status, int? promotionId)
         {
             if (!await AppointmentsExists(appointmentId))
             {
                 return NotFound();
             }
-            var updatedAppointment = await _appointmentServices.UpdateAppointmentAsync(appointmentId, status);
+            var updatedAppointment = await _appointmentServices.UpdateAppointmentAsync(appointmentId, customerId, vehicleId, packageId, appointmentDate, status, promotionId);
             if (updatedAppointment == null)
             {
                 return BadRequest("Unable to update appointment.");

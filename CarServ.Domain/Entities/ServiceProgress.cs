@@ -5,21 +5,17 @@ using System.Collections.Generic;
 
 namespace CarServ.Domain.Entities;
 
-public partial class Payments
+public partial class ServiceProgress
 {
-    public int PaymentId { get; set; }
+    public int ProgressId { get; set; }
 
     public int? AppointmentId { get; set; }
 
-    public decimal? Amount { get; set; }
+    public string Status { get; set; }
 
-    public string PaymentMethod { get; set; }
+    public string Note { get; set; }
 
-    public DateTime? PaidAt { get; set; }
-
-    public int? OrderId { get; set; }
+    public DateTime? UpdatedAt { get; set; }
 
     public virtual Appointments Appointment { get; set; }
-
-    public virtual Orders Order { get; set; }
 }
