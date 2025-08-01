@@ -10,6 +10,7 @@ namespace CarServ.Repository.Repositories.Interfaces
     public interface IPaymentRepository : IGenericRepository<Payments>
     {
         Task<Payments> GetPaymentByIdAsync(int paymentId);
+        Task<Payments> GetPaymentByOrderIdAsync(int orderId);
         Task<List<Payments>> GetPaymentsByAppointmentIdAsync(int appointmentId);
         Task<List<Payments>> GetPaymentsByCustomerIdAsync(int customerId);
         Task<List<Payments>> GetAllPaymentsAsync();

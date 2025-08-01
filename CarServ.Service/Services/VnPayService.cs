@@ -18,11 +18,13 @@ namespace CarServ.Service.Services
     public class VnPayService : IVnPayService
     {
         private readonly VnPaySetting _vnPaySetting;
+        private readonly IOrderRepository _orderRepository;
         private readonly IPaymentRepository _paymentRepository;
 
         public VnPayService(IServiceProvider serviceProvider)
         {
             _vnPaySetting = VnPaySetting.Instance;
+            _orderRepository = serviceProvider.GetRequiredService<IOrderRepository>();
             _paymentRepository = serviceProvider.GetRequiredService<IPaymentRepository>();
         }
 
@@ -77,10 +79,11 @@ namespace CarServ.Service.Services
                 var payment = new Payments
                 {
                     PaymentId = tick,
-                    AppointmentId = request.OrderId,
+                    AppointmentId = order.AppointmentId,
                     Amount = amountInCents,
                     PaymentMethod = "VNPay",
                     PaidAt = createDate,
+                    OrderId = request.OrderId
                 };
 
                 _paymentRepository.CreatePayment(payment);
@@ -114,7 +117,8 @@ namespace CarServ.Service.Services
                 };
             }
 
-            var payment = await _paymentRepository.GetPaymentByIdAsync(vnpOrderId);
+            var order = await _orderRepository.GetOrderByIdAsync(vnpOrderId);
+            var payment = await _paymentRepository.GetPaymentByOrderIdAsync(vnpOrderId);
             if (payment == null)
             {
                 return new VnPaymentResponse()

@@ -42,6 +42,17 @@ namespace CarServ.API.Controllers
             return Ok(payment);
         }
 
+        [HttpGet("order/{orderId}")]
+        public async Task<ActionResult<Payments>> GetPaymentByOrderId(int orderId)
+        {
+            var payment = await _paymentService.GetPaymentByOrderIdAsync(orderId);
+            if (payment == null)
+            {
+                return NotFound();
+            }
+            return Ok(payment);
+        }
+
         [HttpGet("customer/{customerId}")]
         public async Task<ActionResult<IEnumerable<Payments>>> GetPaymentsByCustomerId(int customerId)
         {
