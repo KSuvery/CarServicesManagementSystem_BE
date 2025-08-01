@@ -16,6 +16,11 @@ namespace CarServ.Service.Services.Interfaces
         Task<Appointments> ScheduleAppointmentAsync(int customerId, int vehicleId, int packageId, DateTime appointmentDate, string status = "Pending", int? promotionId = null);
         Task<Appointments> UpdateAppointmentAsync(
             int appointmentId,
-            string status);
+            int customerId,
+            int vehicleId,
+            int packageId,
+            DateTime appointmentDate,
+            string status,
+            int? promotionId);
     }
 }
