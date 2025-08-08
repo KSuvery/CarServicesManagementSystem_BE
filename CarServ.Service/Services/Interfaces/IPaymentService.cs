@@ -1,4 +1,5 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO.Payment;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,5 +19,6 @@ namespace CarServ.Service.Services.Interfaces
         Task<List<Payment>> GetPaymentByAmountRangeAsync(decimal minAmount, decimal maxAmount);
         Task<List<Payment>> GetPaymentByPaidDateAsync(DateTime paidDate);
         Task<Payment> CreatePayment(Payment payment);
+        Task<Payment> ProcessPayment(PaymentDto dto);
     }
 }

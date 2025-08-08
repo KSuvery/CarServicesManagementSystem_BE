@@ -77,7 +77,6 @@ public partial class CarServicesManagementSystemContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer(GetConnectionString("DefaultConnection"));
-
     /*protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Data Source=LAPTOP-P1F3R3OG\\SQLEXPRESS;Initial Catalog=CarServicesManagementSystem;User ID=sa;Password=12345");*/
@@ -317,6 +316,7 @@ public partial class CarServicesManagementSystemContext : DbContext
                 .IsRequired()
                 .HasMaxLength(100)
                 .IsUnicode(false);
+            entity.Property(e => e.Price).HasColumnType("decimal(18, 0)");
         });
 
         modelBuilder.Entity<ServiceHistory>(entity =>

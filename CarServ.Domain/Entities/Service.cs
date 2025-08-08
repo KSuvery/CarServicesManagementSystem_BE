@@ -13,6 +13,8 @@ public partial class Service
 
     public string Description { get; set; }
 
+    public decimal? Price { get; set; }
+
     public decimal? EstimatedLaborHours { get; set; }
 
     public virtual ICollection<AppointmentService> AppointmentServices { get; set; } = new List<AppointmentService>();

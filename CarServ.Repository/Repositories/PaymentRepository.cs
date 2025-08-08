@@ -1,4 +1,5 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO.Payment;
 using CarServ.Repository.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -7,6 +8,7 @@ using System.Linq;
 using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
+using static CarServ.Repository.Repositories.PaymentRepository;
 
 namespace CarServ.Repository.Repositories
 {
@@ -79,5 +81,96 @@ namespace CarServ.Repository.Repositories
             await _context.SaveChangesAsync();
             return payment;
         }
+
+        
+
+            public async Task<Payment> ProcessPayment(PaymentDto dto)
+            {
+                // Validate the input data
+                if (string.IsNullOrEmpty(dto.PaymentMethod) ||
+                    (dto.PaymentMethod != "Online Banking" && dto.PaymentMethod != "Cash"))
+                {
+                    throw new ArgumentException("Invalid payment method provided.");
+                }
+
+                // Retrieve the appointment to calculate the total price
+                var appointment = await _context.Appointments
+                    .Include(a => a.Package)
+                    .Include(a => a.AppointmentServices)
+                    .ThenInclude(s => s.Service)
+                    .FirstOrDefaultAsync(a => a.AppointmentId == dto.AppointmentId);
+
+                if (appointment == null)
+                {
+                    throw new InvalidOperationException("Appointment not found.");
+                }
+
+                decimal totalAmount = 0;
+                
+                if (appointment.PackageId.HasValue)
+                {
+                    totalAmount += appointment.Package.Price ?? 0;
+                    if (appointment.PromotionId != null)
+                    {
+                        totalAmount = (decimal)(totalAmount * appointment.Promotion.DiscountPercentage);
+                    }
+                }
+
+                foreach (var appointmentService in appointment.AppointmentServices)
+                {
+                    totalAmount += appointmentService.Service.Price ?? 0;
+                    if (appointment.PromotionId != null)
+                    {
+                        totalAmount = (decimal)(totalAmount * appointment.Promotion.DiscountPercentage);
+                    }
+                }
+
+                var payment = new Payment
+                {
+                    AppointmentId = appointment.AppointmentId,
+                    Amount = totalAmount,
+                    PaymentMethod = dto.PaymentMethod,
+                    PaidAt = DateTime.Now
+                };
+
+                var order = new Order
+                {
+                    AppointmentId = appointment.AppointmentId,
+                    CreatedAt = DateTime.Now,
+                };
+
+                if (appointment.PackageId.HasValue)
+                {
+                    order.OrderDetails.Add(new OrderDetail
+                    {
+                        PackageId = appointment.PackageId,
+                        Quantity = 1,
+                        UnitPrice = appointment.Package.Price,
+                        LineTotal = appointment.Package.Price
+                    });
+                }
+
+                foreach (var appointmentService in appointment.AppointmentServices)
+                {
+                    order.OrderDetails.Add(new OrderDetail
+                    {
+                        ServiceId = appointmentService.ServiceId,
+                        Quantity = appointmentService.Quantity,
+                        UnitPrice = appointmentService.Service.Price,
+                        LineTotal = appointmentService.Service.Price * appointmentService.Quantity
+                    });
+                }
+
+                // Add the payment and order to the context
+                _context.Payments.Add(payment);
+                _context.Orders.Add(order);
+
+                // Save changes to the database
+                await _context.SaveChangesAsync();
+
+                return payment;
+            }
+        
+
     }
 }

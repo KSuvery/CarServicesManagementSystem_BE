@@ -1,4 +1,5 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO.Payment;
 using CarServ.Repository.Repositories.Interfaces;
 using CarServ.Service.Services.Interfaces;
 using System;
@@ -61,6 +62,11 @@ namespace CarServ.Service.Services
         public async Task<Payment> CreatePayment(Payment payment)
         {
             return await _paymentRepository.CreatePayment(payment);
+        }
+
+        public async Task<Payment> ProcessPayment(PaymentDto dto)
+        {
+            return await _paymentRepository.ProcessPayment(dto);
         }
     }
 }

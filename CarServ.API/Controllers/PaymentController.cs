@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using CarServ.Domain.Entities;
 using CarServ.Service.Services.Interfaces;
 using Service.ApiModels.VNPay;
+using CarServ.Repository.Repositories.DTO.Payment;
+using CarServ.Service.Services;
 
 namespace CarServ.API.Controllers
 {
@@ -137,6 +139,20 @@ namespace CarServ.API.Controllers
         private async Task<bool> PaymentExists(int id)
         {
             return await _Paymentervice.GetPaymentByIdAsync(id) != null;
+        }
+
+        [HttpPost("processPayment")]
+        public async Task<IActionResult> ProcessPayment([FromBody] PaymentDto dto)
+        {
+            try
+            {
+                var payment = await _Paymentervice.ProcessPayment(dto);
+                return CreatedAtAction(nameof(ProcessPayment), new { id = payment.PaymentId }, payment);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
