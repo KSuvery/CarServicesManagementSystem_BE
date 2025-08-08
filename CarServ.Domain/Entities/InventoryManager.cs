@@ -5,9 +5,9 @@ using System.Collections.Generic;
 
 namespace CarServ.Domain.Entities;
 
-public partial class InventoryManagers
+public partial class InventoryManager
 {
     public int ManagerId { get; set; }
 
-    public virtual Users Manager { get; set; }
+    public virtual User Manager { get; set; }
 }

@@ -1,4 +1,5 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO.Booking_A_Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,26 +8,22 @@ using System.Threading.Tasks;
 
 namespace CarServ.Repository.Repositories.Interfaces
 {
-    public interface IAppointmentRepository : IGenericRepository<Appointments>
+    public interface IAppointmentRepository : IGenericRepository<Appointment>
     {
-        Task<List<Appointments>> GetAllAppointmentsAsync();
-        Task<Appointments> GetAppointmentByIdAsync(int appointmentId);
-        Task<List<Appointments>> GetAppointmentsByCustomerIdAsync(int customerId);
-        Task<List<Appointments>> GetAppointmentsByVehicleIdAsync(int vehicleId);
-        Task<Appointments> ScheduleAppointmentAsync(
+        Task<List<Appointment>> GetAllAppointmentsAsync();
+        Task<Appointment> GetAppointmentByIdAsync(int appointmentId);
+        Task<List<Appointment>> GetAppointmentsByCustomerIdAsync(int customerId);
+        Task<List<Appointment>> GetAppointmentsByVehicleIdAsync(int vehicleId);
+        Task<Appointment> ScheduleAppointment(int customerId, ScheduleAppointmentDto dto);
+        Task<Appointment> ScheduleAppointmentAsync(
             int customerId,
             int vehicleId,
             int packageId,
             DateTime appointmentDate,
             string status = "Pending",
             int? promotionId = null);
-        Task<Appointments> UpdateAppointmentAsync(
+        Task<Appointment> UpdateAppointmentAsync(
             int appointmentId,
-            int customerId,
-            int vehicleId,
-            int packageId,
-            DateTime appointmentDate,
-            string status,
-            int? promotionId);
+            string status);
     }
 }

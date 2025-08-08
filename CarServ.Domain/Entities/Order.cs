@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace CarServ.Domain.Entities;
 
-public partial class Orders
+public partial class Order
 {
     public int OrderId { get; set; }
 
@@ -15,11 +15,11 @@ public partial class Orders
 
     public DateTime? CreatedAt { get; set; }
 
-    public virtual Appointments Appointment { get; set; }
+    public virtual Appointment Appointment { get; set; }
 
-    public virtual ICollection<OrderDetails> OrderDetails { get; set; } = new List<OrderDetails>();
+    public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
 
-    public virtual ICollection<Payments> Payments { get; set; } = new List<Payments>();
+    public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
 
-    public virtual Promotions Promotion { get; set; }
+    public virtual Promotion Promotion { get; set; }
 }

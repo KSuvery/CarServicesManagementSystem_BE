@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CarServ.Repository.Repositories
 {
-    public class WarrantyClaimRepository : GenericRepository<WarrantyClaims>, IWarrantyClaimRepository
+    public class WarrantyClaimRepository : GenericRepository<WarrantyClaim>, IWarrantyClaimRepository
     {
         private readonly CarServicesManagementSystemContext _context;
         public WarrantyClaimRepository(CarServicesManagementSystemContext context) : base(context)
@@ -17,25 +17,25 @@ namespace CarServ.Repository.Repositories
             _context = context;
         }
 
-        public async Task<WarrantyClaims> GetWarrantyClaimByIdAsync(int claimId)
+        public async Task<WarrantyClaim> GetWarrantyClaimByIdAsync(int claimId)
         {
             return await _context.WarrantyClaims
                 .FirstOrDefaultAsync(c => c.ClaimId == claimId);
         }
 
-        public async Task<List<WarrantyClaims>> GetWarrantyClaimsBySupplierIdAsync(int supplierId)
+        public async Task<List<WarrantyClaim>> GetWarrantyClaimBySupplierIdAsync(int supplierId)
         {
             return await _context.WarrantyClaims
                 .Where(c => c.SupplierId == supplierId)
                 .ToListAsync();
         }
 
-        public async Task<List<WarrantyClaims>> GetAllWarrantyClaimsAsync()
+        public async Task<List<WarrantyClaim>> GetAllWarrantyClaimAsync()
         {
             return await _context.WarrantyClaims.ToListAsync();
         }
 
-        public async Task<List<WarrantyClaims>> GetWarrantyClaimsByStatusAsync(string status)
+        public async Task<List<WarrantyClaim>> GetWarrantyClaimByStatusAsync(string status)
         {
             return await _context.WarrantyClaims
                 .Where(c => c.Status != null &&
@@ -43,14 +43,14 @@ namespace CarServ.Repository.Repositories
                 .ToListAsync();
         }
 
-        public async Task<List<WarrantyClaims>> GetWarrantyClaimsByClaimDateAsync(DateOnly claimDate)
+        public async Task<List<WarrantyClaim>> GetWarrantyClaimByClaimDateAsync(DateOnly claimDate)
         {
             return await _context.WarrantyClaims
                 .Where(c => c.ClaimDate == claimDate)
                 .ToListAsync();
         }
 
-        public async Task<List<WarrantyClaims>> GetWarrantyClaimsByNoteAsync(string note)
+        public async Task<List<WarrantyClaim>> GetWarrantyClaimByNoteAsync(string note)
         {
             return await _context.WarrantyClaims
                 .Where(c => c.Notes != null &&
@@ -58,7 +58,7 @@ namespace CarServ.Repository.Repositories
                 .ToListAsync();
         }
 
-        public async Task<WarrantyClaims> CreateWarrantyClaimAsync(
+        public async Task<WarrantyClaim> CreateWarrantyClaimAsync(
             int partId,
             int supplierId,
             DateOnly claimDate,
@@ -67,8 +67,7 @@ namespace CarServ.Repository.Repositories
             )
         {
             status = "Pending";
-            claimDate = DateOnly.FromDateTime(DateTime.Now);
-            var warrantyClaim = new WarrantyClaims
+            var warrantyClaim = new WarrantyClaim
             {
                 PartId = partId,
                 SupplierId = supplierId,
@@ -81,7 +80,7 @@ namespace CarServ.Repository.Repositories
             return warrantyClaim;
         }
 
-        public async Task<WarrantyClaims> UpdateWarrantyClaimAsync(
+        public async Task<WarrantyClaim> UpdateWarrantyClaimAsync(
             int claimId,
             int partId,
             int supplierId,
@@ -103,12 +102,12 @@ namespace CarServ.Repository.Repositories
             return warrantyClaim;
         }
 
-        public async Task<WarrantyClaims> DeactivateWarrantyClaimAsync(int claimId)
+        public async Task<WarrantyClaim> DeactivateWarrantyClaimAsync(int claimId)
         {
             var warrantyClaim = await GetWarrantyClaimByIdAsync(claimId);
             if (warrantyClaim == null)
                 return null;
-            warrantyClaim.Status = "Rejected";
+            warrantyClaim.Status = "Deactivated";
             _context.WarrantyClaims.Update(warrantyClaim);
             await _context.SaveChangesAsync();
             return warrantyClaim;

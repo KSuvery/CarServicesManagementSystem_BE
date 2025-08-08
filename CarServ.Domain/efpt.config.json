@@ -4,7 +4,6 @@
    "ContextNamespace": null,
    "FilterSchemas": false,
    "IncludeConnectionString": true,
-   "MinimumProductVersion": "2.6.0",
    "ModelNamespace": null,
    "OutputContextPath": null,
    "OutputPath": "Entities",
@@ -17,6 +16,10 @@
    "Tables": [
       {
          "Name": "[dbo].[Appointments]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AppointmentServices]",
          "ObjectType": 0
       },
       {
@@ -120,7 +123,7 @@
    "UseFluentApiOnly": true,
    "UseHandleBars": false,
    "UseHierarchyId": false,
-   "UseInflector": false,
+   "UseInflector": true,
    "UseInternalAccessModifiersForSprocsAndFunctions": false,
    "UseLegacyPluralizer": false,
    "UseManyToManyEntity": false,

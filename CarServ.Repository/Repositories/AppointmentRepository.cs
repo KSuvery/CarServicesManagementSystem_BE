@@ -1,4 +1,5 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO.Booking_A_Service;
 using CarServ.Repository.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -6,10 +7,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static CarServ.Repository.Repositories.AppointmentRepository;
 
 namespace CarServ.Repository.Repositories
 {
-    public class AppointmentRepository : GenericRepository<Appointments>, IAppointmentRepository
+    public class AppointmentRepository : GenericRepository<Appointment>, IAppointmentRepository
     {
         private readonly CarServicesManagementSystemContext _context;
         public AppointmentRepository(CarServicesManagementSystemContext context) : base(context)
@@ -17,32 +19,32 @@ namespace CarServ.Repository.Repositories
             _context = context;
         }
 
-        public async Task<List<Appointments>> GetAllAppointmentsAsync()
+        public async Task<List<Appointment>> GetAllAppointmentsAsync()
         {
             return await _context.Appointments.ToListAsync();
         }
 
-        public async Task<Appointments> GetAppointmentByIdAsync(int appointmentId)
+        public async Task<Appointment> GetAppointmentByIdAsync(int appointmentId)
         {
             return await _context.Appointments
                 .FirstOrDefaultAsync(a => a.AppointmentId == appointmentId);
         }
 
-        public async Task<List<Appointments>> GetAppointmentsByCustomerIdAsync(int customerId)
+        public async Task<List<Appointment>> GetAppointmentsByCustomerIdAsync(int customerId)
         {
             return await _context.Appointments
                 .Where(a => a.CustomerId == customerId)
                 .ToListAsync();
         }
 
-        public async Task<List<Appointments>> GetAppointmentsByVehicleIdAsync(int vehicleId)
+        public async Task<List<Appointment>> GetAppointmentsByVehicleIdAsync(int vehicleId)
         {
             return await _context.Appointments
                 .Where(a => a.VehicleId == vehicleId)
                 .ToListAsync();
         }
 
-        public async Task<Appointments> ScheduleAppointmentAsync(
+        public async Task<Appointment> ScheduleAppointmentAsync(
             int customerId,
             int vehicleId,
             int packageId,
@@ -50,8 +52,7 @@ namespace CarServ.Repository.Repositories
             string status = "Pending",
             int? promotionId = null)
         {
-            appointmentDate = DateTime.UtcNow;
-            var appointment = new Appointments
+            var appointment = new Appointment
             {
                 CustomerId = customerId,
                 VehicleId = vehicleId,
@@ -66,15 +67,90 @@ namespace CarServ.Repository.Repositories
             return appointment;
 
         }
+        
+           
 
-        public async Task<Appointments> UpdateAppointmentAsync(
+            public async Task<Appointment> ScheduleAppointment(int customerId, ScheduleAppointmentDto dto)
+            {
+                if (dto.VehicleId == null)
+                {
+                    throw new ArgumentException("Vehicle must be selected.");
+                }
+
+                if (dto.AppointmentDate == default)
+                {
+                    throw new ArgumentException("Appointment date must be provided.");
+                }
+
+                // Check time
+                var isAvailable = await CheckAvailability(dto.AppointmentDate, customerId);
+                if (!isAvailable)
+                {
+                    throw new InvalidOperationException("Selected time is not available.");
+                }
+
+                var appointment = new Appointment
+                {
+                    CustomerId = customerId,
+                    VehicleId = dto.VehicleId,
+                    PackageId = dto.PackageId,
+                    AppointmentDate = dto.AppointmentDate,
+                    Status = "Booked",
+                    PromotionId = dto.PromotionId
+                };
+
+                _context.Appointments.Add(appointment);
+                await _context.SaveChangesAsync();
+
+            //  a service package
+            if (dto.PackageId.HasValue)
+            {
+                appointment.PackageId = dto.PackageId.Value;
+            }
+
+            // multiple services 
+            foreach (var serviceId in dto.ServiceIds)
+                {
+                    var appointmentService = new AppointmentService
+                    {
+                        AppointmentId = appointment.AppointmentId,
+                        ServiceId = serviceId,
+                        Quantity = 1 
+                    };
+                    _context.AppointmentServices.Add(appointmentService);
+                }
+
+             
+                var serviceProgress = new ServiceProgress
+                {
+                    AppointmentId = appointment.AppointmentId,
+                    Status = "Booked",
+                    Note = "Appointment confirmed for customer " + customerId,
+                    UpdatedAt = DateTime.Now
+                };
+
+                _context.ServiceProgresses.Add(serviceProgress);
+
+             
+                await _context.SaveChangesAsync();
+
+                return appointment;
+            }
+
+            private async Task<bool> CheckAvailability(DateTime appointmentDate, int customerId)
+            {
+                // if there are any existing appointments for the same time
+                var existingAppointments = await _context.Appointments
+                    .AnyAsync(a => a.AppointmentDate == appointmentDate && a.CustomerId == customerId);
+
+                return !existingAppointments;
+            }
+        
+
+
+        public async Task<Appointment> UpdateAppointmentAsync(
             int appointmentId,
-            int customerId,
-            int vehicleId,
-            int packageId,
-            DateTime appointmentDate,
-            string status,
-            int? promotionId)
+            string status)
         {
             var appointment = await GetAppointmentByIdAsync(appointmentId);
 
@@ -82,12 +158,7 @@ namespace CarServ.Repository.Repositories
             {
                 throw new KeyNotFoundException($"Appointment with ID {appointmentId} not found.");
             }
-            appointment.CustomerId = customerId;
-            appointment.VehicleId = vehicleId;
-            appointment.PackageId = packageId;
-            appointment.AppointmentDate = appointmentDate;
             appointment.Status = status;
-            appointment.PromotionId = promotionId;
             await UpdateAsync(appointment);
             await _context.SaveChangesAsync();
             return appointment;

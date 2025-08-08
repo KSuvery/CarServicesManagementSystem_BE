@@ -7,17 +7,17 @@ using System.Threading.Tasks;
 
 namespace CarServ.Repository.Repositories.Interfaces
 {
-    public interface INotificationRepository : IGenericRepository<Notifications>
+    public interface INotificationRepository : IGenericRepository<Notification>
     {
-        Task<Notifications> GetNotificationByIdAsync(int notificationId);
-        Task<List<Notifications>> GetNotificationsByUserIdAsync(int userId);
-        Task<Notifications> CreateNotificationAsync(
+        Task<Notification> GetNotificationByIdAsync(int notificationId);
+        Task<List<Notification>> GetNotificationByUserIdAsync(int userId);
+        Task<Notification> CreateNotificationAsync(
             int userId,
             string title,
             string message,
             DateTime? sentAt = null,
             bool isRead = false);
-        Task<Notifications> MarkNotificationAsReadAsync(
+        Task<Notification> MarkNotificationAsReadAsync(
             int notificationId,
             bool isRead);
         Task<bool> DeleteNotificationAsync(int notificationId);

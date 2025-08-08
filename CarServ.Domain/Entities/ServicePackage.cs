@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace CarServ.Domain.Entities;
 
-public partial class ServicePackages
+public partial class ServicePackage
 {
     public int PackageId { get; set; }
 
@@ -15,9 +15,7 @@ public partial class ServicePackages
 
     public decimal? Price { get; set; }
 
-    public virtual ICollection<Appointments> Appointments { get; set; } = new List<Appointments>();
+    public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
 
-    public virtual ICollection<OrderDetails> OrderDetails { get; set; } = new List<OrderDetails>();
-
-    public virtual ICollection<Services> Service { get; set; } = new List<Services>();
+    public virtual ICollection<Service> Services { get; set; } = new List<Service>();
 }

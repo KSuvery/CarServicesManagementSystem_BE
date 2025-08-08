@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace CarServ.Domain.Entities;
 
-public partial class PartPrices
+public partial class PartPrice
 {
     public int PriceId { get; set; }
 
@@ -15,5 +15,5 @@ public partial class PartPrices
 
     public DateTime? EffectiveFrom { get; set; }
 
-    public virtual Parts Part { get; set; }
+    public virtual Part Part { get; set; }
 }
