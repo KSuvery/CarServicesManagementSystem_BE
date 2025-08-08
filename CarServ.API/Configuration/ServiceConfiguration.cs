@@ -9,15 +9,15 @@ namespace CarServ.API.Configuration
     {
         public static IServiceCollection AddServiceConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddScoped<IAppointmentServices, AppointmentServices>();
-            services.AddScoped<IInventoryServices, InventoryServices>();
+            services.AddScoped<IPartServices, PartServices>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IPackageServices, PackageServices>();
-            services.AddScoped<INotificationService, NotificationService>();
-            services.AddScoped<IPaymentService, PaymentService>();
+            services.AddScoped<INotificationervice, Notificationervice>();
+            services.AddScoped<IPaymentervice, Paymentervice>();
             services.AddScoped<ICloudinaryService, CloudinaryService>();
             services.AddScoped<IVnPayService, VnPayService>();
-            services.AddScoped<IWarrantyClaimService, WarrantyClaimService>();
+            services.AddScoped<IAppointmentervices, Appointmentervices>();
+            services.AddScoped<IWarrantyClaimervice, WarrantyClaimervice>();
             services.AddScoped<AdminSeederService>();
             
 

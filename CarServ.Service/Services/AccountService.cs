@@ -20,17 +20,17 @@ namespace CarServ.Service.Services
         {
             _accRepository = accRepository;
         }
-        public async Task<Users> GetAccountById(int Id)
+        public async Task<User> GetAccountById(int Id)
         {
             return await _accRepository.GetAccountById(Id);
         }
 
-        public async Task<Users> GetAccountByMail(string mail)
+        public async Task<User> GetAccountByMail(string mail)
         {
             return await _accRepository.GetAccountByMail(mail);
         }
 
-        public async Task<List<Users>> GetAccountByRole(int roleID)
+        public async Task<List<User>> GetAccountByRole(int roleID)
         {
             return await _accRepository.GetAccountByRole(roleID);
         }
@@ -45,7 +45,7 @@ namespace CarServ.Service.Services
             return await _accRepository.GetAllAccountWithPaging(currentPage, pageSize);
         }
 
-        public async Task<Users> Login(string username, string password)
+        public async Task<User> Login(string username, string password)
         {
             return await _accRepository.Login(username, password);
         }

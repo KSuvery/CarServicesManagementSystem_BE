@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace CarServ.Domain.Entities;
 
-public partial class Promotions
+public partial class Promotion
 {
     public int PromotionId { get; set; }
 
@@ -17,6 +17,7 @@ public partial class Promotions
 
     public DateOnly? EndDate { get; set; }
 
-    public virtual ICollection<Appointments> Appointments { get; set; } = new List<Appointments>();
-    public virtual ICollection<PromotionServicePackage> PromotionServicePackages { get; set; }
+    public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
+
+    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 }

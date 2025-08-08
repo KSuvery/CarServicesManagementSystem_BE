@@ -4,7 +4,6 @@
    "ContextNamespace": null,
    "FilterSchemas": false,
    "IncludeConnectionString": true,
-   "MinimumProductVersion": "2.6.0",
    "ModelNamespace": null,
    "OutputContextPath": null,
    "OutputPath": "Entities",
@@ -20,11 +19,15 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Customers]",
+         "Name": "[dbo].[AppointmentServices]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Inventory]",
+         "Name": "[dbo].[CarTypes]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Customers]",
          "ObjectType": 0
       },
       {
@@ -36,7 +39,23 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[PartsUsed]",
+         "Name": "[dbo].[OrderDetails]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Orders]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[PackageServices]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[PartPrices]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Parts]",
          "ObjectType": 0
       },
       {
@@ -57,6 +76,18 @@
       },
       {
          "Name": "[dbo].[ServicePackages]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ServiceParts]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ServiceProgress]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Services]",
          "ObjectType": 0
       },
       {
@@ -92,7 +123,7 @@
    "UseFluentApiOnly": true,
    "UseHandleBars": false,
    "UseHierarchyId": false,
-   "UseInflector": false,
+   "UseInflector": true,
    "UseInternalAccessModifiersForSprocsAndFunctions": false,
    "UseLegacyPluralizer": false,
    "UseManyToManyEntity": false,

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace CarServ.Domain.Entities;
 
-public partial class Payments
+public partial class Payment
 {
     public int PaymentId { get; set; }
 
@@ -17,5 +17,9 @@ public partial class Payments
 
     public DateTime? PaidAt { get; set; }
 
-    public virtual Appointments Appointment { get; set; }
+    public int? OrderId { get; set; }
+
+    public virtual Appointment Appointment { get; set; }
+
+    public virtual Order Order { get; set; }
 }

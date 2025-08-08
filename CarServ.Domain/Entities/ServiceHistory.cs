@@ -14,15 +14,12 @@ public partial class ServiceHistory
     public string Description { get; set; }
 
     public string Review { get; set; }
-    public string Notes { get; set; }
 
     public decimal? LaborHours { get; set; }
 
     public DateTime? ServiceDate { get; set; }
 
-    public virtual ICollection<PartsUsed> PartsUsed { get; set; } = new List<PartsUsed>();
-
-    public virtual Appointments Service { get; set; }
+    public virtual Appointment Service { get; set; }
 
     public virtual ServiceStaff Staff { get; set; }
 }

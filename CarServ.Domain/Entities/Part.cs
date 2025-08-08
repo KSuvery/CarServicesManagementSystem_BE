@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace CarServ.Domain.Entities;
 
-public partial class Inventory
+public partial class Part
 {
     public int PartId { get; set; }
 
@@ -19,7 +19,9 @@ public partial class Inventory
 
     public int? WarrantyMonths { get; set; }
 
-    public virtual ICollection<PartsUsed> PartsUsed { get; set; } = new List<PartsUsed>();
+    public virtual ICollection<PartPrice> PartPrices { get; set; } = new List<PartPrice>();
 
-    public virtual ICollection<WarrantyClaims> WarrantyClaims { get; set; } = new List<WarrantyClaims>();
+    public virtual ICollection<ServicePart> ServiceParts { get; set; } = new List<ServicePart>();
+
+    public virtual ICollection<WarrantyClaim> WarrantyClaims { get; set; } = new List<WarrantyClaim>();
 }

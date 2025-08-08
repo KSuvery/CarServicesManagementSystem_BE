@@ -74,7 +74,7 @@ namespace CarServ.Service.Services
             try
             {
                 // Create payment entity in the repository
-                var payment = new Payments
+                var payment = new Payment
                 {
                     PaymentId = tick,
                     AppointmentId = request.OrderId,
