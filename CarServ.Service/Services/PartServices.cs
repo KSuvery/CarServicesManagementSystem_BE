@@ -81,5 +81,10 @@ namespace CarServ.Service.Services
             // You can add any additional business logic here if needed
             _PartRepository.TrackPartsUsed(partsUsedDTO);
         }
+
+        public async Task UpdateServiceProgress(UpdateServiceProgressDto dto)
+        {
+            await _PartRepository.UpdateServiceProgress(dto);
+        }
     }
 }

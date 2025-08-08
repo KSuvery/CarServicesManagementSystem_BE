@@ -94,6 +94,7 @@ namespace CarServ.API.Controllers
             return CreatedAtAction(nameof(GetAppointmentById), new { id = createdAppointment.AppointmentId }, createdAppointment);
         }
         [HttpPost("schedule")]
+        [Authorize(Roles = "1,2,3,4")]
         public async Task<IActionResult> ScheduleAppointment(int customerId, [FromBody] ScheduleAppointmentDto dto)
         {
             try

@@ -33,5 +33,6 @@ namespace CarServ.Repository.Repositories.Interfaces
         Task<RevenueReportDto> GenerateRevenueReport(DateTime startDate, DateTime endDate);
 
         Task TrackPartsUsed(PartUsageDto partsUsedDTO);
+        Task UpdateServiceProgress(UpdateServiceProgressDto dto);
     }
 }

@@ -32,6 +32,7 @@ namespace CarServ.Service.Services.Interfaces
         //This is revenue report, i just put it here 'cause dont know wwhere to put this func
         Task<RevenueReportDto> GenerateRevenueReport(DateTime startDate, DateTime endDate);
         void TrackPartsUsed(PartUsageDto partUsage);
+        Task UpdateServiceProgress(UpdateServiceProgressDto dto);
 
 
 

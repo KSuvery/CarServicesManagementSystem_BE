@@ -102,30 +102,14 @@ namespace CarServ.Repository.Repositories
                 _context.Appointments.Add(appointment);
                 await _context.SaveChangesAsync();
 
-                //  a service package
-                if (dto.PackageId.HasValue)
-                {
-                    var servicesInPackage = await _context.ServicePackages
-                        .Include(sp => sp.Services)
-                        .FirstOrDefaultAsync(sp => sp.PackageId == dto.PackageId.Value);
+            //  a service package
+            if (dto.PackageId.HasValue)
+            {
+                appointment.PackageId = dto.PackageId.Value;
+            }
 
-                    if (servicesInPackage != null)
-                    {
-                        foreach (var service in servicesInPackage.Services)
-                        {
-                            var appointmentService = new AppointmentService
-                            {
-                                AppointmentId = appointment.AppointmentId,
-                                ServiceId = service.ServiceId,
-                                Quantity = 1 // Assuming quantity is 1 for each service
-                            };
-                            _context.AppointmentServices.Add(appointmentService);
-                        }
-                    }
-                }
-
-                // multiple services 
-                foreach (var serviceId in dto.ServiceIds)
+            // multiple services 
+            foreach (var serviceId in dto.ServiceIds)
                 {
                     var appointmentService = new AppointmentService
                     {
@@ -141,6 +125,7 @@ namespace CarServ.Repository.Repositories
                 {
                     AppointmentId = appointment.AppointmentId,
                     Status = "Booked",
+                    Note = "Appointment confirmed for customer " + customerId,
                     UpdatedAt = DateTime.Now
                 };
 

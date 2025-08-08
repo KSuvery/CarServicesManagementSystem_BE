@@ -151,5 +151,19 @@ namespace CarServ.API.Controllers
             _PartServices.TrackPartsUsed(partsUsedDTO);
             return Ok("Parts used added successfully.");
         }
+        [HttpPut("updateServiceProgress")]
+        [Authorize(Roles = "1,3,4")]
+        public async Task<IActionResult> UpdateServiceProgress([FromBody] UpdateServiceProgressDto dto)
+        {
+            try
+            {
+                await _PartServices.UpdateServiceProgress(dto);
+                return NoContent(); 
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using static CarServ.Repository.Repositories.PartRepository;
 
 namespace CarServ.Repository.Repositories
 {
@@ -177,10 +178,81 @@ namespace CarServ.Repository.Repositories
                         .Sum()
                 })
                 .Where(r => r.Revenue > 0)
-                .ToListAsync();
+            .ToListAsync();
 
             return report;
         }
+        
+
+            public async Task UpdateServiceProgress(UpdateServiceProgressDto dto)
+            {
+                // Validate the input data
+                if (string.IsNullOrEmpty(dto.Status) || !IsValidStatus(dto.Status))
+                {
+                    throw new ArgumentException("Invalid status provided.");
+                }
+
+                // Retrieve the service progress record
+                var serviceProgress = await _context.ServiceProgresses
+                    .FirstOrDefaultAsync(sp => sp.AppointmentId == dto.AppointmentId);
+
+                if (serviceProgress == null)
+                {
+                    throw new InvalidOperationException("Service progress not found for the given appointment.");
+                }
+
+                // Update the status and note
+                serviceProgress.Status = dto.Status;
+                serviceProgress.Note = dto.Note;
+                serviceProgress.UpdatedAt = DateTime.Now;
+
+                // If the status is "Completed", reduce the quantity of parts used
+                if (dto.Status == "Completed")
+                {
+                    await ReduceUsedParts(dto.AppointmentId);
+                }
+
+                // Save changes to the database
+                await _context.SaveChangesAsync();
+            }
+
+            private bool IsValidStatus(string status)
+            {
+                var validStatuses = new[] { "Booked", "Vehicle Received", "In Service", "Completed" };
+                return validStatuses.Contains(status);
+            }
+
+            private async Task ReduceUsedParts(int appointmentId)
+            {
+                // Get the parts used in the appointment
+                var appointmentServices = await _context.AppointmentServices
+                    .Include(a => a.Service)
+                    .Where(a => a.AppointmentId == appointmentId)
+                    .ToListAsync();
+
+                foreach (var appointmentService in appointmentServices)
+                {
+                    var serviceParts = await _context.ServiceParts
+                        .Where(sp => sp.ServiceId == appointmentService.ServiceId)
+                        .ToListAsync();
+
+                    foreach (var servicePart in serviceParts)
+                    {
+                        var part = await _context.Parts.FindAsync(servicePart.PartId);
+                        if (part != null && part.Quantity.HasValue)
+                        {
+                           
+                            part.Quantity -= servicePart.QuantityRequired; 
+                            if (part.Quantity < 0)
+                            {
+                                part.Quantity = 0; 
+                            }
+                        }
+                    }
+                }
+            }
+        
+
 
 
         public async Task TrackPartsUsed(PartUsageDto partsUsedDTO)
