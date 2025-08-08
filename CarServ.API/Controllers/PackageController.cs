@@ -1,4 +1,5 @@
-﻿using CarServ.Service.Services.Interfaces;
+﻿using CarServ.Domain.Entities;
+using CarServ.Service.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,6 +31,22 @@ namespace CarServ.API.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        [HttpGet("{id}")]
+        [Authorize(Roles = "1,2,3,4")]
+        public async Task<IActionResult> GetAllAvailableVehicleWithCustomerId(int id)
+        {
+            try
+            {
+                var vehicles = await _service.GetVehiclesByCustomerId(id);
+                return Ok(vehicles);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+        
     }
 
 }
