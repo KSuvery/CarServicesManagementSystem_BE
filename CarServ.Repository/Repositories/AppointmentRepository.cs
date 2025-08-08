@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CarServ.Repository.Repositories
 {
-    public class AppointmentRepository : GenericRepository<Appointments>, IAppointmentRepository
+    public class AppointmentRepository : GenericRepository<Appointment>, IAppointmentRepository
     {
         private readonly CarServicesManagementSystemContext _context;
         public AppointmentRepository(CarServicesManagementSystemContext context) : base(context)
@@ -17,32 +17,32 @@ namespace CarServ.Repository.Repositories
             _context = context;
         }
 
-        public async Task<List<Appointments>> GetAllAppointmentsAsync()
+        public async Task<List<Appointment>> GetAllAppointmentsAsync()
         {
             return await _context.Appointments.ToListAsync();
         }
 
-        public async Task<Appointments> GetAppointmentByIdAsync(int appointmentId)
+        public async Task<Appointment> GetAppointmentByIdAsync(int appointmentId)
         {
             return await _context.Appointments
                 .FirstOrDefaultAsync(a => a.AppointmentId == appointmentId);
         }
 
-        public async Task<List<Appointments>> GetAppointmentsByCustomerIdAsync(int customerId)
+        public async Task<List<Appointment>> GetAppointmentsByCustomerIdAsync(int customerId)
         {
             return await _context.Appointments
                 .Where(a => a.CustomerId == customerId)
                 .ToListAsync();
         }
 
-        public async Task<List<Appointments>> GetAppointmentsByVehicleIdAsync(int vehicleId)
+        public async Task<List<Appointment>> GetAppointmentsByVehicleIdAsync(int vehicleId)
         {
             return await _context.Appointments
                 .Where(a => a.VehicleId == vehicleId)
                 .ToListAsync();
         }
 
-        public async Task<Appointments> ScheduleAppointmentAsync(
+        public async Task<Appointment> ScheduleAppointmentAsync(
             int customerId,
             int vehicleId,
             int packageId,
@@ -50,7 +50,7 @@ namespace CarServ.Repository.Repositories
             string status = "Pending",
             int? promotionId = null)
         {
-            var appointment = new Appointments
+            var appointment = new Appointment
             {
                 CustomerId = customerId,
                 VehicleId = vehicleId,
@@ -66,7 +66,7 @@ namespace CarServ.Repository.Repositories
 
         }
 
-        public async Task<Appointments> UpdateAppointmentAsync(
+        public async Task<Appointment> UpdateAppointmentAsync(
             int appointmentId,
             string status)
         {

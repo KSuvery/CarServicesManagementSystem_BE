@@ -19,25 +19,25 @@ namespace CarServ.Repository.Repositories
 
         public async Task<WarrantyClaim> GetWarrantyClaimByIdAsync(int claimId)
         {
-            return await _context.WarrantyClaim
+            return await _context.WarrantyClaims
                 .FirstOrDefaultAsync(c => c.ClaimId == claimId);
         }
 
         public async Task<List<WarrantyClaim>> GetWarrantyClaimBySupplierIdAsync(int supplierId)
         {
-            return await _context.WarrantyClaim
+            return await _context.WarrantyClaims
                 .Where(c => c.SupplierId == supplierId)
                 .ToListAsync();
         }
 
         public async Task<List<WarrantyClaim>> GetAllWarrantyClaimAsync()
         {
-            return await _context.WarrantyClaim.ToListAsync();
+            return await _context.WarrantyClaims.ToListAsync();
         }
 
         public async Task<List<WarrantyClaim>> GetWarrantyClaimByStatusAsync(string status)
         {
-            return await _context.WarrantyClaim
+            return await _context.WarrantyClaims
                 .Where(c => c.Status != null &&
                     c.Status.ToLower().Contains(status.ToLower()))
                 .ToListAsync();
@@ -45,14 +45,14 @@ namespace CarServ.Repository.Repositories
 
         public async Task<List<WarrantyClaim>> GetWarrantyClaimByClaimDateAsync(DateOnly claimDate)
         {
-            return await _context.WarrantyClaim
+            return await _context.WarrantyClaims
                 .Where(c => c.ClaimDate == claimDate)
                 .ToListAsync();
         }
 
         public async Task<List<WarrantyClaim>> GetWarrantyClaimByNoteAsync(string note)
         {
-            return await _context.WarrantyClaim
+            return await _context.WarrantyClaims
                 .Where(c => c.Notes != null &&
                     c.Notes.ToLower().Contains(note.ToLower()))
                 .ToListAsync();
@@ -75,7 +75,7 @@ namespace CarServ.Repository.Repositories
                 Status = status,
                 Notes = notes
             };
-            _context.WarrantyClaim.Add(warrantyClaim);
+            _context.WarrantyClaims.Add(warrantyClaim);
             await _context.SaveChangesAsync();
             return warrantyClaim;
         }
@@ -97,7 +97,7 @@ namespace CarServ.Repository.Repositories
             warrantyClaim.ClaimDate = claimDate;
             warrantyClaim.Status = status;
             warrantyClaim.Notes = notes;
-            _context.WarrantyClaim.Update(warrantyClaim);
+            _context.WarrantyClaims.Update(warrantyClaim);
             await _context.SaveChangesAsync();
             return warrantyClaim;
         }
@@ -108,7 +108,7 @@ namespace CarServ.Repository.Repositories
             if (warrantyClaim == null)
                 return null;
             warrantyClaim.Status = "Deactivated";
-            _context.WarrantyClaim.Update(warrantyClaim);
+            _context.WarrantyClaims.Update(warrantyClaim);
             await _context.SaveChangesAsync();
             return warrantyClaim;
         }

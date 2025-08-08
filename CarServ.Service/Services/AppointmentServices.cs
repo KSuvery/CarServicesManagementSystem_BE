@@ -9,36 +9,36 @@ using System.Threading.Tasks;
 
 namespace CarServ.Service.Services
 {
-    public class AppointmentServices : IAppointmentServices
+    public class Appointmentervices : IAppointmentervices
     {
         private readonly IAppointmentRepository _appointmentRepository;
 
-        public AppointmentServices(IAppointmentRepository appointmentRepository)
+        public Appointmentervices(IAppointmentRepository appointmentRepository)
         {
             _appointmentRepository = appointmentRepository;
         }
 
-        public async Task<List<Appointments>> GetAllAppointmentsAsync()
+        public async Task<List<Appointment>> GetAllAppointmentAsync()
         {
             return await _appointmentRepository.GetAllAppointmentsAsync();
         }
 
-        public async Task<Appointments> GetAppointmentByIdAsync(int appointmentId)
+        public async Task<Appointment> GetAppointmentByIdAsync(int appointmentId)
         {
             return await _appointmentRepository.GetAppointmentByIdAsync(appointmentId);
         }
 
-        public async Task<List<Appointments>> GetAppointmentsByCustomerIdAsync(int customerId)
+        public async Task<List<Appointment>> GetAppointmentByCustomerIdAsync(int customerId)
         {
             return await _appointmentRepository.GetAppointmentsByCustomerIdAsync(customerId);
         }
 
-        public async Task<List<Appointments>> GetAppointmentsByVehicleIdAsync(int vehicleId)
+        public async Task<List<Appointment>> GetAppointmentByVehicleIdAsync(int vehicleId)
         {
             return await _appointmentRepository.GetAppointmentsByVehicleIdAsync(vehicleId);
         }
 
-        public async Task<Appointments> ScheduleAppointmentAsync(
+        public async Task<Appointment> ScheduleAppointmentAsync(
             int customerId,
             int vehicleId,
             int packageId,
@@ -55,7 +55,7 @@ namespace CarServ.Service.Services
                 promotionId);
         }
 
-        public async Task<Appointments> UpdateAppointmentAsync(
+        public async Task<Appointment> UpdateAppointmentAsync(
             int appointmentId,
             string status)
         {

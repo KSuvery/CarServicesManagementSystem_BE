@@ -20,13 +20,13 @@ namespace CarServ.Repository.Repositories
 
         public async Task<Notification> GetNotificationByIdAsync(int notificationId)
         {
-            return await _context.Notification
+            return await _context.Notifications
                 .FirstOrDefaultAsync(n => n.NotificationId == notificationId);
         }
 
         public async Task<List<Notification>> GetNotificationByUserIdAsync(int userId)
         {
-            return await _context.Notification
+            return await _context.Notifications
                 .Where(n => n.UserId == userId)
                 .ToListAsync();
         }
@@ -45,7 +45,7 @@ namespace CarServ.Repository.Repositories
                 SentAt = sentAt ?? DateTime.Now,
                 IsRead = isRead
             };
-            _context.Notification.Add(notification);
+            _context.Notifications.Add(notification);
             await _context.SaveChangesAsync();
             return notification;
         }
@@ -57,7 +57,7 @@ namespace CarServ.Repository.Repositories
             {
                 return false;
             }
-            _context.Notification.Remove(notification);
+            _context.Notifications.Remove(notification);
             await _context.SaveChangesAsync();
             return true;
         }
@@ -71,7 +71,7 @@ namespace CarServ.Repository.Repositories
             {
                 isRead = true;
                 notification.IsRead = isRead;
-                _context.Notification.Update(notification);
+                _context.Notifications.Update(notification);
                 await _context.SaveChangesAsync();
             }
             return notification;

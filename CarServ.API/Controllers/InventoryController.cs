@@ -16,68 +16,68 @@ namespace CarServ.API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class InventoryController : ControllerBase
+    public class PartController : ControllerBase
     {
-        private readonly IInventoryServices _inventoryServices;
+        private readonly IPartServices _PartServices;
 
-        public InventoryController(IInventoryServices inventoryServices)
+        public PartController(IPartServices PartServices)
         {
-            _inventoryServices = inventoryServices;
+            _PartServices = PartServices;
         }
 
         [HttpGet]
         [Authorize(Roles = "1,3")]
-        public async Task<ActionResult<IEnumerable<Inventory>>> GetInventoryItems()
+        public async Task<ActionResult<IEnumerable<Part>>> GetPartItems()
         {
-            return await _inventoryServices.GetAllInventoryItemsAsync();
+            return await _PartServices.GetAllPartItemsAsync();
         }
 
         [HttpGet("{id}")]
         [Authorize(Roles = "1,3")]
-        public async Task<ActionResult<Inventory>> GetInventoryItemById(int id)
+        public async Task<ActionResult<Part>> GetPartItemById(int id)
         {
-            var inventoryItem = await _inventoryServices.GetInventoryItemByIdAsync(id);
-            if (inventoryItem == null)
+            var PartItem = await _PartServices.GetPartItemByIdAsync(id);
+            if (PartItem == null)
             {
                 return NotFound();
             }
-            return inventoryItem;
+            return PartItem;
         }
 
         [HttpGet("GetByName/{partName}")]
         [Authorize(Roles = "1,3")]
-        public async Task<ActionResult<IEnumerable<Inventory>>> GetInventoryItemsByName(string partName)
+        public async Task<ActionResult<IEnumerable<Part>>> GetPartItemsByName(string partName)
         {
-            var inventoryItems = await _inventoryServices.GetInventoryItemsByNameAsync(partName);
-            if (inventoryItems == null || !inventoryItems.Any())
+            var PartItems = await _PartServices.GetPartItemsByNameAsync(partName);
+            if (PartItems == null || !PartItems.Any())
             {
                 return NotFound();
             }
-            return inventoryItems;
+            return PartItems;
         }
 
         [HttpPost("Create")]
         [Authorize(Roles = "1,3")]
-        public async Task<ActionResult<Inventory>> CreateInventoryItem(
+        public async Task<ActionResult<Part>> CreatePartItem(
             string partName,
             int? quantity,
             decimal? unitPrice,
             DateOnly? expiryDate,
             int? warrantyMonths)
         {
-            var newInventoryItem = await _inventoryServices.CreateInventoryItemAsync(
+            var newPartItem = await _PartServices.CreatePartItemAsync(
                 partName, quantity, unitPrice, expiryDate, warrantyMonths);
-            if (newInventoryItem == null)
+            if (newPartItem == null)
             {
-                return BadRequest("Failed to create inventory item.");
+                return BadRequest("Failed to create Part item.");
             }
 
-            return CreatedAtAction(nameof(GetInventoryItemById), new { id = newInventoryItem.PartId }, newInventoryItem);
+            return CreatedAtAction(nameof(GetPartItemById), new { id = newPartItem.PartId }, newPartItem);
         }
 
         [HttpPut("Update/{id}")]
         [Authorize(Roles = "1,3")]
-        public async Task<ActionResult<Inventory>> UpdateInventoryItem(
+        public async Task<ActionResult<Part>> UpdatePartItem(
             int id,
             string partName,
             int? quantity,
@@ -85,38 +85,38 @@ namespace CarServ.API.Controllers
             DateOnly? expiryDate,
             int? warrantyMonths)
         {
-            if (!await InventoryExists(id))
+            if (!await PartExists(id))
             {
                 return NotFound();
             }
-            var updatedInventoryItem = await _inventoryServices.UpdateInventoryItemAsync(
+            var updatedPartItem = await _PartServices.UpdatePartItemAsync(
                 id, partName, quantity, unitPrice, expiryDate, warrantyMonths);
-            if (updatedInventoryItem == null)
+            if (updatedPartItem == null)
             {
-                return BadRequest("Failed to update inventory item.");
+                return BadRequest("Failed to update Part item.");
             }
-            return Ok(updatedInventoryItem);
+            return Ok(updatedPartItem);
         }
 
         [HttpDelete("Delete/{id}")]
         [Authorize(Roles = "1,3")]
-        public async Task<IActionResult> RemoveInventoryItem(int id)
+        public async Task<IActionResult> RemovePartItem(int id)
         {
-            if (!await InventoryExists(id))
+            if (!await PartExists(id))
             {
                 return NotFound();
             }
-            var result = await _inventoryServices.RemoveInventoryItemAsync(id);
+            var result = await _PartServices.RemovePartItemAsync(id);
             if (!result)
             {
-                return BadRequest("Failed to delete inventory item.");
+                return BadRequest("Failed to delete Part item.");
             }
             return NoContent();
         }
 
-        private async Task<bool> InventoryExists(int id)
+        private async Task<bool> PartExists(int id)
         {
-            return await _inventoryServices.GetInventoryItemByIdAsync(id) != null;
+            return await _PartServices.GetPartItemByIdAsync(id) != null;
         }
 
         [HttpGet("revenueReport")]
@@ -127,7 +127,7 @@ namespace CarServ.API.Controllers
         {
             try
             {
-                var report = await _inventoryServices.GenerateRevenueReport(startDate, endDate);
+                var report = await _PartServices.GenerateRevenueReport(startDate, endDate);
                 return Ok(report);
             }
             catch (ArgumentException ex)
@@ -148,7 +148,7 @@ namespace CarServ.API.Controllers
             {
                 return BadRequest("Invalid data.");
             }
-            _inventoryServices.TrackPartsUsed(partsUsedDTO);
+            _PartServices.TrackPartsUsed(partsUsedDTO);
             return Ok("Parts used added successfully.");
         }
     }

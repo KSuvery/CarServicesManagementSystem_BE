@@ -11,7 +11,7 @@ namespace CarServ.Repository.Repositories.Interfaces
 {
     public interface IPackageRepository 
     {
-        Task<PaginationResult<ServicePackages>> GetAllWithPaging(int pageNum, int pageSize);
+        Task<PaginationResult<ServicePackage>> GetAllWithPaging(int pageNum, int pageSize);
         Task<ServicePackageListDto> GetAllServicePackages();
     }
 }

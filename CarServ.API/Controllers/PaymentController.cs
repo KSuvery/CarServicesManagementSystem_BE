@@ -15,26 +15,26 @@ namespace CarServ.API.Controllers
     [ApiController]
     public class PaymentController : ControllerBase
     {
-        private readonly IPaymentService _paymentService;
+        private readonly IPaymentervice _Paymentervice;
         private readonly IVnPayService _vnPayService;
 
-        public PaymentController(IPaymentService paymentService, IVnPayService vnPayService)
+        public PaymentController(IPaymentervice Paymentervice, IVnPayService vnPayService)
         {
-            _paymentService = paymentService;
+            _Paymentervice = Paymentervice;
             _vnPayService = vnPayService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Payments>>> GetPayments()
+        public async Task<ActionResult<IEnumerable<Payment>>> GetPayment()
         {
-            var payments = await _paymentService.GetAllPaymentsAsync();
-            return Ok(payments);
+            var Payment = await _Paymentervice.GetAllPaymentAsync();
+            return Ok(Payment);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Payments>> GetPaymentById(int id)
+        public async Task<ActionResult<Payment>> GetPaymentById(int id)
         {
-            var payment = await _paymentService.GetPaymentByIdAsync(id);
+            var payment = await _Paymentervice.GetPaymentByIdAsync(id);
             if (payment == null)
             {
                 return NotFound();
@@ -43,79 +43,79 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("customer/{customerId}")]
-        public async Task<ActionResult<IEnumerable<Payments>>> GetPaymentsByCustomerId(int customerId)
+        public async Task<ActionResult<IEnumerable<Payment>>> GetPaymentByCustomerId(int customerId)
         {
-            var payments = await _paymentService.GetPaymentsByCustomerIdAsync(customerId);
-            if (payments == null || !payments.Any())
+            var Payment = await _Paymentervice.GetPaymentByCustomerIdAsync(customerId);
+            if (Payment == null || !Payment.Any())
             {
                 return NotFound();
             }
-            return Ok(payments);
+            return Ok(Payment);
         }
 
         [HttpGet("appointment/{appointmentId}")]
-        public async Task<ActionResult<IEnumerable<Payments>>> GetPaymentsByAppointmentId(int appointmentId)
+        public async Task<ActionResult<IEnumerable<Payment>>> GetPaymentByAppointmentId(int appointmentId)
         {
-            var payments = await _paymentService.GetPaymentsByAppointmentIdAsync(appointmentId);
-            if (payments == null || !payments.Any())
+            var Payment = await _Paymentervice.GetPaymentByAppointmentIdAsync(appointmentId);
+            if (Payment == null || !Payment.Any())
             {
                 return NotFound();
             }
-            return Ok(payments);
+            return Ok(Payment);
         }
 
         [HttpGet("method")]
-        public async Task<ActionResult<IEnumerable<Payments>>> GetPaymentsByMethod([FromQuery] string method)
+        public async Task<ActionResult<IEnumerable<Payment>>> GetPaymentByMethod([FromQuery] string method)
         {
-            var payments = await _paymentService.GetPaymentsByMethodAsync(method);
-            if (payments == null || !payments.Any())
+            var Payment = await _Paymentervice.GetPaymentByMethodAsync(method);
+            if (Payment == null || !Payment.Any())
             {
                 return NotFound();
             }
-            return Ok(payments);
+            return Ok(Payment);
         }
 
         [HttpGet("sort/method")]
-        public async Task<ActionResult<IEnumerable<Payments>>> SortPaymentsByMethod()
+        public async Task<ActionResult<IEnumerable<Payment>>> SortPaymentByMethod()
         {
-            var payments = await _paymentService.SortPaymentsByMethodAsync();
-            if (payments == null || !payments.Any())
+            var Payment = await _Paymentervice.SortPaymentByMethodAsync();
+            if (Payment == null || !Payment.Any())
             {
                 return NotFound();
             }
-            return Ok(payments);
+            return Ok(Payment);
         }
 
         [HttpGet("amount-range")]
-        public async Task<ActionResult<IEnumerable<Payments>>> GetPaymentsByAmountRange([FromQuery] decimal minAmount, [FromQuery] decimal maxAmount)
+        public async Task<ActionResult<IEnumerable<Payment>>> GetPaymentByAmountRange([FromQuery] decimal minAmount, [FromQuery] decimal maxAmount)
         {
-            var payments = await _paymentService.GetPaymentsByAmountRangeAsync(minAmount, maxAmount);
-            if (payments == null || !payments.Any())
+            var Payment = await _Paymentervice.GetPaymentByAmountRangeAsync(minAmount, maxAmount);
+            if (Payment == null || !Payment.Any())
             {
                 return NotFound();
             }
-            return Ok(payments);
+            return Ok(Payment);
         }
 
         [HttpGet("paid-date")]
-        public async Task<ActionResult<IEnumerable<Payments>>> GetPaymentsByPaidDate([FromQuery] DateTime paidDate)
+        public async Task<ActionResult<IEnumerable<Payment>>> GetPaymentByPaidDate([FromQuery] DateTime paidDate)
         {
-            var payments = await _paymentService.GetPaymentsByPaidDateAsync(paidDate);
-            if (payments == null || !payments.Any())
+            var Payment = await _Paymentervice.GetPaymentByPaidDateAsync(paidDate);
+            if (Payment == null || !Payment.Any())
             {
                 return NotFound();
             }
-            return Ok(payments);
+            return Ok(Payment);
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult<Payments>> CreatePayment([FromBody] Payments payment)
+        public async Task<ActionResult<Payment>> CreatePayment([FromBody] Payment payment)
         {
             if (payment == null)
             {
                 return BadRequest("Payment cannot be null.");
             }
-            var createdPayment = await _paymentService.CreatePayment(payment);
+            var createdPayment = await _Paymentervice.CreatePayment(payment);
             return CreatedAtAction(nameof(GetPaymentById), new { id = createdPayment.PaymentId }, createdPayment);
         }
 
@@ -134,9 +134,9 @@ namespace CarServ.API.Controllers
             return Ok(response);
         }
 
-        private async Task<bool> PaymentsExists(int id)
+        private async Task<bool> PaymentExists(int id)
         {
-            return await _paymentService.GetPaymentByIdAsync(id) != null;
+            return await _Paymentervice.GetPaymentByIdAsync(id) != null;
         }
     }
 }

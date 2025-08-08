@@ -23,7 +23,7 @@ namespace CarServ.Service.Services
             return await _repository.GetAllServicePackages();
         }        
 
-        public Task<PaginationResult<ServicePackages>> GetAllWithPaging(int pageNum, int pageSize)
+        public Task<PaginationResult<ServicePackage>> GetAllWithPaging(int pageNum, int pageSize)
         {
             throw new NotImplementedException();
         }

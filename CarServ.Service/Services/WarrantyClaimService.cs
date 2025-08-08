@@ -9,45 +9,45 @@ using System.Threading.Tasks;
 
 namespace CarServ.Service.Services
 {
-    public class WarrantyClaimService : IWarrantyClaimService
+    public class WarrantyClaimervice : IWarrantyClaimervice
     {
         private readonly IWarrantyClaimRepository _warrantyClaimRepository;
-        public WarrantyClaimService(IWarrantyClaimRepository warrantyClaimRepository)
+        public WarrantyClaimervice(IWarrantyClaimRepository warrantyClaimRepository)
         {
             _warrantyClaimRepository = warrantyClaimRepository;
         }
 
-        public async Task<WarrantyClaims> GetWarrantyClaimByIdAsync(int claimId)
+        public async Task<WarrantyClaim> GetWarrantyClaimByIdAsync(int claimId)
         {
             return await _warrantyClaimRepository.GetWarrantyClaimByIdAsync(claimId);
         }
 
-        public async Task<List<WarrantyClaims>> GetWarrantyClaimsBySupplierIdAsync(int supplierId)
+        public async Task<List<WarrantyClaim>> GetWarrantyClaimBySupplierIdAsync(int supplierId)
         {
-            return await _warrantyClaimRepository.GetWarrantyClaimsBySupplierIdAsync(supplierId);
+            return await _warrantyClaimRepository.GetWarrantyClaimBySupplierIdAsync(supplierId);
         }
 
-        public async Task<List<WarrantyClaims>> GetAllWarrantyClaimsAsync()
+        public async Task<List<WarrantyClaim>> GetAllWarrantyClaimAsync()
         {
-            return await _warrantyClaimRepository.GetAllWarrantyClaimsAsync();
+            return await _warrantyClaimRepository.GetAllWarrantyClaimAsync();
         }
 
-        public async Task<List<WarrantyClaims>> GetWarrantyClaimsByStatusAsync(string status)
+        public async Task<List<WarrantyClaim>> GetWarrantyClaimByStatusAsync(string status)
         {
-            return await _warrantyClaimRepository.GetWarrantyClaimsByStatusAsync(status);
+            return await _warrantyClaimRepository.GetWarrantyClaimByStatusAsync(status);
         }
 
-        public async Task<List<WarrantyClaims>> GetWarrantyClaimsByClaimDateAsync(DateOnly claimDate)
+        public async Task<List<WarrantyClaim>> GetWarrantyClaimByClaimDateAsync(DateOnly claimDate)
         {
-            return await _warrantyClaimRepository.GetWarrantyClaimsByClaimDateAsync(claimDate);
+            return await _warrantyClaimRepository.GetWarrantyClaimByClaimDateAsync(claimDate);
         }
 
-        public async Task<List<WarrantyClaims>> GetWarrantyClaimsByNoteAsync(string note)
+        public async Task<List<WarrantyClaim>> GetWarrantyClaimByNoteAsync(string note)
         {
-            return await _warrantyClaimRepository.GetWarrantyClaimsByNoteAsync(note);
+            return await _warrantyClaimRepository.GetWarrantyClaimByNoteAsync(note);
         }
 
-        public async Task<WarrantyClaims> CreateWarrantyClaimAsync(
+        public async Task<WarrantyClaim> CreateWarrantyClaimAsync(
             int partId,
             int supplierId,
             DateOnly claimDate,
@@ -57,7 +57,7 @@ namespace CarServ.Service.Services
             return await _warrantyClaimRepository.CreateWarrantyClaimAsync(partId, supplierId, claimDate, status, notes);
         }
 
-        public async Task<WarrantyClaims> UpdateWarrantyClaimAsync(
+        public async Task<WarrantyClaim> UpdateWarrantyClaimAsync(
             int claimId,
             int partId,
             int supplierId,
@@ -68,7 +68,7 @@ namespace CarServ.Service.Services
             return await _warrantyClaimRepository.UpdateWarrantyClaimAsync(claimId, partId, supplierId, claimDate, status, notes);
         }
 
-        public async Task<WarrantyClaims> DeactivateWarrantyClaimAsync(int claimId)
+        public async Task<WarrantyClaim> DeactivateWarrantyClaimAsync(int claimId)
         {
             return await _warrantyClaimRepository.DeactivateWarrantyClaimAsync(claimId);
         }

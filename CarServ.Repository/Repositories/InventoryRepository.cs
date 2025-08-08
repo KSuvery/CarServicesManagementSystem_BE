@@ -105,12 +105,12 @@ namespace CarServ.Repository.Repositories
             };
 
             // Calculate total Payment in date range
-            report.TotalRevenue = (decimal)await _context.Payment
+            report.TotalRevenue = (decimal)await _context.Payments
                 .Where(p => p.PaidAt >= startDate && p.PaidAt <= endDate)
                 .SumAsync(p => p.Amount);
 
             // Calculate service revenue (from packages)
-            report.ServiceRevenue = (decimal)await _context.Payment
+            report.ServiceRevenue = (decimal)await _context.Payments
                 .Where(p => p.PaidAt >= startDate && p.PaidAt <= endDate)
                 .Join(_context.Appointments,
                     payment => payment.AppointmentId,
@@ -148,7 +148,7 @@ namespace CarServ.Repository.Repositories
                         .Where(a => a.PackageId == sp.PackageId &&
                                   a.AppointmentDate >= startDate &&
                                   a.AppointmentDate <= endDate)
-                        .Join(_context.Payment,
+                        .Join(_context.Payments,
                             appointment => appointment.AppointmentId,
                             payment => payment.AppointmentId,
                             (appointment, payment) => payment.Amount)
@@ -170,7 +170,7 @@ namespace CarServ.Repository.Repositories
                             (vehicle, appointment) => appointment)
                         .Where(a => a.AppointmentDate >= startDate &&
                                   a.AppointmentDate <= endDate)
-                        .Join(_context.Payment,
+                        .Join(_context.Payments,
                             appointment => appointment.AppointmentId,
                             payment => payment.AppointmentId,
                             (appointment, payment) => payment.Amount)
