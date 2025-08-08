@@ -5,17 +5,15 @@ using System.Collections.Generic;
 
 namespace CarServ.Domain.Entities;
 
-public partial class ServiceProgress
+public partial class AppointmentService
 {
-    public int ProgressId { get; set; }
+    public int AppointmentId { get; set; }
 
-    public int? AppointmentId { get; set; }
+    public int ServiceId { get; set; }
 
-    public string Status { get; set; }
-
-    public string Note { get; set; }
-
-    public DateTime? UpdatedAt { get; set; }
+    public int? Quantity { get; set; }
 
     public virtual Appointment Appointment { get; set; }
+
+    public virtual Service Service { get; set; }
 }

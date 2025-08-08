@@ -5,15 +5,15 @@ using System.Collections.Generic;
 
 namespace CarServ.Domain.Entities;
 
-public partial class Customers
+public partial class Customer
 {
     public int CustomerId { get; set; }
 
     public string Address { get; set; }
 
-    public virtual ICollection<Appointments> Appointments { get; set; } = new List<Appointments>();
+    public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
 
-    public virtual Users Customer { get; set; }
+    public virtual User CustomerNavigation { get; set; }
 
-    public virtual ICollection<Vehicles> Vehicles { get; set; } = new List<Vehicles>();
+    public virtual ICollection<Vehicle> Vehicles { get; set; } = new List<Vehicle>();
 }
