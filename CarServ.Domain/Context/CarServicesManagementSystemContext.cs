@@ -233,14 +233,6 @@ public partial class CarServicesManagementSystemContext : DbContext
             entity.HasOne(d => d.Order).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.OrderId)
                 .HasConstraintName("FK__OrderDeta__Order__1BC821DD");
-
-            entity.HasOne(d => d.Package).WithMany(p => p.OrderDetails)
-                .HasForeignKey(d => d.PackageId)
-                .HasConstraintName("FK__OrderDeta__Packa__1CBC4616");
-
-            entity.HasOne(d => d.Service).WithMany(p => p.OrderDetails)
-                .HasForeignKey(d => d.ServiceId)
-                .HasConstraintName("FK__OrderDeta__Servi__1DB06A4F");
         });
 
         modelBuilder.Entity<Part>(entity =>

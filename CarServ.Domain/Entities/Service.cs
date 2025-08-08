@@ -17,8 +17,6 @@ public partial class Service
 
     public virtual ICollection<AppointmentService> AppointmentServices { get; set; } = new List<AppointmentService>();
 
-    public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
-
     public virtual ICollection<ServicePart> ServiceParts { get; set; } = new List<ServicePart>();
 
     public virtual ICollection<ServicePackage> Packages { get; set; } = new List<ServicePackage>();

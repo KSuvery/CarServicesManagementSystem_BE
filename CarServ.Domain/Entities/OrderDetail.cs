@@ -22,8 +22,4 @@ public partial class OrderDetail
     public decimal? LineTotal { get; set; }
 
     public virtual Order Order { get; set; }
-
-    public virtual ServicePackage Package { get; set; }
-
-    public virtual Service Service { get; set; }
 }
