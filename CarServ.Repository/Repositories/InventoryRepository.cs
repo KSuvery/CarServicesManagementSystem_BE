@@ -218,19 +218,21 @@ namespace CarServ.Repository.Repositories
                     .Include(m => m.Manager)
                     .ToListAsync();
 
+                var notifications = new List<Notifications>();
+
                 foreach (var manager in managers)
                 {
-                    var notification = new Notifications
+                    notifications.Add(new Notifications
                     {
                         UserId = manager.ManagerId,
                         Message = $"Low Stock Alert: {message}",
                         SentAt = DateTime.Now,
                         IsRead = false
-                    };
-
-                    _context.Notifications.Add(notification);
-                    _context.SaveChanges();
+                    });
                 }
+
+                _context.Notifications.AddRange(notifications);
+                await _context.SaveChangesAsync(); 
             }
         }
 
