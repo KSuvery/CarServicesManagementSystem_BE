@@ -1,4 +1,5 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO.Booking_A_Service;
 using CarServ.Repository.Repositories.Interfaces;
 using CarServ.Service.Services.Interfaces;
 using System;
@@ -60,6 +61,11 @@ namespace CarServ.Service.Services
             string status)
         {
             return await _appointmentRepository.UpdateAppointmentAsync(appointmentId, status);
+        }
+
+        public async Task<Appointment> ScheduleAppointment(int customerId, ScheduleAppointmentDto dto)
+        {
+            return await _appointmentRepository.ScheduleAppointment(customerId, dto);
         }
     }
 }

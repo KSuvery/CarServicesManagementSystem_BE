@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using CarServ.Domain.Entities;
 using CarServ.Service.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using CarServ.Repository.Repositories.DTO.Booking_A_Service;
 
 namespace CarServ.API.Controllers
 {
@@ -67,7 +68,7 @@ namespace CarServ.API.Controllers
             return Appointment;
         }
 
-        [HttpPost("Schedule")]
+        [HttpPost("Schedule_1")]
         /*[Authorize(Roles = "1,2")]*/
         public async Task<ActionResult<Appointment>> ScheduleAppointment(
             int customerId,
@@ -91,6 +92,19 @@ namespace CarServ.API.Controllers
             }
 
             return CreatedAtAction(nameof(GetAppointmentById), new { id = createdAppointment.AppointmentId }, createdAppointment);
+        }
+        [HttpPost("schedule")]
+        public async Task<IActionResult> ScheduleAppointment(int customerId, [FromBody] ScheduleAppointmentDto dto)
+        {
+            try
+            {
+                var appointment = await _Appointmentervices.ScheduleAppointment(customerId, dto);
+                return CreatedAtAction(nameof(ScheduleAppointment), new { id = appointment.AppointmentId }, appointment);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut("{appointmentId}")]
