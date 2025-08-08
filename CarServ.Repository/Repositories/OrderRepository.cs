@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CarServ.Repository.Repositories
 {
-    public class OrderRepository : GenericRepository<Orders>, IOrderRepository
+    public class OrderRepository : GenericRepository<Order>, IOrderRepository
     {
         private readonly CarServicesManagementSystemContext _context;
         public OrderRepository(CarServicesManagementSystemContext context) : base(context)
@@ -17,31 +17,31 @@ namespace CarServ.Repository.Repositories
             _context = context;
         }
 
-        public async Task<Orders> GetOrderByIdAsync(int orderId)
+        public async Task<Order> GetOrderByIdAsync(int orderId)
         {
             return await _context.Orders
                 .FirstOrDefaultAsync(o => o.OrderId == orderId);
         }
 
-        public async Task<List<Orders>> GetOrdersByCustomerIdAsync(int customerId)
+        public async Task<List<Order>> GetOrdersByCustomerIdAsync(int customerId)
         {
             return await _context.Orders
                 .Where(o => o.Appointment.CustomerId == customerId)
                 .ToListAsync();
         }
 
-        public async Task<List<Orders>> GetAllOrdersAsync()
+        public async Task<List<Order>> GetAllOrdersAsync()
         {
             return await _context.Orders.ToListAsync();
         }
 
-        public async Task<Orders> CreateOrderAsync(
+        public async Task<Order> CreateOrderAsync(
             int appointmentId,
             int? promotionId,
             DateTime createdAt)
         {
             createdAt = DateTime.Now;
-            var order = new Orders
+            var order = new Order
             {
                 AppointmentId = appointmentId,
                 PromotionId = promotionId,
@@ -52,7 +52,7 @@ namespace CarServ.Repository.Repositories
             return order;
         }
 
-        public async Task<Orders> UpdateOrderAsync(
+        public async Task<Order> UpdateOrderAsync(
             int orderId,
             int appointmentId,
             int? promotionId,

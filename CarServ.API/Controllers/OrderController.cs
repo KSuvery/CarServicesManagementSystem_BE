@@ -15,14 +15,14 @@ namespace CarServ.API.Controllers
             _orderService = orderService;
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Orders>>> GetOrders()
+        public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
         {
             var orders = await _orderService.GetAllOrdersAsync();
             return Ok(orders);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Orders>> GetOrderById(int id)
+        public async Task<ActionResult<Order>> GetOrderById(int id)
         {
             var order = await _orderService.GetOrderByIdAsync(id);
             if (order == null)
@@ -33,7 +33,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("customer/{customerId}")]
-        public async Task<ActionResult<IEnumerable<Orders>>> GetOrdersByCustomerId(int customerId)
+        public async Task<ActionResult<IEnumerable<Order>>> GetOrdersByCustomerId(int customerId)
         {
             var orders = await _orderService.GetOrdersByCustomerIdAsync(customerId);
             if (orders == null || !orders.Any())
@@ -44,7 +44,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult<Orders>> CreateOrder(
+        public async Task<ActionResult<Order>> CreateOrder(
             int appointmentId,
             int? promotionId,
             DateTime createdAt)

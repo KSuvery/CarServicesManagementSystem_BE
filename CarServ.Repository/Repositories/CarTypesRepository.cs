@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CarServ.Repository.Repositories
 {
-    public class CarTypesRepository : GenericRepository<CarTypes>, ICarTypesRepository
+    public class CarTypesRepository : GenericRepository<CarType>, ICarTypesRepository
     {
         private readonly CarServicesManagementSystemContext _context;
         public CarTypesRepository(CarServicesManagementSystemContext context) : base(context)
@@ -17,17 +17,17 @@ namespace CarServ.Repository.Repositories
             _context = context;
         }
 
-        public async Task<List<CarTypes>> GetAllCarTypesAsync()
+        public async Task<List<CarType>> GetAllCarTypesAsync()
         {
             return await _context.CarTypes.ToListAsync();
         }
 
-        public async Task<CarTypes> GetCarTypeByIdAsync(int carTypeId)
+        public async Task<CarType> GetCarTypeByIdAsync(int carTypeId)
         {
             return await _context.CarTypes.FindAsync(carTypeId);
         }
 
-        public async Task<List<CarTypes>> GetCarTypesByNameAsync(string typeName)
+        public async Task<List<CarType>> GetCarTypesByNameAsync(string typeName)
         {
             var carTypes = await _context.CarTypes
                 .Where(ct => ct.TypeName.ToLower().Contains(typeName.ToLower()))
@@ -36,11 +36,11 @@ namespace CarServ.Repository.Repositories
             return carTypes;
         }
 
-        public async Task<CarTypes> AddCarTypeAsync(
+        public async Task<CarType> AddCarTypeAsync(
             string typeName,
             string description)
         {
-            var carType = new CarTypes
+            var carType = new CarType
             {
                 TypeName = typeName,
                 Description = description
@@ -50,7 +50,7 @@ namespace CarServ.Repository.Repositories
             return carType;
         }
 
-        public async Task<CarTypes> UpdateCarTypeAsync(
+        public async Task<CarType> UpdateCarTypeAsync(
             int carTypeId,
             string typeName,
             string description)

@@ -17,37 +17,37 @@ namespace CarServ.Service.Services
             _partsRepository = partsRepository;
         }
 
-        public async Task<List<Parts>> GetAllPartsAsync()
+        public async Task<List<Part>> GetAllPartsAsync()
         {
             return await _partsRepository.GetAllPartsAsync();
         }
 
-        public async Task<Parts> GetPartByIdAsync(int partId)
+        public async Task<Part> GetPartByIdAsync(int partId)
         {
             return await _partsRepository.GetPartByIdAsync(partId);
         }
 
-        public async Task<List<Parts>> GetPartsByPartName(string partName)
+        public async Task<List<Part>> GetPartsByPartName(string partName)
         {
             return await _partsRepository.GetPartsByPartName(partName);
         }
 
-        public async Task<List<Parts>> GetPartsByUnitPriceRange(decimal minPrice, decimal maxPrice)
+        public async Task<List<Part>> GetPartsByUnitPriceRange(decimal minPrice, decimal maxPrice)
         {
             return await _partsRepository.GetPartsByUnitPriceRange(minPrice, maxPrice);
         }
 
-        public async Task<List<Parts>> GetPartsByExpiryDateRange(DateOnly startDate, DateOnly endDate)
+        public async Task<List<Part>> GetPartsByExpiryDateRange(DateOnly startDate, DateOnly endDate)
         {
             return await _partsRepository.GetPartsByExpiryDateRange(startDate, endDate);
         }
 
-        public async Task<List<Parts>> GetPartsByWarrantyMonthsRange(int minMonths, int maxMonths)
+        public async Task<List<Part>> GetPartsByWarrantyMonthsRange(int minMonths, int maxMonths)
         {
             return await _partsRepository.GetPartsByWarrantyMonthsRange(minMonths, maxMonths);
         }
 
-        public async Task<Parts> AddPartAsync(
+        public async Task<Part> AddPartAsync(
             string partName,
             int quantity,
             decimal unitPrice,
@@ -62,7 +62,7 @@ namespace CarServ.Service.Services
                 warrantyMonths);
         }
 
-        public async Task<Parts> UpdatePartAsync(
+        public async Task<Part> UpdatePartAsync(
             int partId,
             string partName,
             int quantity,

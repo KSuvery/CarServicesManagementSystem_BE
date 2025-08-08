@@ -33,7 +33,7 @@ namespace CarServ.API.Controllers
             return Ok(token);
         }
 
-        private string GenerateJSONWebToken(Users user)
+        private string GenerateJSONWebToken(User user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);

@@ -25,14 +25,14 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Payments>>> GetPayments()
+        public async Task<ActionResult<IEnumerable<Payment>>> GetPayments()
         {
             var payments = await _paymentService.GetAllPaymentsAsync();
             return Ok(payments);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Payments>> GetPaymentById(int id)
+        public async Task<ActionResult<Payment>> GetPaymentById(int id)
         {
             var payment = await _paymentService.GetPaymentByIdAsync(id);
             if (payment == null)
@@ -43,7 +43,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("order/{orderId}")]
-        public async Task<ActionResult<Payments>> GetPaymentByOrderId(int orderId)
+        public async Task<ActionResult<Payment>> GetPaymentByOrderId(int orderId)
         {
             var payment = await _paymentService.GetPaymentByOrderIdAsync(orderId);
             if (payment == null)
@@ -54,7 +54,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("customer/{customerId}")]
-        public async Task<ActionResult<IEnumerable<Payments>>> GetPaymentsByCustomerId(int customerId)
+        public async Task<ActionResult<IEnumerable<Payment>>> GetPaymentsByCustomerId(int customerId)
         {
             var payments = await _paymentService.GetPaymentsByCustomerIdAsync(customerId);
             if (payments == null || !payments.Any())
@@ -65,7 +65,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("appointment/{appointmentId}")]
-        public async Task<ActionResult<IEnumerable<Payments>>> GetPaymentsByAppointmentId(int appointmentId)
+        public async Task<ActionResult<IEnumerable<Payment>>> GetPaymentsByAppointmentId(int appointmentId)
         {
             var payments = await _paymentService.GetPaymentsByAppointmentIdAsync(appointmentId);
             if (payments == null || !payments.Any())
@@ -76,7 +76,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("method")]
-        public async Task<ActionResult<IEnumerable<Payments>>> GetPaymentsByMethod([FromQuery] string method)
+        public async Task<ActionResult<IEnumerable<Payment>>> GetPaymentsByMethod([FromQuery] string method)
         {
             var payments = await _paymentService.GetPaymentsByMethodAsync(method);
             if (payments == null || !payments.Any())
@@ -87,7 +87,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("sort/method")]
-        public async Task<ActionResult<IEnumerable<Payments>>> SortPaymentsByMethod()
+        public async Task<ActionResult<IEnumerable<Payment>>> SortPaymentsByMethod()
         {
             var payments = await _paymentService.SortPaymentsByMethodAsync();
             if (payments == null || !payments.Any())
@@ -98,7 +98,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("amount-range")]
-        public async Task<ActionResult<IEnumerable<Payments>>> GetPaymentsByAmountRange([FromQuery] decimal minAmount, [FromQuery] decimal maxAmount)
+        public async Task<ActionResult<IEnumerable<Payment>>> GetPaymentsByAmountRange([FromQuery] decimal minAmount, [FromQuery] decimal maxAmount)
         {
             var payments = await _paymentService.GetPaymentsByAmountRangeAsync(minAmount, maxAmount);
             if (payments == null || !payments.Any())
@@ -109,7 +109,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("paid-date")]
-        public async Task<ActionResult<IEnumerable<Payments>>> GetPaymentsByPaidDate([FromQuery] DateTime paidDate)
+        public async Task<ActionResult<IEnumerable<Payment>>> GetPaymentsByPaidDate([FromQuery] DateTime paidDate)
         {
             var payments = await _paymentService.GetPaymentsByPaidDateAsync(paidDate);
             if (payments == null || !payments.Any())
@@ -120,7 +120,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult<Payments>> CreatePayment([FromBody] Payments payment)
+        public async Task<ActionResult<Payment>> CreatePayment([FromBody] Payment payment)
         {
             if (payment == null)
             {

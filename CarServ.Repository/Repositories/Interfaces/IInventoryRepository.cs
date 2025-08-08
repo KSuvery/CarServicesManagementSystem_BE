@@ -9,18 +9,18 @@ using System.Threading.Tasks;
 
 namespace CarServ.Repository.Repositories.Interfaces
 {
-    public interface IInventoryRepository : IGenericRepository<Inventory>
+    public interface IInventoryRepository : IGenericRepository<Part>
     {
-        Task<List<Inventory>> GetAllInventoryItemsAsync();
-        Task<Inventory> GetInventoryItemByIdAsync(int partId);
-        Task<List<Inventory>> GetInventoryItemsByNameAsync(string partName);
-        Task<Inventory> CreateInventoryItemAsync(
+        Task<List<Part>> GetAllInventoryItemsAsync();
+        Task<Part> GetInventoryItemByIdAsync(int partId);
+        Task<List<Part>> GetInventoryItemsByNameAsync(string partName);
+        Task<Part> CreateInventoryItemAsync(
             string partName,
             int? quantity,
             decimal? unitPrice,
             DateOnly? expiryDate,
             int? warrantyMonths);
-        Task<Inventory> UpdateInventoryItemAsync(
+        Task<Part> UpdateInventoryItemAsync(
             int partId,
             string partName,
             int? quantity,
@@ -33,5 +33,6 @@ namespace CarServ.Repository.Repositories.Interfaces
         Task<RevenueReportDto> GenerateRevenueReport(DateTime startDate, DateTime endDate);
 
         Task TrackPartsUsed(PartUsageDto partsUsedDTO);
+        Task UpdateServiceProgress(UpdateServiceProgressDto dto);
     }
 }

@@ -13,28 +13,28 @@ namespace CarServ.Service.Services
 {
     public class PartServices : IPartServices
     {
-        private readonly IPartRepository _PartRepository;
+        private readonly IInventoryRepository _inventoryRepository;
         private readonly IAppointmentRepository _appointmentRepository;
 
-        public PartServices(IPartRepository PartRepository, IAppointmentRepository appointmentRepository)
+        public PartServices(IInventoryRepository inventoryRepository, IAppointmentRepository appointmentRepository)
         {
-            _PartRepository = PartRepository;
+            _inventoryRepository = inventoryRepository;
             _appointmentRepository = appointmentRepository;
         }
 
         public async Task<List<Part>> GetAllPartItemsAsync()
         {
-            return await _PartRepository.GetAllPartItemsAsync();
+            return await _inventoryRepository.GetAllInventoryItemsAsync();
         }
 
         public async Task<Part> GetPartItemByIdAsync(int partId)
         {
-            return await _PartRepository.GetPartItemByIdAsync(partId);
+            return await _inventoryRepository.GetInventoryItemByIdAsync(partId);
         }
 
         public async Task<List<Part>> GetPartItemsByNameAsync(string partName)
         {
-            return await _PartRepository.GetPartItemsByNameAsync(partName);
+            return await _inventoryRepository.GetInventoryItemsByNameAsync(partName);
         }
 
         public async Task<Part> CreatePartItemAsync(
@@ -44,7 +44,7 @@ namespace CarServ.Service.Services
             DateOnly? expiryDate,
             int? warrantyMonths)
         {
-            return await _PartRepository.CreatePartItemAsync(
+            return await _inventoryRepository.CreateInventoryItemAsync(
                 partName, quantity, unitPrice, expiryDate, warrantyMonths);
         }
 
@@ -56,13 +56,13 @@ namespace CarServ.Service.Services
             DateOnly? expiryDate,
             int? warrantyMonths)
         {
-            return await _PartRepository.UpdatePartItemAsync(
+            return await _inventoryRepository.UpdateInventoryItemAsync(
                 partId, partName, quantity, unitPrice, expiryDate, warrantyMonths);
         }
 
         public async Task<bool> RemovePartItemAsync(int partId)
         {
-            return await _PartRepository.RemovePartItemAsync(partId);
+            return await _inventoryRepository.RemoveInventoryItemAsync(partId);
         }
 
         //This is revenue report
@@ -73,18 +73,18 @@ namespace CarServ.Service.Services
             {
                 throw new ArgumentException("Start date must be before end date");
             }
-            return await _PartRepository.GenerateRevenueReport(startDate, endDate);
+            return await _inventoryRepository.GenerateRevenueReport(startDate, endDate);
         }
 
         public void TrackPartsUsed(PartUsageDto partsUsedDTO)
         {
             // You can add any additional business logic here if needed
-            _PartRepository.TrackPartsUsed(partsUsedDTO);
+            _inventoryRepository.TrackPartsUsed(partsUsedDTO);
         }
 
         public async Task UpdateServiceProgress(UpdateServiceProgressDto dto)
         {
-            await _PartRepository.UpdateServiceProgress(dto);
+            await _inventoryRepository.UpdateServiceProgress(dto);
         }
     }
 }

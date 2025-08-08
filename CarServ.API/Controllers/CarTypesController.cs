@@ -66,7 +66,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult<CarTypes>> CreateCarTypes(
+        public async Task<ActionResult<CarType>> CreateCarTypes(
             string typeName,
             string description)
         {
@@ -79,7 +79,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpPut("update")]
-        public async Task<ActionResult<CarTypes>> UpdateCarType(
+        public async Task<ActionResult<CarType>> UpdateCarType(
             int carTypeId,
             string typeName,
             string description)

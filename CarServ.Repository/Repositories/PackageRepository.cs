@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace CarServ.Repository.Repositories
 {
-    public class PackageRepository : GenericRepository<ServicePackages>, IPackageRepository
+    public class PackageRepository : GenericRepository<ServicePackage>, IPackageRepository
     {
         private readonly CarServicesManagementSystemContext _context;
         public PackageRepository(CarServicesManagementSystemContext context) : base(context)
@@ -58,7 +58,7 @@ namespace CarServ.Repository.Repositories
         }
 
 
-        public Task<PaginationResult<ServicePackages>> GetAllWithPaging(int pageNum, int pageSize)
+        public Task<PaginationResult<ServicePackage>> GetAllWithPaging(int pageNum, int pageSize)
         {
             throw new NotImplementedException();
         }

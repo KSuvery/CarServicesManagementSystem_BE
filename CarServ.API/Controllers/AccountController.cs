@@ -39,7 +39,7 @@ namespace CarServ.API.Controllers
 
         [HttpGet("{id}")]
         [Authorize(Roles = "1")]
-        public async Task<ActionResult<Users>> GetAccountById(int id)
+        public async Task<ActionResult<User>> GetAccountById(int id)
         {
             var acc = await _accService.GetAccountById(id);
             if (acc == null)
@@ -51,7 +51,7 @@ namespace CarServ.API.Controllers
 
         [HttpGet("{mail}")]
         [Authorize(Roles = "1")]
-        public async Task<ActionResult<Users>> GetAccountByMail(string mail)
+        public async Task<ActionResult<User>> GetAccountByMail(string mail)
         {
             var acc = await _accService.GetAccountByMail(mail);
             if (acc == null)
@@ -63,7 +63,7 @@ namespace CarServ.API.Controllers
 
         [HttpGet("{roleID}")]
         [Authorize(Roles = "1")]
-        public async Task<List<Users>> GetAccountByRole(int roleID)
+        public async Task<List<User>> GetAccountByRole(int roleID)
         {
             return await _accService.GetAccountByRole(roleID);
         }

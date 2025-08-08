@@ -9,12 +9,12 @@ namespace CarServ.Service.Services.Interfaces
 {
     public interface IAppointmentServices
     {
-        Task<List<Appointments>> GetAllAppointmentsAsync();
-        Task<Appointments> GetAppointmentByIdAsync(int appointmentId);
-        Task<List<Appointments>> GetAppointmentsByCustomerIdAsync(int customerId);
-        Task<List<Appointments>> GetAppointmentsByVehicleIdAsync(int vehicleId);
-        Task<Appointments> ScheduleAppointmentAsync(int customerId, int vehicleId, int packageId, DateTime appointmentDate, string status = "Pending", int? promotionId = null);
-        Task<Appointments> UpdateAppointmentAsync(
+        Task<List<Appointment>> GetAllAppointmentsAsync();
+        Task<Appointment> GetAppointmentByIdAsync(int appointmentId);
+        Task<List<Appointment>> GetAppointmentsByCustomerIdAsync(int customerId);
+        Task<List<Appointment>> GetAppointmentsByVehicleIdAsync(int vehicleId);
+        Task<Appointment> ScheduleAppointmentAsync(int customerId, int vehicleId, int packageId, DateTime appointmentDate, string status = "Pending", int? promotionId = null);
+        Task<Appointment> UpdateAppointmentAsync(
             int appointmentId,
             int customerId,
             int vehicleId,

@@ -18,27 +18,27 @@ namespace CarServ.Service.Services
             _orderRepository = orderRepository;
         }
 
-        public async Task<Orders> GetOrderByIdAsync(int orderId)
+        public async Task<Order> GetOrderByIdAsync(int orderId)
         {
             return await _orderRepository.GetOrderByIdAsync(orderId);
         }
 
-        public async Task<List<Orders>> GetOrdersByCustomerIdAsync(int customerId)
+        public async Task<List<Order>> GetOrdersByCustomerIdAsync(int customerId)
         {
             return await _orderRepository.GetOrdersByCustomerIdAsync(customerId);
         }
 
-        public async Task<List<Orders>> GetAllOrdersAsync()
+        public async Task<List<Order>> GetAllOrdersAsync()
         {
             return await _orderRepository.GetAllOrdersAsync();
         }
 
-        public async Task<Orders> CreateOrderAsync(int appointmentId, int? promotionId, DateTime createdAt)
+        public async Task<Order> CreateOrderAsync(int appointmentId, int? promotionId, DateTime createdAt)
         {
             return await _orderRepository.CreateOrderAsync(appointmentId, promotionId, createdAt);
         }
 
-        public async Task<Orders> UpdateOrderAsync(int orderId, int appointmentId, int? promotionId, DateTime createdAt)
+        public async Task<Order> UpdateOrderAsync(int orderId, int appointmentId, int? promotionId, DateTime createdAt)
         {
             return await _orderRepository.UpdateOrderAsync(orderId, appointmentId, promotionId, createdAt);
         }

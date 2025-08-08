@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace CarServ.Repository.Repositories.Interfaces
 {
-    public interface IOrderRepository : IGenericRepository<Orders>
+    public interface IOrderRepository : IGenericRepository<Order>
     {
-        Task<Orders> GetOrderByIdAsync(int orderId);
-        Task<List<Orders>> GetOrdersByCustomerIdAsync(int customerId);
-        Task<List<Orders>> GetAllOrdersAsync();
-        Task<Orders> CreateOrderAsync(int appointmentId, int? promotionId, DateTime createdAt);
-        Task<Orders> UpdateOrderAsync(int orderId, int appointmentId, int? promotionId, DateTime createdAt);
+        Task<Order> GetOrderByIdAsync(int orderId);
+        Task<List<Order>> GetOrdersByCustomerIdAsync(int customerId);
+        Task<List<Order>> GetAllOrdersAsync();
+        Task<Order> CreateOrderAsync(int appointmentId, int? promotionId, DateTime createdAt);
+        Task<Order> UpdateOrderAsync(int orderId, int appointmentId, int? promotionId, DateTime createdAt);
     }
 }

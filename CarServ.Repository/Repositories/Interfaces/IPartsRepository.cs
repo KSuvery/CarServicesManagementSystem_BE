@@ -7,21 +7,21 @@ using System.Threading.Tasks;
 
 namespace CarServ.Repository.Repositories.Interfaces
 {
-    public interface IPartsRepository : IGenericRepository<Parts>
+    public interface IPartsRepository : IGenericRepository<Part>
     {
-        Task<List<Parts>> GetAllPartsAsync();
-        Task<Parts> GetPartByIdAsync(int partId);
-        Task<List<Parts>> GetPartsByPartName(string partName);
-        Task<List<Parts>> GetPartsByUnitPriceRange(decimal minPrice, decimal maxPrice);
-        Task<List<Parts>> GetPartsByExpiryDateRange(DateOnly startDate, DateOnly endDate);
-        Task<List<Parts>> GetPartsByWarrantyMonthsRange(int minMonths, int maxMonths);
-        Task<Parts> AddPartAsync(
+        Task<List<Part>> GetAllPartsAsync();
+        Task<Part> GetPartByIdAsync(int partId);
+        Task<List<Part>> GetPartsByPartName(string partName);
+        Task<List<Part>> GetPartsByUnitPriceRange(decimal minPrice, decimal maxPrice);
+        Task<List<Part>> GetPartsByExpiryDateRange(DateOnly startDate, DateOnly endDate);
+        Task<List<Part>> GetPartsByWarrantyMonthsRange(int minMonths, int maxMonths);
+        Task<Part> AddPartAsync(
             string partName,
             int quantity,
             decimal unitPrice,
             DateOnly expiryDate,
             int warrantyMonths);
-        Task<Parts> UpdatePartAsync(
+        Task<Part> UpdatePartAsync(
             int partId,
             string partName,
             int quantity,

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace CarServ.Domain.Entities;
 
-public partial class ServiceParts
+public partial class ServicePart
 {
     public int ServiceId { get; set; }
 
@@ -13,7 +13,7 @@ public partial class ServiceParts
 
     public int QuantityRequired { get; set; }
 
-    public virtual Parts Part { get; set; }
+    public virtual Part Part { get; set; }
 
-    public virtual Services Service { get; set; }
+    public virtual Service Service { get; set; }
 }

@@ -22,14 +22,14 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<WarrantyClaims>>> GetAllWarrantyClaims()
+        public async Task<ActionResult<IEnumerable<WarrantyClaim>>> GetAllWarrantyClaims()
         {
             var warrantyClaims = await _warrantyClaimService.GetAllWarrantyClaimsAsync();
             return Ok(warrantyClaims);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<WarrantyClaims>> GetWarrantyClaimById(int id)
+        public async Task<ActionResult<WarrantyClaim>> GetWarrantyClaimById(int id)
         {
             var warrantyClaim = await _warrantyClaimService.GetWarrantyClaimByIdAsync(id);
             if (warrantyClaim == null)
@@ -40,7 +40,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("supplier/{supplierId}")]
-        public async Task<ActionResult<IEnumerable<WarrantyClaims>>> GetWarrantyClaimsBySupplierId(int supplierId)
+        public async Task<ActionResult<IEnumerable<WarrantyClaim>>> GetWarrantyClaimsBySupplierId(int supplierId)
         {
             var warrantyClaims = await _warrantyClaimService.GetWarrantyClaimsBySupplierIdAsync(supplierId);
             if (warrantyClaims == null || !warrantyClaims.Any())
@@ -51,7 +51,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("status/{status}")]
-        public async Task<ActionResult<IEnumerable<WarrantyClaims>>> GetWarrantyClaimsByStatus(string status)
+        public async Task<ActionResult<IEnumerable<WarrantyClaim>>> GetWarrantyClaimsByStatus(string status)
         {
             var warrantyClaims = await _warrantyClaimService.GetWarrantyClaimsByStatusAsync(status);
             if (warrantyClaims == null || !warrantyClaims.Any())
@@ -62,7 +62,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("claimDate/{claimDate}")]
-        public async Task<ActionResult<IEnumerable<WarrantyClaims>>> GetWarrantyClaimsByClaimDate(DateOnly claimDate)
+        public async Task<ActionResult<IEnumerable<WarrantyClaim>>> GetWarrantyClaimsByClaimDate(DateOnly claimDate)
         {
             var warrantyClaims = await _warrantyClaimService.GetWarrantyClaimsByClaimDateAsync(claimDate);
             if (warrantyClaims == null || !warrantyClaims.Any())
@@ -73,7 +73,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("note/{note}")]
-        public async Task<ActionResult<IEnumerable<WarrantyClaims>>> GetWarrantyClaimsByNote(string note)
+        public async Task<ActionResult<IEnumerable<WarrantyClaim>>> GetWarrantyClaimsByNote(string note)
         {
             var warrantyClaims = await _warrantyClaimService.GetWarrantyClaimsByNoteAsync(note);
             if (warrantyClaims == null || !warrantyClaims.Any())
@@ -84,7 +84,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult<WarrantyClaims>> CreateWarrantyClaim(
+        public async Task<ActionResult<WarrantyClaim>> CreateWarrantyClaim(
             int partId,
             int supplierId,
             DateOnly claimDate,
@@ -100,7 +100,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpPut("update/{claimId}")]
-        public async Task<ActionResult<WarrantyClaims>> UpdateWarrantyClaim(
+        public async Task<ActionResult<WarrantyClaim>> UpdateWarrantyClaim(
             int claimId,
             int partId,
             int supplierId,
@@ -117,7 +117,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpDelete("deactivate/{claimId}")]
-        public async Task<ActionResult<WarrantyClaims>> DeactivateWarrantyClaim(int claimId)
+        public async Task<ActionResult<WarrantyClaim>> DeactivateWarrantyClaim(int claimId)
         {
             var warrantyClaim = await _warrantyClaimService.DeactivateWarrantyClaimAsync(claimId);
             if (warrantyClaim == null)

@@ -26,14 +26,14 @@ namespace CarServ.API.Controllers
         // GET: api/Appointment
         [HttpGet]
         [Authorize(Roles = "1")]
-        public async Task<ActionResult<IEnumerable<Appointments>>> GetAppointments()
+        public async Task<ActionResult<IEnumerable<Appointment>>> GetAppointments()
         {
             return await _appointmentServices.GetAllAppointmentsAsync();
         }
 
         [HttpGet("{id}")]
         [Authorize(Roles = "1")]
-        public async Task<ActionResult<Appointments>> GetAppointmentById(int id)
+        public async Task<ActionResult<Appointment>> GetAppointmentById(int id)
         {
             var appointment = await _appointmentServices.GetAppointmentByIdAsync(id);
             if (appointment == null)
@@ -45,7 +45,7 @@ namespace CarServ.API.Controllers
 
         [HttpGet("GetByCustomerId/{customerId}")]
         [Authorize(Roles = "1")]
-        public async Task<ActionResult<IEnumerable<Appointments>>> GetAppointmentsByCustomerId(int customerId)
+        public async Task<ActionResult<IEnumerable<Appointment>>> GetAppointmentsByCustomerId(int customerId)
         {
             var appointments = await _appointmentServices.GetAppointmentsByCustomerIdAsync(customerId);
             if (appointments == null || !appointments.Any())
@@ -57,7 +57,7 @@ namespace CarServ.API.Controllers
 
         [HttpGet("GetByVehicleId/{vehicleId}")]
         [Authorize(Roles = "1")]
-        public async Task<ActionResult<IEnumerable<Appointments>>> GetAppointmentsByVehicleId(int vehicleId)
+        public async Task<ActionResult<IEnumerable<Appointment>>> GetAppointmentsByVehicleId(int vehicleId)
         {
             var appointments = await _appointmentServices.GetAppointmentsByVehicleIdAsync(vehicleId);
             if (appointments == null || !appointments.Any())
@@ -69,7 +69,7 @@ namespace CarServ.API.Controllers
 
         [HttpPost("Schedule")]
         /*[Authorize(Roles = "1,2")]*/
-        public async Task<ActionResult<Appointments>> ScheduleAppointment(
+        public async Task<ActionResult<Appointment>> ScheduleAppointment(
             int customerId,
             int vehicleId,
             int packageId,
@@ -95,7 +95,7 @@ namespace CarServ.API.Controllers
 
         [HttpPut("{appointmentId}")]
         /*[Authorize(Roles = "1,2")]*/
-        public async Task<ActionResult<Appointments>> UpdateAppointment(
+        public async Task<ActionResult<Appointment>> UpdateAppointment(
             int appointmentId, int customerId, int vehicleId, int packageId, DateTime appointmentDate, string status, int? promotionId)
         {
             if (!await AppointmentsExists(appointmentId))

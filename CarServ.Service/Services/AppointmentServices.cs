@@ -18,27 +18,27 @@ namespace CarServ.Service.Services
             _appointmentRepository = appointmentRepository;
         }
 
-        public async Task<List<Appointments>> GetAllAppointmentsAsync()
+        public async Task<List<Appointment>> GetAllAppointmentsAsync()
         {
             return await _appointmentRepository.GetAllAppointmentsAsync();
         }
 
-        public async Task<Appointments> GetAppointmentByIdAsync(int appointmentId)
+        public async Task<Appointment> GetAppointmentByIdAsync(int appointmentId)
         {
             return await _appointmentRepository.GetAppointmentByIdAsync(appointmentId);
         }
 
-        public async Task<List<Appointments>> GetAppointmentsByCustomerIdAsync(int customerId)
+        public async Task<List<Appointment>> GetAppointmentsByCustomerIdAsync(int customerId)
         {
             return await _appointmentRepository.GetAppointmentsByCustomerIdAsync(customerId);
         }
 
-        public async Task<List<Appointments>> GetAppointmentsByVehicleIdAsync(int vehicleId)
+        public async Task<List<Appointment>> GetAppointmentsByVehicleIdAsync(int vehicleId)
         {
             return await _appointmentRepository.GetAppointmentsByVehicleIdAsync(vehicleId);
         }
 
-        public async Task<Appointments> ScheduleAppointmentAsync(
+        public async Task<Appointment> ScheduleAppointmentAsync(
             int customerId,
             int vehicleId,
             int packageId,
@@ -55,7 +55,7 @@ namespace CarServ.Service.Services
                 promotionId);
         }
 
-        public async Task<Appointments> UpdateAppointmentAsync(
+        public async Task<Appointment> UpdateAppointmentAsync(
             int appointmentId,
             int customerId,
             int vehicleId,

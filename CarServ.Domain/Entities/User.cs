@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace CarServ.Domain.Entities;
 
-public partial class Users
+public partial class User
 {
     public int UserId { get; set; }
 
@@ -21,13 +21,13 @@ public partial class Users
 
     public DateTime? CreatedAt { get; set; }
 
-    public virtual Customers Customers { get; set; }
+    public virtual Customer Customer { get; set; }
 
-    public virtual InventoryManagers InventoryManagers { get; set; }
+    public virtual InventoryManager InventoryManager { get; set; }
 
-    public virtual ICollection<Notifications> Notifications { get; set; } = new List<Notifications>();
+    public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
 
-    public virtual Roles Role { get; set; }
+    public virtual Role Role { get; set; }
 
     public virtual ServiceStaff ServiceStaff { get; set; }
 }

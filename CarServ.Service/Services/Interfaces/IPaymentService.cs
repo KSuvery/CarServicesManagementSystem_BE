@@ -9,15 +9,15 @@ namespace CarServ.Service.Services.Interfaces
 {
     public interface IPaymentService
     {
-        Task<Payments> GetPaymentByIdAsync(int paymentId);
-        Task<Payments> GetPaymentByOrderIdAsync(int orderId);
-        Task<List<Payments>> GetPaymentsByAppointmentIdAsync(int appointmentId);
-        Task<List<Payments>> GetPaymentsByCustomerIdAsync(int customerId);
-        Task<List<Payments>> GetAllPaymentsAsync();
-        Task<List<Payments>> GetPaymentsByMethodAsync(string method);
-        Task<List<Payments>> SortPaymentsByMethodAsync();
-        Task<List<Payments>> GetPaymentsByAmountRangeAsync(decimal minAmount, decimal maxAmount);
-        Task<List<Payments>> GetPaymentsByPaidDateAsync(DateTime paidDate);
-        Task<Payments> CreatePayment(Payments payment);
+        Task<Payment> GetPaymentByIdAsync(int paymentId);
+        Task<Payment> GetPaymentByOrderIdAsync(int orderId);
+        Task<List<Payment>> GetPaymentsByAppointmentIdAsync(int appointmentId);
+        Task<List<Payment>> GetPaymentsByCustomerIdAsync(int customerId);
+        Task<List<Payment>> GetAllPaymentsAsync();
+        Task<List<Payment>> GetPaymentsByMethodAsync(string method);
+        Task<List<Payment>> SortPaymentsByMethodAsync();
+        Task<List<Payment>> GetPaymentsByAmountRangeAsync(decimal minAmount, decimal maxAmount);
+        Task<List<Payment>> GetPaymentsByPaidDateAsync(DateTime paidDate);
+        Task<Payment> CreatePayment(Payment payment);
     }
 }

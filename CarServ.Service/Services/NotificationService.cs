@@ -18,7 +18,7 @@ namespace CarServ.Service.Services
             _notificationRepository = notificationRepository;
         }
 
-        public async Task<Notifications> CreateNotificationAsync(
+        public async Task<Notification> CreateNotificationAsync(
             int userId,
             string title,
             string message,
@@ -34,17 +34,17 @@ namespace CarServ.Service.Services
             return await _notificationRepository.DeleteNotificationAsync(notificationId);
         }
 
-        public async Task<Notifications> GetNotificationByIdAsync(int notificationId)
+        public async Task<Notification> GetNotificationByIdAsync(int notificationId)
         {
             return await _notificationRepository.GetNotificationByIdAsync(notificationId);
         }
 
-        public async Task<List<Notifications>> GetNotificationsByUserIdAsync(int userId)
+        public async Task<List<Notification>> GetNotificationsByUserIdAsync(int userId)
         {
             return await _notificationRepository.GetNotificationsByUserIdAsync(userId);
         }
 
-        public async Task<Notifications> MarkNotificationAsReadAsync(int notificationId, bool isRead)
+        public async Task<Notification> MarkNotificationAsReadAsync(int notificationId, bool isRead)
         {
             return await _notificationRepository.MarkNotificationAsReadAsync(notificationId, isRead);
         }

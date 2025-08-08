@@ -9,13 +9,13 @@ namespace CarServ.Service.Services.Interfaces
 {
     public interface IVehicleService
     {
-        Task<List<Vehicles>> GetAllVehiclesAsync();
-        Task<Vehicles> GetVehicleByIdAsync(int id);
-        Task<List<Vehicles>> GetVehiclesByCustomerIdAsync(int customerId);
-        Task<List<Vehicles>> GetVehiclesByMakeAsync(string make);
-        Task<Vehicles> GetVehicleByLicensePlateAsync(string licensePlate);
-        Task<List<Vehicles>> GetVehiclesByModelAsync(string model);
-        Task<List<Vehicles>> GetVehiclesByYearRangeAsync(int minYear, int maxYear);
-        Task<List<Vehicles>> GetVehiclesByCarTypeIdAsync(int carTypeId);
+        Task<List<Vehicle>> GetAllVehiclesAsync();
+        Task<Vehicle> GetVehicleByIdAsync(int id);
+        Task<List<Vehicle>> GetVehiclesByCustomerIdAsync(int customerId);
+        Task<List<Vehicle>> GetVehiclesByMakeAsync(string make);
+        Task<Vehicle> GetVehicleByLicensePlateAsync(string licensePlate);
+        Task<List<Vehicle>> GetVehiclesByModelAsync(string model);
+        Task<List<Vehicle>> GetVehiclesByYearRangeAsync(int minYear, int maxYear);
+        Task<List<Vehicle>> GetVehiclesByCarTypeIdAsync(int carTypeId);
     }
 }

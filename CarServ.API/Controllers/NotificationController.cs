@@ -22,7 +22,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Notifications>> GetNotificationById(int id)
+        public async Task<ActionResult<Notification>> GetNotificationById(int id)
         {
             var notification = await _notificationService.GetNotificationByIdAsync(id);
             if (notification == null)
@@ -33,7 +33,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("user/{userId}")]
-        public async Task<ActionResult<List<Notifications>>> GetNotificationsByUserId(int userId)
+        public async Task<ActionResult<List<Notification>>> GetNotificationsByUserId(int userId)
         {
             var notifications = await _notificationService.GetNotificationsByUserIdAsync(userId);
             if (notifications == null || !notifications.Any())
@@ -59,7 +59,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpPost("Create")]
-        public async Task<ActionResult<Notifications>> CreateNotification(
+        public async Task<ActionResult<Notification>> CreateNotification(
             int userId,
             string title,
             string message,

@@ -16,14 +16,14 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Parts>>> GetAllParts()
+        public async Task<ActionResult<IEnumerable<Part>>> GetAllParts()
         {
             var parts = await _partsService.GetAllPartsAsync();
             return Ok(parts);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Parts>> GetPartById(int id)
+        public async Task<ActionResult<Part>> GetPartById(int id)
         {
             var part = await _partsService.GetPartByIdAsync(id);
             if (part == null)
@@ -34,7 +34,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("search")]
-        public async Task<ActionResult<IEnumerable<Parts>>> SearchParts([FromQuery] string query)
+        public async Task<ActionResult<IEnumerable<Part>>> SearchParts([FromQuery] string query)
         {
             if (string.IsNullOrWhiteSpace(query))
             {
@@ -45,7 +45,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("price")]
-        public async Task<ActionResult<IEnumerable<Parts>>> GetPartsByPriceRange([FromQuery] decimal minPrice, [FromQuery] decimal maxPrice)
+        public async Task<ActionResult<IEnumerable<Part>>> GetPartsByPriceRange([FromQuery] decimal minPrice, [FromQuery] decimal maxPrice)
         {
             if (minPrice < 0 || maxPrice < 0 || minPrice > maxPrice)
             {
@@ -56,7 +56,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("expiryDate")]
-        public async Task<ActionResult<IEnumerable<Parts>>> GetPartsByExpiryDateRange([FromQuery] DateOnly startDate, DateOnly endDate)
+        public async Task<ActionResult<IEnumerable<Part>>> GetPartsByExpiryDateRange([FromQuery] DateOnly startDate, DateOnly endDate)
         {
             if (startDate > endDate)
             {
@@ -67,7 +67,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("warrantyMonths")]
-        public async Task<ActionResult<IEnumerable<Parts>>> GetPartsByWarrantyMonths([FromQuery] int minMonths, [FromQuery] int maxMonths)
+        public async Task<ActionResult<IEnumerable<Part>>> GetPartsByWarrantyMonths([FromQuery] int minMonths, [FromQuery] int maxMonths)
         {
             if (minMonths < 0 || maxMonths < 0 || minMonths > maxMonths)
             {
@@ -78,7 +78,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult<Parts>> CreatePart(
+        public async Task<ActionResult<Part>> CreatePart(
             string partName,
             int quantity,
             decimal unitPrice,
@@ -96,7 +96,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpPut("update")]
-        public async Task<ActionResult<Parts>> UpdatePart(
+        public async Task<ActionResult<Part>> UpdatePart(
             int partId,
             string partName,
             int quantity,

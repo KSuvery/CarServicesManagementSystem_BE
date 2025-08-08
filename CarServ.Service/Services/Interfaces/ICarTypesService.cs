@@ -9,10 +9,10 @@ namespace CarServ.Service.Services.Interfaces
 {
     public interface ICarTypesService
     {
-        Task<List<CarTypes>> GetAllCarTypesAsync();
-        Task<CarTypes> GetCarTypeByIdAsync(int carTypeId);
-        Task<List<CarTypes>> GetCarTypesByNameAsync(string typeName);
-        Task<CarTypes> AddCarTypeAsync(string typeName, string description);
-        Task<CarTypes> UpdateCarTypeAsync(int carTypeId, string typeName, string description);
+        Task<List<CarType>> GetAllCarTypesAsync();
+        Task<CarType> GetCarTypeByIdAsync(int carTypeId);
+        Task<List<CarType>> GetCarTypesByNameAsync(string typeName);
+        Task<CarType> AddCarTypeAsync(string typeName, string description);
+        Task<CarType> UpdateCarTypeAsync(int carTypeId, string typeName, string description);
     }
 }

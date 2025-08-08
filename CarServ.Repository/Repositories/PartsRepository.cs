@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CarServ.Repository.Repositories
 {
-    public class PartsRepository : GenericRepository<Parts>, IPartsRepository
+    public class PartsRepository : GenericRepository<Part>, IPartsRepository
     {
         private readonly CarServicesManagementSystemContext _context;
         public PartsRepository(CarServicesManagementSystemContext context) : base(context)
@@ -18,17 +18,17 @@ namespace CarServ.Repository.Repositories
             _context = context;
         }
         
-        public async Task<List<Parts>> GetAllPartsAsync()
+        public async Task<List<Part>> GetAllPartsAsync()
         {
             return await _context.Parts.ToListAsync();
         }
 
-        public async Task<Parts> GetPartByIdAsync(int partId)
+        public async Task<Part> GetPartByIdAsync(int partId)
         {
             return await _context.Parts.FindAsync(partId);
         }
 
-        public async Task<List<Parts>> GetPartsByPartName(string partName)
+        public async Task<List<Part>> GetPartsByPartName(string partName)
         {
             var parts = await _context.Parts
                 .Where(p => p.PartName.ToLower().Contains(partName.ToLower()))
@@ -37,35 +37,35 @@ namespace CarServ.Repository.Repositories
             return parts;
         }
 
-        public async Task<List<Parts>> GetPartsByUnitPriceRange(decimal minPrice, decimal maxPrice)
+        public async Task<List<Part>> GetPartsByUnitPriceRange(decimal minPrice, decimal maxPrice)
         {
             return await _context.Parts
                 .Where(p => p.UnitPrice >= minPrice && p.UnitPrice <= maxPrice)
                 .ToListAsync();
         }
 
-        public async Task<List<Parts>> GetPartsByExpiryDateRange(DateOnly startDate, DateOnly endDate)
+        public async Task<List<Part>> GetPartsByExpiryDateRange(DateOnly startDate, DateOnly endDate)
         {
             return await _context.Parts
                 .Where(p => p.ExpiryDate >= startDate && p.ExpiryDate <= endDate)
                 .ToListAsync();
         }
 
-        public async Task<List<Parts>> GetPartsByWarrantyMonthsRange(int minMonths, int maxMonths)
+        public async Task<List<Part>> GetPartsByWarrantyMonthsRange(int minMonths, int maxMonths)
         {
             return await _context.Parts
                 .Where(p => p.WarrantyMonths >= minMonths && p.WarrantyMonths <= maxMonths)
                 .ToListAsync();
         }
 
-        public async Task<Parts> AddPartAsync(
+        public async Task<Part> AddPartAsync(
             string partName,
             int quantity,
             decimal unitPrice,
             DateOnly expiryDate,
             int warrantyMonths)
         {
-            var newPart = new Parts
+            var newPart = new Part
             {
                 PartName = partName,
                 Quantity = quantity,
@@ -78,7 +78,7 @@ namespace CarServ.Repository.Repositories
             return newPart;
         }
 
-        public async Task<Parts> UpdatePartAsync(
+        public async Task<Part> UpdatePartAsync(
             int partId,
             string partName,
             int quantity,
