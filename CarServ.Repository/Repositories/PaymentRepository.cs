@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CarServ.Repository.Repositories
 {
-    public class PaymentRepository : GenericRepository<Payments>, IPaymentRepository
+    public class PaymentRepository : GenericRepository<Payment>, IPaymentRepository
     {
         private readonly CarServicesManagementSystemContext _context;
 
@@ -19,63 +19,63 @@ namespace CarServ.Repository.Repositories
             _context = context;
         }
         
-        public async Task<Payments> GetPaymentByIdAsync(int paymentId)
+        public async Task<Payment> GetPaymentByIdAsync(int paymentId)
         {
-            return await _context.Payments
+            return await _context.Payment
                 .FirstOrDefaultAsync(p => p.PaymentId == paymentId);
         }
 
-        public async Task<List<Payments>> GetPaymentsByAppointmentIdAsync(int appointmentId)
+        public async Task<List<Payment>> GetPaymentByAppointmentIdAsync(int appointmentId)
         {
-            return await _context.Payments
+            return await _context.Payment
                 .Where(p => p.AppointmentId == appointmentId)
                 .ToListAsync();
         }
 
-        public async Task<List<Payments>> GetPaymentsByCustomerIdAsync(int customerId)
+        public async Task<List<Payment>> GetPaymentByCustomerIdAsync(int customerId)
         {
-            return await _context.Payments
+            return await _context.Payment
                 .Where(p => p.Appointment.CustomerId == customerId)
                 .ToListAsync();
         }
 
-        public async Task<List<Payments>> GetAllPaymentsAsync()
+        public async Task<List<Payment>> GetAllPaymentAsync()
         {
-            return await _context.Payments.ToListAsync();
+            return await _context.Payment.ToListAsync();
         }
 
-        public async Task<List<Payments>> GetPaymentsByMethodAsync(string method)
+        public async Task<List<Payment>> GetPaymentByMethodAsync(string method)
         {
-            return await _context.Payments
+            return await _context.Payment
                 .Where(p => p.PaymentMethod != null && 
                     p.PaymentMethod.ToLower().Contains(method.ToLower()))
                 .ToListAsync();
         }
 
-        public async Task<List<Payments>> SortPaymentsByMethodAsync()
+        public async Task<List<Payment>> SortPaymentByMethodAsync()
         {
-            return await _context.Payments
+            return await _context.Payment
                 .OrderBy(p => p.PaymentMethod)
                 .ToListAsync();
         }
 
-        public async Task<List<Payments>> GetPaymentsByAmountRangeAsync(decimal minAmount, decimal maxAmount)
+        public async Task<List<Payment>> GetPaymentByAmountRangeAsync(decimal minAmount, decimal maxAmount)
         {
-            return await _context.Payments
+            return await _context.Payment
                 .Where(p => p.Amount >= minAmount && p.Amount <= maxAmount)
                 .ToListAsync();
         }
 
-        public async Task<List<Payments>> GetPaymentsByPaidDateAsync(DateTime paidDate)
+        public async Task<List<Payment>> GetPaymentByPaidDateAsync(DateTime paidDate)
         {
-            return await _context.Payments
+            return await _context.Payment
                 .Where(p => p.PaidAt == paidDate.Date)
                 .ToListAsync();
         }
 
-        public async Task<Payments> CreatePayment(Payments payment)
+        public async Task<Payment> CreatePayment(Payment payment)
         {
-            _context.Payments.Add(payment);
+            _context.Payment.Add(payment);
             await _context.SaveChangesAsync();
             return payment;
         }

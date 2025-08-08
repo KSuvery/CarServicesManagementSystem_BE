@@ -12,43 +12,43 @@ using System.Threading.Tasks;
 
 namespace CarServ.Repository.Repositories
 {
-    public class InventoryRepository : GenericRepository<Inventory>, IInventoryRepository
+    public class PartRepository : GenericRepository<Part>, IPartRepository
     {
         private readonly CarServicesManagementSystemContext _context;        
 
 
-        public InventoryRepository(CarServicesManagementSystemContext context) : base(context)
+        public PartRepository(CarServicesManagementSystemContext context) : base(context)
         {
             _context = context;
             
         }
 
-        public async Task<List<Inventory>> GetAllInventoryItemsAsync()
+        public async Task<List<Part>> GetAllPartItemsAsync()
         {
-            return await _context.Inventory.ToListAsync();
+            return await _context.Parts.ToListAsync();
         }
 
-        public async Task<Inventory> GetInventoryItemByIdAsync(int partId)
+        public async Task<Part> GetPartItemByIdAsync(int partId)
         {
-            return await _context.Inventory
+            return await _context.Parts
                 .FirstOrDefaultAsync(i => i.PartId == partId);
         }
 
-        public async Task<List<Inventory>> GetInventoryItemsByNameAsync(string partName)
+        public async Task<List<Part>> GetPartItemsByNameAsync(string partName)
         {
-            return await _context.Inventory
+            return await _context.Parts
                 .Where(i => i.PartName.Contains(partName))
                 .ToListAsync();
         }
 
-        public async Task<Inventory> CreateInventoryItemAsync(
+        public async Task<Part> CreatePartItemAsync(
             string partName,
             int? quantity,
             decimal? unitPrice,
             DateOnly? expiryDate,
             int? warrantyMonths)
         {
-            var inventoryItem = new Inventory
+            var PartItem = new Part
             {
                 PartName = partName,
                 Quantity = quantity,
@@ -56,12 +56,12 @@ namespace CarServ.Repository.Repositories
                 ExpiryDate = expiryDate,
                 WarrantyMonths = warrantyMonths
             };
-            _context.Inventory.Add(inventoryItem);
+            _context.Parts.Add(PartItem);
             await _context.SaveChangesAsync();
-            return inventoryItem;
+            return PartItem;
         }
 
-        public async Task<Inventory> UpdateInventoryItemAsync(
+        public async Task<Part> UpdatePartItemAsync(
             int partId,
             string partName,
             int? quantity,
@@ -69,29 +69,29 @@ namespace CarServ.Repository.Repositories
             DateOnly? expiryDate,
             int? warrantyMonths)
         {
-            var inventoryItem = await GetInventoryItemByIdAsync(partId);
-            if (inventoryItem == null)
+            var PartItem = await GetPartItemByIdAsync(partId);
+            if (PartItem == null)
             {
                 return null; // or throw an exception
             }
-            inventoryItem.PartName = partName;
-            inventoryItem.Quantity = quantity;
-            inventoryItem.UnitPrice = unitPrice;
-            inventoryItem.ExpiryDate = expiryDate;
-            inventoryItem.WarrantyMonths = warrantyMonths;
-            _context.Inventory.Update(inventoryItem);
+            PartItem.PartName = partName;
+            PartItem.Quantity = quantity;
+            PartItem.UnitPrice = unitPrice;
+            PartItem.ExpiryDate = expiryDate;
+            PartItem.WarrantyMonths = warrantyMonths;
+            _context.Parts.Update(PartItem);
             await _context.SaveChangesAsync();
-            return inventoryItem;
+            return PartItem;
         }
 
-        public async Task<bool> RemoveInventoryItemAsync(int partId)
+        public async Task<bool> RemovePartItemAsync(int partId)
         {
-            var inventoryItem = await GetInventoryItemByIdAsync(partId);
-            if (inventoryItem == null)
+            var PartItem = await GetPartItemByIdAsync(partId);
+            if (PartItem == null)
             {
                 return false; // or throw an exception
             }
-            _context.Inventory.Remove(inventoryItem);
+            _context.Parts.Remove(PartItem);
             await _context.SaveChangesAsync();
             return true;
         }
@@ -104,13 +104,13 @@ namespace CarServ.Repository.Repositories
                 EndDate = endDate
             };
 
-            // Calculate total payments in date range
-            report.TotalRevenue = (decimal)await _context.Payments
+            // Calculate total Payment in date range
+            report.TotalRevenue = (decimal)await _context.Payment
                 .Where(p => p.PaidAt >= startDate && p.PaidAt <= endDate)
                 .SumAsync(p => p.Amount);
 
             // Calculate service revenue (from packages)
-            report.ServiceRevenue = (decimal)await _context.Payments
+            report.ServiceRevenue = (decimal)await _context.Payment
                 .Where(p => p.PaidAt >= startDate && p.PaidAt <= endDate)
                 .Join(_context.Appointments,
                     payment => payment.AppointmentId,
@@ -123,16 +123,16 @@ namespace CarServ.Repository.Repositories
                 .SumAsync();
 
             // Calculate parts revenue
-            report.PartsRevenue = (decimal)await _context.PartsUsed
+            /*report.PartsRevenue = (decimal)await _context.PartPrices
                 .Where(pu => _context.ServiceHistory
                     .Any(sh => sh.ServiceId == pu.ServiceId &&
                               sh.ServiceDate >= startDate &&
                               sh.ServiceDate <= endDate))
-                .Join(_context.Inventory,
+                .Join(_context.Part,
                     part => part.PartId,
-                    inventory => inventory.PartId,
-                    (part, inventory) => part.QuantityUsed * inventory.UnitPrice)
-                .SumAsync();
+                    Part => Part.PartId,
+                    (part, Part) => part.QuantityUsed * Part.UnitPrice)
+                .SumAsync();*/
 
             // Revenue by service package
             report.RevenueByPackages = await _context.ServicePackages
@@ -148,7 +148,7 @@ namespace CarServ.Repository.Repositories
                         .Where(a => a.PackageId == sp.PackageId &&
                                   a.AppointmentDate >= startDate &&
                                   a.AppointmentDate <= endDate)
-                        .Join(_context.Payments,
+                        .Join(_context.Payment,
                             appointment => appointment.AppointmentId,
                             payment => payment.AppointmentId,
                             (appointment, payment) => payment.Amount)
@@ -159,10 +159,10 @@ namespace CarServ.Repository.Repositories
 
             // Revenue by vehicle type
             report.RevenueByVehicleTypes = await _context.Vehicles
-                .GroupBy(v => v.Type)
+                .GroupBy(v => v.CarType)
                 .Select(g => new RevenueByVehicleType
                 {
-                    VehicleType = g.Key,
+                    VehicleType = g.Key.TypeName,
                     VehicleCount = g.Count(),
                     Revenue = (decimal)g.Join(_context.Appointments,
                             vehicle => vehicle.VehicleId,
@@ -170,7 +170,7 @@ namespace CarServ.Repository.Repositories
                             (vehicle, appointment) => appointment)
                         .Where(a => a.AppointmentDate >= startDate &&
                                   a.AppointmentDate <= endDate)
-                        .Join(_context.Payments,
+                        .Join(_context.Payment,
                             appointment => appointment.AppointmentId,
                             payment => payment.AppointmentId,
                             (appointment, payment) => payment.Amount)
@@ -185,7 +185,7 @@ namespace CarServ.Repository.Repositories
 
         public async Task TrackPartsUsed(PartUsageDto partsUsedDTO)
         {
-            var partsUsed = new PartsUsed
+            /*var partsUsed = new PartsUsed
             {
                 ServiceId = partsUsedDTO.ServiceID,
                 PartId = partsUsedDTO.PartID,
@@ -194,35 +194,35 @@ namespace CarServ.Repository.Repositories
 
             _context.PartsUsed.Add(partsUsed);
 
-            // Update the inventory stock level
-            var inventoryItem = _context.Inventory.Find(partsUsedDTO.PartID);
-            if (inventoryItem != null)
+            // Update the Part stock level
+            var PartItem = _context.Part.Find(partsUsedDTO.PartID);
+            if (PartItem != null)
             {
-                inventoryItem.Quantity -= partsUsedDTO.QuantityUsed;
-                _context.Inventory.Update(inventoryItem);
+                PartItem.Quantity -= partsUsedDTO.QuantityUsed;
+                _context.Part.Update(PartItem);
                 await _context.SaveChangesAsync();
                 
             }
 
-            await CheckAndNotifyLowStock(inventoryItem);
+            await CheckAndNotifyLowStock(PartItem);*/
         }
 
-        private async Task CheckAndNotifyLowStock(Inventory item)
+        private async Task CheckAndNotifyLowStock(Part item)
         {
-            if (item != null && item.Quantity < 3)
+           /* if (item != null && item.Quantity < 3)
             {
                 var message = $"Low stock alert: {item.PartName} (ID: {item.PartId}) " +
                               $"has only {item.Quantity} units remaining!";
 
-                var managers = await _context.InventoryManagers
+                var managers = await _context.PartManagers
                     .Include(m => m.Manager)
                     .ToListAsync();
 
-                var notifications = new List<Notifications>();
+                var Notification = new List<Notification>();
 
                 foreach (var manager in managers)
                 {
-                    notifications.Add(new Notifications
+                    Notification.Add(new Notification
                     {
                         UserId = manager.ManagerId,
                         Message = $"Low Stock Alert: {message}",
@@ -231,9 +231,9 @@ namespace CarServ.Repository.Repositories
                     });
                 }
 
-                _context.Notifications.AddRange(notifications);
+                _context.Notification.AddRange(Notification);
                 await _context.SaveChangesAsync(); 
-            }
+            }*/
         }
 
 
