@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace CarServ.Domain.Entities;
 
-public partial class OrderDetail
+public partial class OrderDetails
 {
     public int OrderDetailId { get; set; }
 
@@ -21,5 +21,9 @@ public partial class OrderDetail
 
     public decimal? LineTotal { get; set; }
 
-    public virtual Order Order { get; set; }
+    public virtual Orders Order { get; set; }
+
+    public virtual ServicePackages Package { get; set; }
+
+    public virtual Services Service { get; set; }
 }

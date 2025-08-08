@@ -7,27 +7,27 @@ using System.Threading.Tasks;
 
 namespace CarServ.Repository.Repositories.Interfaces
 {
-    public interface IWarrantyClaimRepository : IGenericRepository<WarrantyClaim>
+    public interface IWarrantyClaimRepository : IGenericRepository<WarrantyClaims>
     {
-        Task<WarrantyClaim> GetWarrantyClaimByIdAsync(int claimId);
-        Task<List<WarrantyClaim>> GetWarrantyClaimBySupplierIdAsync(int supplierId);
-        Task<List<WarrantyClaim>> GetAllWarrantyClaimAsync();
-        Task<List<WarrantyClaim>> GetWarrantyClaimByStatusAsync(string status);
-        Task<List<WarrantyClaim>> GetWarrantyClaimByClaimDateAsync(DateOnly claimDate);
-        Task<List<WarrantyClaim>> GetWarrantyClaimByNoteAsync(string note);
-        Task<WarrantyClaim> CreateWarrantyClaimAsync(
+        Task<WarrantyClaims> GetWarrantyClaimByIdAsync(int claimId);
+        Task<List<WarrantyClaims>> GetWarrantyClaimsBySupplierIdAsync(int supplierId);
+        Task<List<WarrantyClaims>> GetAllWarrantyClaimsAsync();
+        Task<List<WarrantyClaims>> GetWarrantyClaimsByStatusAsync(string status);
+        Task<List<WarrantyClaims>> GetWarrantyClaimsByClaimDateAsync(DateOnly claimDate);
+        Task<List<WarrantyClaims>> GetWarrantyClaimsByNoteAsync(string note);
+        Task<WarrantyClaims> CreateWarrantyClaimAsync(
             int partId,
             int supplierId,
             DateOnly claimDate,
             string status,
             string notes);
-        Task<WarrantyClaim> UpdateWarrantyClaimAsync(
+        Task<WarrantyClaims> UpdateWarrantyClaimAsync(
             int claimId,
             int partId,
             int supplierId,
             DateOnly claimDate,
             string status,
             string notes);
-        Task<WarrantyClaim> DeactivateWarrantyClaimAsync(int claimId);
+        Task<WarrantyClaims> DeactivateWarrantyClaimAsync(int claimId);
     }
 }

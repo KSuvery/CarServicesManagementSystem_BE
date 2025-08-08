@@ -8,17 +8,17 @@ using System.Threading.Tasks;
 
 namespace CarServ.Service.Services.Interfaces
 {
-    public interface INotificationervice
+    public interface INotificationService
     {
-        Task<Notification> GetNotificationByIdAsync(int notificationId);
-        Task<List<Notification>> GetNotificationByUserIdAsync(int userId);
-        Task<Notification> CreateNotificationAsync(
+        Task<Notifications> GetNotificationByIdAsync(int notificationId);
+        Task<List<Notifications>> GetNotificationsByUserIdAsync(int userId);
+        Task<Notifications> CreateNotificationAsync(
             int userId,            
             string title,
             string message,
             DateTime? sentAt = null,
             bool isRead = false);
-        Task<Notification> MarkNotificationAsReadAsync(
+        Task<Notifications> MarkNotificationAsReadAsync(
             int notificationId,
             bool isRead);
         Task<bool> DeleteNotificationAsync(int notificationId);

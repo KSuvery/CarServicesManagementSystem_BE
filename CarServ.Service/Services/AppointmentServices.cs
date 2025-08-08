@@ -1,5 +1,4 @@
 ﻿using CarServ.Domain.Entities;
-using CarServ.Repository.Repositories.DTO.Booking_A_Service;
 using CarServ.Repository.Repositories.Interfaces;
 using CarServ.Service.Services.Interfaces;
 using System;
@@ -10,36 +9,36 @@ using System.Threading.Tasks;
 
 namespace CarServ.Service.Services
 {
-    public class Appointmentervices : IAppointmentervices
+    public class AppointmentServices : IAppointmentServices
     {
         private readonly IAppointmentRepository _appointmentRepository;
 
-        public Appointmentervices(IAppointmentRepository appointmentRepository)
+        public AppointmentServices(IAppointmentRepository appointmentRepository)
         {
             _appointmentRepository = appointmentRepository;
         }
 
-        public async Task<List<Appointment>> GetAllAppointmentAsync()
+        public async Task<List<Appointments>> GetAllAppointmentsAsync()
         {
             return await _appointmentRepository.GetAllAppointmentsAsync();
         }
 
-        public async Task<Appointment> GetAppointmentByIdAsync(int appointmentId)
+        public async Task<Appointments> GetAppointmentByIdAsync(int appointmentId)
         {
             return await _appointmentRepository.GetAppointmentByIdAsync(appointmentId);
         }
 
-        public async Task<List<Appointment>> GetAppointmentByCustomerIdAsync(int customerId)
+        public async Task<List<Appointments>> GetAppointmentsByCustomerIdAsync(int customerId)
         {
             return await _appointmentRepository.GetAppointmentsByCustomerIdAsync(customerId);
         }
 
-        public async Task<List<Appointment>> GetAppointmentByVehicleIdAsync(int vehicleId)
+        public async Task<List<Appointments>> GetAppointmentsByVehicleIdAsync(int vehicleId)
         {
             return await _appointmentRepository.GetAppointmentsByVehicleIdAsync(vehicleId);
         }
 
-        public async Task<Appointment> ScheduleAppointmentAsync(
+        public async Task<Appointments> ScheduleAppointmentAsync(
             int customerId,
             int vehicleId,
             int packageId,
@@ -56,16 +55,23 @@ namespace CarServ.Service.Services
                 promotionId);
         }
 
-        public async Task<Appointment> UpdateAppointmentAsync(
+        public async Task<Appointments> UpdateAppointmentAsync(
             int appointmentId,
-            string status)
+            int customerId,
+            int vehicleId,
+            int packageId,
+            DateTime appointmentDate,
+            string status,
+            int? promotionId)
         {
-            return await _appointmentRepository.UpdateAppointmentAsync(appointmentId, status);
-        }
-
-        public async Task<Appointment> ScheduleAppointment(int customerId, ScheduleAppointmentDto dto)
-        {
-            return await _appointmentRepository.ScheduleAppointment(customerId, dto);
+            return await _appointmentRepository.UpdateAppointmentAsync(
+                appointmentId,
+                customerId,
+                vehicleId,
+                packageId,
+                appointmentDate,
+                status,
+                promotionId);
         }
     }
 }

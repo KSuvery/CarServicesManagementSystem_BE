@@ -17,5 +17,5 @@ public partial class ServiceProgress
 
     public DateTime? UpdatedAt { get; set; }
 
-    public virtual Appointment Appointment { get; set; }
+    public virtual Appointments Appointment { get; set; }
 }

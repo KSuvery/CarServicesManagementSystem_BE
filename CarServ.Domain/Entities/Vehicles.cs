@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace CarServ.Domain.Entities;
 
-public partial class Vehicle
+public partial class Vehicles
 {
     public int VehicleId { get; set; }
 
@@ -21,9 +21,9 @@ public partial class Vehicle
 
     public int? CarTypeId { get; set; }
 
-    public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
+    public virtual ICollection<Appointments> Appointments { get; set; } = new List<Appointments>();
 
-    public virtual CarType CarType { get; set; }
+    public virtual CarTypes CarType { get; set; }
 
-    public virtual Customer Customer { get; set; }
+    public virtual Customers Customer { get; set; }
 }

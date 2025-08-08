@@ -9,16 +9,16 @@ using System.Threading.Tasks;
 
 namespace CarServ.Service.Services
 {
-    public class Notificationervice : INotificationervice
+    public class NotificationService : INotificationService
     {
         private readonly INotificationRepository _notificationRepository;
 
-        public Notificationervice(INotificationRepository notificationRepository)
+        public NotificationService(INotificationRepository notificationRepository)
         {
             _notificationRepository = notificationRepository;
         }
 
-        public async Task<Notification> CreateNotificationAsync(
+        public async Task<Notifications> CreateNotificationAsync(
             int userId,
             string title,
             string message,
@@ -34,17 +34,17 @@ namespace CarServ.Service.Services
             return await _notificationRepository.DeleteNotificationAsync(notificationId);
         }
 
-        public async Task<Notification> GetNotificationByIdAsync(int notificationId)
+        public async Task<Notifications> GetNotificationByIdAsync(int notificationId)
         {
             return await _notificationRepository.GetNotificationByIdAsync(notificationId);
         }
 
-        public async Task<List<Notification>> GetNotificationByUserIdAsync(int userId)
+        public async Task<List<Notifications>> GetNotificationsByUserIdAsync(int userId)
         {
-            return await _notificationRepository.GetNotificationByUserIdAsync(userId);
+            return await _notificationRepository.GetNotificationsByUserIdAsync(userId);
         }
 
-        public async Task<Notification> MarkNotificationAsReadAsync(int notificationId, bool isRead)
+        public async Task<Notifications> MarkNotificationAsReadAsync(int notificationId, bool isRead)
         {
             return await _notificationRepository.MarkNotificationAsReadAsync(notificationId, isRead);
         }

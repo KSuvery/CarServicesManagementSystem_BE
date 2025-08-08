@@ -31,11 +31,11 @@ namespace CarServ.Service.WorkerService
                 var adminRole = await _context.Roles.FirstOrDefaultAsync(r => r.RoleName == "Admin");
                 if (adminRole == null)
                 {
-                    adminRole = new Domain.Entities.Role { RoleName = "Admin" };
+                    adminRole = new Roles { RoleName = "Admin" };
                     _context.Roles.Add(adminRole);
                     await _context.SaveChangesAsync();
                 }
-                var adminUser = new User
+                var adminUser = new Users
                 {
                     FullName = _adminSettings.Username,
                     Email = _adminSettings.Email,

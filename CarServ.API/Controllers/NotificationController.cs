@@ -14,17 +14,17 @@ namespace CarServ.API.Controllers
     [ApiController]
     public class NotificationController : ControllerBase
     {
-        private readonly INotificationervice _Notificationervice;
+        private readonly INotificationService _notificationService;
 
-        public NotificationController(INotificationervice Notificationervice)
+        public NotificationController(INotificationService notificationService)
         {
-            _Notificationervice = Notificationervice;
+            _notificationService = notificationService;
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Notification>> GetNotificationById(int id)
+        public async Task<ActionResult<Notifications>> GetNotificationById(int id)
         {
-            var notification = await _Notificationervice.GetNotificationByIdAsync(id);
+            var notification = await _notificationService.GetNotificationByIdAsync(id);
             if (notification == null)
             {
                 return NotFound();
@@ -33,24 +33,24 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("user/{userId}")]
-        public async Task<ActionResult<List<Notification>>> GetNotificationByUserId(int userId)
+        public async Task<ActionResult<List<Notifications>>> GetNotificationsByUserId(int userId)
         {
-            var Notification = await _Notificationervice.GetNotificationByUserIdAsync(userId);
-            if (Notification == null || !Notification.Any())
+            var notifications = await _notificationService.GetNotificationsByUserIdAsync(userId);
+            if (notifications == null || !notifications.Any())
             {
                 return NotFound();
             }
-            return Notification;
+            return notifications;
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteNotification(int id)
         {
-            if (!await NotificationExists(id))
+            if (!await NotificationsExists(id))
             {
                 return NotFound();
             }
-            var deleted = await _Notificationervice.DeleteNotificationAsync(id);
+            var deleted = await _notificationService.DeleteNotificationAsync(id);
             if (!deleted)
             {
                 return BadRequest("Failed to delete notification.");
@@ -59,7 +59,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpPost("Create")]
-        public async Task<ActionResult<Notification>> CreateNotification(
+        public async Task<ActionResult<Notifications>> CreateNotification(
             int userId,
             string title,
             string message,
@@ -67,7 +67,7 @@ namespace CarServ.API.Controllers
             bool isRead = false)
         {
             notificationDate ??= DateTime.UtcNow;
-            var newNotification = await _Notificationervice.CreateNotificationAsync(
+            var newNotification = await _notificationService.CreateNotificationAsync(
                 userId, title, message, notificationDate, isRead);
             if (newNotification == null)
             {
@@ -79,11 +79,11 @@ namespace CarServ.API.Controllers
         [HttpPut("MarkAsRead/{id}")]
         public async Task<IActionResult> MarkNotificationAsRead(int id, bool isRead)
         {
-            if (!await NotificationExists(id))
+            if (!await NotificationsExists(id))
             {
                 return NotFound();
             }
-            var readNotification = await _Notificationervice.MarkNotificationAsReadAsync(id, isRead);
+            var readNotification = await _notificationService.MarkNotificationAsReadAsync(id, isRead);
             if (readNotification == null)
             {
                 return BadRequest("Failed to mark notification as read.");
@@ -92,9 +92,9 @@ namespace CarServ.API.Controllers
         }
 
 
-        private async Task<bool> NotificationExists(int id)
+        private async Task<bool> NotificationsExists(int id)
         {
-            return await _Notificationervice.GetNotificationByIdAsync(id) != null;
+            return await _notificationService.GetNotificationByIdAsync(id) != null;
         }
     }
 }

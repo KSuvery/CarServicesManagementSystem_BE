@@ -5,11 +5,11 @@ using System.Collections.Generic;
 
 namespace CarServ.Domain.Entities;
 
-public partial class Role
+public partial class Roles
 {
     public int RoleId { get; set; }
 
     public string RoleName { get; set; }
 
-    public virtual ICollection<User> Users { get; set; } = new List<User>();
+    public virtual ICollection<Users> Users { get; set; } = new List<Users>();
 }

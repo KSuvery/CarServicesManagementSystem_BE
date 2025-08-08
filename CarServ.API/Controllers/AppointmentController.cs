@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using CarServ.Domain.Entities;
 using CarServ.Service.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using CarServ.Repository.Repositories.DTO.Booking_A_Service;
 
 namespace CarServ.API.Controllers
 {
@@ -17,26 +16,26 @@ namespace CarServ.API.Controllers
     [Authorize]
     public class AppointmentController : ControllerBase
     {
-        private readonly IAppointmentervices _Appointmentervices;
+        private readonly IAppointmentServices _appointmentServices;
 
-        public AppointmentController(IAppointmentervices Appointmentervices)
+        public AppointmentController(IAppointmentServices appointmentServices)
         {
-            _Appointmentervices = Appointmentervices;
+            _appointmentServices = appointmentServices;
         }
 
         // GET: api/Appointment
         [HttpGet]
         [Authorize(Roles = "1")]
-        public async Task<ActionResult<IEnumerable<Appointment>>> GetAppointment()
+        public async Task<ActionResult<IEnumerable<Appointments>>> GetAppointments()
         {
-            return await _Appointmentervices.GetAllAppointmentAsync();
+            return await _appointmentServices.GetAllAppointmentsAsync();
         }
 
         [HttpGet("{id}")]
         [Authorize(Roles = "1")]
-        public async Task<ActionResult<Appointment>> GetAppointmentById(int id)
+        public async Task<ActionResult<Appointments>> GetAppointmentById(int id)
         {
-            var appointment = await _Appointmentervices.GetAppointmentByIdAsync(id);
+            var appointment = await _appointmentServices.GetAppointmentByIdAsync(id);
             if (appointment == null)
             {
                 return NotFound();
@@ -46,31 +45,31 @@ namespace CarServ.API.Controllers
 
         [HttpGet("GetByCustomerId/{customerId}")]
         [Authorize(Roles = "1")]
-        public async Task<ActionResult<IEnumerable<Appointment>>> GetAppointmentByCustomerId(int customerId)
+        public async Task<ActionResult<IEnumerable<Appointments>>> GetAppointmentsByCustomerId(int customerId)
         {
-            var Appointment = await _Appointmentervices.GetAppointmentByCustomerIdAsync(customerId);
-            if (Appointment == null || !Appointment.Any())
+            var appointments = await _appointmentServices.GetAppointmentsByCustomerIdAsync(customerId);
+            if (appointments == null || !appointments.Any())
             {
                 return NotFound();
             }
-            return Appointment;
+            return appointments;
         }
 
         [HttpGet("GetByVehicleId/{vehicleId}")]
         [Authorize(Roles = "1")]
-        public async Task<ActionResult<IEnumerable<Appointment>>> GetAppointmentByVehicleId(int vehicleId)
+        public async Task<ActionResult<IEnumerable<Appointments>>> GetAppointmentsByVehicleId(int vehicleId)
         {
-            var Appointment = await _Appointmentervices.GetAppointmentByVehicleIdAsync(vehicleId);
-            if (Appointment == null || !Appointment.Any())
+            var appointments = await _appointmentServices.GetAppointmentsByVehicleIdAsync(vehicleId);
+            if (appointments == null || !appointments.Any())
             {
                 return NotFound();
             }
-            return Appointment;
+            return appointments;
         }
 
-        [HttpPost("Schedule_1")]
+        [HttpPost("Schedule")]
         /*[Authorize(Roles = "1,2")]*/
-        public async Task<ActionResult<Appointment>> ScheduleAppointment(
+        public async Task<ActionResult<Appointments>> ScheduleAppointment(
             int customerId,
             int vehicleId,
             int packageId,
@@ -78,7 +77,7 @@ namespace CarServ.API.Controllers
             string status = "Pending",
             int? promotionId = null)
         {
-            var createdAppointment = await _Appointmentervices.ScheduleAppointmentAsync(
+            var createdAppointment = await _appointmentServices.ScheduleAppointmentAsync(
                 customerId,
                 vehicleId,
                 packageId,
@@ -93,30 +92,17 @@ namespace CarServ.API.Controllers
 
             return CreatedAtAction(nameof(GetAppointmentById), new { id = createdAppointment.AppointmentId }, createdAppointment);
         }
-        [HttpPost("schedule")]
-        [Authorize(Roles = "1,2,3,4")]
-        public async Task<IActionResult> ScheduleAppointment(int customerId, [FromBody] ScheduleAppointmentDto dto)
-        {
-            try
-            {
-                var appointment = await _Appointmentervices.ScheduleAppointment(customerId, dto);
-                return CreatedAtAction(nameof(ScheduleAppointment), new { id = appointment.AppointmentId }, appointment);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
 
         [HttpPut("{appointmentId}")]
         /*[Authorize(Roles = "1,2")]*/
-        public async Task<ActionResult<Appointment>> UpdateAppointment(int appointmentId, string status)
+        public async Task<ActionResult<Appointments>> UpdateAppointment(
+            int appointmentId, int customerId, int vehicleId, int packageId, DateTime appointmentDate, string status, int? promotionId)
         {
-            if (!await AppointmentExists(appointmentId))
+            if (!await AppointmentsExists(appointmentId))
             {
                 return NotFound();
             }
-            var updatedAppointment = await _Appointmentervices.UpdateAppointmentAsync(appointmentId, status);
+            var updatedAppointment = await _appointmentServices.UpdateAppointmentAsync(appointmentId, customerId, vehicleId, packageId, appointmentDate, status, promotionId);
             if (updatedAppointment == null)
             {
                 return BadRequest("Unable to update appointment.");
@@ -124,9 +110,9 @@ namespace CarServ.API.Controllers
             return Ok(updatedAppointment);
         }
 
-        private async Task<bool> AppointmentExists(int id)
+        private async Task<bool> AppointmentsExists(int id)
         {
-            return await _Appointmentervices.GetAppointmentByIdAsync(id) != null;
+            return await _appointmentServices.GetAppointmentByIdAsync(id) != null;
         }
     }
 }

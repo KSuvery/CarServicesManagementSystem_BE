@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CarServ.Repository.Repositories
 {
-    public class NotificationRepository : GenericRepository<Notification>, INotificationRepository
+    public class NotificationRepository : GenericRepository<Notifications>, INotificationRepository
     {
         private readonly CarServicesManagementSystemContext _context;
 
@@ -18,27 +18,27 @@ namespace CarServ.Repository.Repositories
             _context = context;
         }
 
-        public async Task<Notification> GetNotificationByIdAsync(int notificationId)
+        public async Task<Notifications> GetNotificationByIdAsync(int notificationId)
         {
             return await _context.Notifications
                 .FirstOrDefaultAsync(n => n.NotificationId == notificationId);
         }
 
-        public async Task<List<Notification>> GetNotificationByUserIdAsync(int userId)
+        public async Task<List<Notifications>> GetNotificationsByUserIdAsync(int userId)
         {
             return await _context.Notifications
                 .Where(n => n.UserId == userId)
                 .ToListAsync();
         }
 
-        public async Task<Notification> CreateNotificationAsync(
+        public async Task<Notifications> CreateNotificationAsync(
             int userId,
             string title,
             string message,
             DateTime? sentAt = null,
             bool isRead = false)
         {
-            var notification = new Notification
+            var notification = new Notifications
             {
                 UserId = userId,
                 Message = $"{title}: {message}",
@@ -62,7 +62,7 @@ namespace CarServ.Repository.Repositories
             return true;
         }
 
-        public async Task<Notification> MarkNotificationAsReadAsync(
+        public async Task<Notifications> MarkNotificationAsReadAsync(
             int notificationId,
             bool isRead)
         {

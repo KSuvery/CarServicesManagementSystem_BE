@@ -13,7 +13,7 @@ using System.Net;
 
 namespace CarServ.Repository.Repositories
 {
-    public class AccountRepository : GenericRepository<User>, IAccountRepository
+    public class AccountRepository : GenericRepository<Users>, IAccountRepository
     {
         private readonly CarServicesManagementSystemContext _context;
         public AccountRepository(CarServicesManagementSystemContext context) : base(context)
@@ -27,24 +27,24 @@ namespace CarServ.Repository.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<User> GetAccountById(int Id)
+        public async Task<Users> GetAccountById(int Id)
         {
             var userListTmp = await _context.Users.Include(m => m.Role).FirstOrDefaultAsync(m => m.UserId == Id);
-            return userListTmp ?? new User();
+            return userListTmp ?? new Users();
         }
 
-        public async Task<User> GetAccountByMail(string mail)
+        public async Task<Users> GetAccountByMail(string mail)
         {
             var userListTmp = await _context.Users.Include(m => m.Role).FirstOrDefaultAsync(m => m.Email == mail);
-            return userListTmp ?? new User();
+            return userListTmp ?? new Users();
         }
 
-        public async Task<List<User>> GetAccountByRole(int roleID)
+        public async Task<List<Users>> GetAccountByRole(int roleID)
         {
-            var userListTmp = await _context.Users   
+            var userListTmp = await _context.Users
                 .Include(m => m.Role)
             .Where(m =>m.RoleId == roleID).ToListAsync();
-            return userListTmp ?? new List<User>();
+            return userListTmp ?? new List<Users>();
         }
 
         public async Task<List<GetAllUserDTO>> GetAllAccount()
@@ -82,16 +82,16 @@ namespace CarServ.Repository.Repositories
             };
         }
 
-        public async Task<User> Login(string username, string password)
+        public async Task<Users> Login(string username, string password)
         {
             
-            // await _context.User
+            // await _context.Users
             //    .FirstOrDefaultAsync(x => x.Phone == username && x.Password == password);
 
-            // await _context.User
+            // await _context.Users
             //    .FirstOrDefaultAsync(x => x.id == username && x.Password == password);
 
-            // await _context.User
+            // await _context.Users
             //    .FirstOrDefaultAsync(x => x.username == username && x.Password == password && x.IsActive);
             
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == username);
@@ -110,7 +110,7 @@ namespace CarServ.Repository.Repositories
                 throw new Exception("Email already exists.");
             }
             var passwordHash = HashPassword(password);
-            var newUser = new User
+            var newUser = new Users
             {
                 FullName = fullName,
                 Email = email,
@@ -120,7 +120,7 @@ namespace CarServ.Repository.Repositories
             };
             _context.Users.Add(newUser);
             await _context.SaveChangesAsync();
-            var customer = new Customer
+            var customer = new Customers
             {   
                 CustomerId = newUser.UserId,
                 Address = address
@@ -136,7 +136,7 @@ namespace CarServ.Repository.Repositories
                 FullName = newlyCreatedCustomer.FullName,
                 Email = newlyCreatedCustomer.Email,
                 PhoneNumber = newlyCreatedCustomer.PhoneNumber,
-                Address = newlyCreatedCustomer.Customer.Address,
+                Address = newlyCreatedCustomer.Customers.Address,
                 RoleName = newlyCreatedCustomer.Role.RoleName
             };
             return userDTO;
@@ -150,7 +150,7 @@ namespace CarServ.Repository.Repositories
                 throw new Exception("Email already exists.");
             }
             var passwordHash = HashPassword(password);
-            var newUser = new User
+            var newUser = new Users
             {
                 FullName = fullName,
                 Email = email,
@@ -166,7 +166,7 @@ namespace CarServ.Repository.Repositories
                 
             };
 
-            _context.ServiceStaffs.Add(staff);
+            _context.ServiceStaff.Add(staff);
             await _context.SaveChangesAsync();
 
             var newlyCreatedStaff = await this.GetAccountById(staff.StaffId);
