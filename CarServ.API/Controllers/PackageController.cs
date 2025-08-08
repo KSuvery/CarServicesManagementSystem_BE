@@ -1,10 +1,12 @@
 ﻿using CarServ.Service.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarServ.API.Controllers
 {
     [ApiController]
     [Route("api/services")]
+    [Authorize]
     public class PackageController : ControllerBase
     {
         private readonly IPackageServices _service;
@@ -15,6 +17,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "1,2,4")]
         public async Task<IActionResult> GetAllServicePackages()
         {
             try

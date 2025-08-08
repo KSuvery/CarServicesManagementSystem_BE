@@ -1,5 +1,7 @@
 ﻿using CarServ.Service.Services.Interfaces;
 using CarServ.Service.Services;
+using CarServ.Service.WorkerService;
+using CarServ.Repository.Repositories;
 
 namespace CarServ.API.Configuration
 {
@@ -15,6 +17,9 @@ namespace CarServ.API.Configuration
             services.AddScoped<ICloudinaryService, CloudinaryService>();
             services.AddScoped<IVnPayService, VnPayService>();
             services.AddScoped<IWarrantyClaimService, WarrantyClaimService>();
+            services.AddScoped<AdminSeederService>();
+            
+
             return services;
         }
     }

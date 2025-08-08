@@ -13,6 +13,7 @@ namespace CarServ.Repository.Repositories.Interfaces
         Task<List<Notifications>> GetNotificationsByUserIdAsync(int userId);
         Task<Notifications> CreateNotificationAsync(
             int userId,
+            string title,
             string message,
             DateTime? sentAt = null,
             bool isRead = false);

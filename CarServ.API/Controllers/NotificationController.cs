@@ -61,13 +61,14 @@ namespace CarServ.API.Controllers
         [HttpPost("Create")]
         public async Task<ActionResult<Notifications>> CreateNotification(
             int userId,
+            string title,
             string message,
             DateTime? notificationDate = null,
             bool isRead = false)
         {
             notificationDate ??= DateTime.UtcNow;
             var newNotification = await _notificationService.CreateNotificationAsync(
-                userId, message, notificationDate, isRead);
+                userId, title, message, notificationDate, isRead);
             if (newNotification == null)
             {
                 return BadRequest("Failed to create notification.");

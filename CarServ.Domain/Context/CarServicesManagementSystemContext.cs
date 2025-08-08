@@ -173,6 +173,7 @@ public partial class CarServicesManagementSystemContext : DbContext
         {
             entity.HasKey(e => e.OrderDetailId).HasName("PK__OrderDet__D3B9D30CE9471D15");
 
+<<<<<<< HEAD
             entity.Property(e => e.OrderDetailId).HasColumnName("OrderDetailID");
             entity.Property(e => e.LineTotal)
                 .HasComputedColumnSql("([Quantity]*[UnitPrice])", true)
@@ -180,6 +181,10 @@ public partial class CarServicesManagementSystemContext : DbContext
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
             entity.Property(e => e.PackageId).HasColumnName("PackageID");
             entity.Property(e => e.Quantity).HasDefaultValue(1);
+=======
+            entity.Property(e => e.UsedId).HasColumnName("UsedID");
+            entity.Property(e => e.PartId).HasColumnName("PartID");            
+>>>>>>> Nhật
             entity.Property(e => e.ServiceId).HasColumnName("ServiceID");
             entity.Property(e => e.UnitPrice).HasColumnType("decimal(10, 2)");
 
@@ -297,6 +302,7 @@ public partial class CarServicesManagementSystemContext : DbContext
                 .ValueGeneratedNever()
                 .HasColumnName("ServiceID");
             entity.Property(e => e.Description).HasColumnType("text");
+            entity.Property(e => e.Notes).HasColumnType("text");
             entity.Property(e => e.LaborHours).HasColumnType("decimal(5, 2)");
             entity.Property(e => e.Review).HasColumnType("text");
             entity.Property(e => e.ServiceDate).HasColumnType("datetime");
