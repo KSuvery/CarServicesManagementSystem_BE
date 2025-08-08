@@ -53,5 +53,49 @@ namespace CarServ.Repository.Repositories
         {
             throw new NotImplementedException();
         }
+        public async Task<List<VehicleDto>> GetVehiclesByCustomerId(int customerId)
+        {
+            var vehicles = await _context.Vehicles
+                .Where(v => v.CustomerId == customerId)
+                .ToListAsync();
+            return vehicles.Select(v => new VehicleDto
+            {
+                VehicleId = v.VehicleId,
+                LicensePlate = v.LicensePlate,
+                Make = v.Make,
+                Model = v.Model,
+                Year = v.Year
+            }).ToList();
+        }
+        //  single service
+        public async Task<List<PartDto>> GetPartsByServiceId(int serviceId)
+        {
+            var serviceParts = await _context.ServiceParts
+                .Include(sp => sp.Part) 
+                .Where(sp => sp.ServiceId == serviceId)
+                .ToListAsync();
+            return serviceParts.Select(sp => new PartDto
+            {
+                PartId = sp.Part.PartId,
+                PartName = sp.Part.PartName,
+                QuantityRequired = sp.QuantityRequired,
+                UnitPrice = sp.Part.UnitPrice
+            }).ToList();
+        }
+        // service package
+        public async Task<List<PartDto>> GetPartsByPackageId(int packageId)
+        {
+            var serviceParts = await _context.ServiceParts
+                .Include(sp => sp.Part) 
+                .Where(sp => sp.Service.Packages.Any(p => p.PackageId == packageId))
+                .ToListAsync();
+            return serviceParts.Select(sp => new PartDto
+            {
+                PartId = sp.Part.PartId,
+                PartName = sp.Part.PartName,
+                QuantityRequired = sp.QuantityRequired,
+                UnitPrice = sp.Part.UnitPrice
+            }).ToList();
+        }
     }
 }

@@ -32,7 +32,7 @@ namespace CarServ.API.Controllers
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("GetAllAvailableVehicleWithCustomerId/{id}")]
         [Authorize(Roles = "1,2,3,4")]
         public async Task<IActionResult> GetAllAvailableVehicleWithCustomerId(int id)
         {
@@ -46,7 +46,35 @@ namespace CarServ.API.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-        
+        [HttpGet("GetAllPartsForSingleService/{serviceid}")]
+        [Authorize(Roles = "1,2,3,4")]
+        public async Task<IActionResult> GetAllPartsForSingleService(int serviceid)
+        {
+            try
+            {
+                var vehicles = await _service.GetPartsByServiceId(serviceid);
+                return Ok(vehicles);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+        [HttpGet("GetAllPartsForPackageService/{packageid}")]
+        [Authorize(Roles = "1,2,3,4")]
+        public async Task<IActionResult> GetAllPartsForPackageService(int packageid)
+        {
+            try
+            {
+                var vehicles = await _service.GetPartsByPackageId(packageid);
+                return Ok(vehicles);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
     }
 
 }
