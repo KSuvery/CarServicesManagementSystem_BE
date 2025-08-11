@@ -1,4 +1,4 @@
-﻿using CarServ.Service.Services.Interfaces;
+﻿using CarServ.service.Services.Interfaces;
 using CarServ.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -6,12 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarServ.Service.Services.Interfaces
+namespace CarServ.service.Services.Interfaces
 {
-    public interface INotificationService
+    public interface INotificationervice
     {
         Task<Notification> GetNotificationByIdAsync(int notificationId);
-        Task<List<Notification>> GetNotificationsByUserIdAsync(int userId);
+        Task<List<Notification>> GetNotificationByUserIdAsync(int userId);
         Task<Notification> CreateNotificationAsync(
             int userId,            
             string title,

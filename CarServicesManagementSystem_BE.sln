@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarServ.Domain", "CarServ.D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarServ.Repository", "CarServ.Repository\CarServ.Repository.csproj", "{B4494247-7EE6-4733-A415-9BF2E608B044}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarServ.Service", "CarServ.Service\CarServ.Service.csproj", "{57A20577-6811-4B21-8A89-3252EF6E0CBD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarServ.service", "CarServ.Service\CarServ.service.csproj", "{57A20577-6811-4B21-8A89-3252EF6E0CBD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarServ.API", "CarServ.API\CarServ.API.csproj", "{7C32F597-0283-48E0-8088-CBE64DF50409}"
 EndProject

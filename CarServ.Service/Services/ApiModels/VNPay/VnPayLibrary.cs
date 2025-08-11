@@ -3,7 +3,7 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace CarServ.Service.Services.ApiModels.VNPay
+namespace CarServ.service.Services.ApiModels.VNPay
 {
     public class VnPayLibrary
     {

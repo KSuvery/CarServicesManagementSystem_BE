@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CarServ.Domain.Entities;
-using CarServ.Service.Services.Interfaces;
+using CarServ.service.Services.Interfaces;
 using CarServ.Repository.Repositories.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;

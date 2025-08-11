@@ -1,24 +1,25 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO.Booking_A_Service;
 using CarServ.Repository.Repositories.Interfaces;
-using CarServ.Service.Services.Interfaces;
+using CarServ.service.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarServ.Service.Services
+namespace CarServ.service.Services
 {
-    public class AppointmentServices : IAppointmentServices
+    public class Appointmentervices : IAppointmentervices
     {
         private readonly IAppointmentRepository _appointmentRepository;
 
-        public AppointmentServices(IAppointmentRepository appointmentRepository)
+        public Appointmentervices(IAppointmentRepository appointmentRepository)
         {
             _appointmentRepository = appointmentRepository;
         }
 
-        public async Task<List<Appointment>> GetAllAppointmentsAsync()
+        public async Task<List<Appointment>> GetAllAppointmentAsync()
         {
             return await _appointmentRepository.GetAllAppointmentsAsync();
         }
@@ -28,12 +29,12 @@ namespace CarServ.Service.Services
             return await _appointmentRepository.GetAppointmentByIdAsync(appointmentId);
         }
 
-        public async Task<List<Appointment>> GetAppointmentsByCustomerIdAsync(int customerId)
+        public async Task<List<Appointment>> GetAppointmentByCustomerIdAsync(int customerId)
         {
             return await _appointmentRepository.GetAppointmentsByCustomerIdAsync(customerId);
         }
 
-        public async Task<List<Appointment>> GetAppointmentsByVehicleIdAsync(int vehicleId)
+        public async Task<List<Appointment>> GetAppointmentByVehicleIdAsync(int vehicleId)
         {
             return await _appointmentRepository.GetAppointmentsByVehicleIdAsync(vehicleId);
         }
@@ -57,21 +58,14 @@ namespace CarServ.Service.Services
 
         public async Task<Appointment> UpdateAppointmentAsync(
             int appointmentId,
-            int customerId,
-            int vehicleId,
-            int packageId,
-            DateTime appointmentDate,
-            string status,
-            int? promotionId)
+            string status)
         {
-            return await _appointmentRepository.UpdateAppointmentAsync(
-                appointmentId,
-                customerId,
-                vehicleId,
-                packageId,
-                appointmentDate,
-                status,
-                promotionId);
+            return await _appointmentRepository.UpdateAppointmentAsync(appointmentId, status);
+        }
+
+        public async Task<Appointment> ScheduleAppointment(int customerId, ScheduleAppointmentDto dto)
+        {
+            return await _appointmentRepository.ScheduleAppointment(customerId, dto);
         }
     }
 }

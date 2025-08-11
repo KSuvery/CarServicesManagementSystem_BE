@@ -2,7 +2,7 @@
 using CarServ.Repository.Repositories.DTO;
 using CarServ.Repository.Repositories.DTO.User_return_DTO;
 using CarServ.Repository.Repositories.Interfaces;
-using CarServ.Service.Services.Interfaces;
+using CarServ.service.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarServ.Service.Services
+namespace CarServ.service.Services
 {
     public class AccountService : IAccountService
     {

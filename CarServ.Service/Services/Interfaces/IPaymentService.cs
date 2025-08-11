@@ -1,23 +1,24 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO.Payment;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarServ.Service.Services.Interfaces
+namespace CarServ.service.Services.Interfaces
 {
-    public interface IPaymentService
+    public interface IPaymentervice
     {
         Task<Payment> GetPaymentByIdAsync(int paymentId);
-        Task<Payment> GetPaymentByOrderIdAsync(int orderId);
-        Task<List<Payment>> GetPaymentsByAppointmentIdAsync(int appointmentId);
-        Task<List<Payment>> GetPaymentsByCustomerIdAsync(int customerId);
-        Task<List<Payment>> GetAllPaymentsAsync();
-        Task<List<Payment>> GetPaymentsByMethodAsync(string method);
-        Task<List<Payment>> SortPaymentsByMethodAsync();
-        Task<List<Payment>> GetPaymentsByAmountRangeAsync(decimal minAmount, decimal maxAmount);
-        Task<List<Payment>> GetPaymentsByPaidDateAsync(DateTime paidDate);
+        Task<List<Payment>> GetPaymentByAppointmentIdAsync(int appointmentId);
+        Task<List<Payment>> GetPaymentByCustomerIdAsync(int customerId);
+        Task<List<Payment>> GetAllPaymentAsync();
+        Task<List<Payment>> GetPaymentByMethodAsync(string method);
+        Task<List<Payment>> SortPaymentByMethodAsync();
+        Task<List<Payment>> GetPaymentByAmountRangeAsync(decimal minAmount, decimal maxAmount);
+        Task<List<Payment>> GetPaymentByPaidDateAsync(DateTime paidDate);
         Task<Payment> CreatePayment(Payment payment);
+        Task<Payment> ProcessPayment(PaymentDto dto);
     }
 }

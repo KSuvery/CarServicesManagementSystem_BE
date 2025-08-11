@@ -13,15 +13,15 @@ using static CarServ.Repository.Repositories.PartRepository;
 
 namespace CarServ.Repository.Repositories
 {
-    public class PartRepository : GenericRepository<Part>, IInventoryRepository
+    public class PartRepository : GenericRepository<Part>, IPartRepository
     {
-        private readonly CarServicesManagementSystemContext _context;
+        private readonly CarServicesManagementSystemContext _context;        
 
 
         public PartRepository(CarServicesManagementSystemContext context) : base(context)
         {
             _context = context;
-
+            
         }
 
         public async Task<List<Part>> GetAllPartItemsAsync()
@@ -97,161 +97,105 @@ namespace CarServ.Repository.Repositories
             return true;
         }
 
-        public async Task<RevenueReportDto> GenerateRevenueReport(DateTime startDate, DateTime endDate)
-        {
-            var report = new RevenueReportDto
+        
+
+            public async Task<RevenueReportDto> GenerateRevenueReport(DateTime startDate, DateTime endDate)
             {
-                StartDate = startDate,
-                EndDate = endDate
-            };
-
-            // Calculate total Payment in date range
-            report.TotalRevenue = (decimal)await _context.Payments
-                .Where(p => p.PaidAt >= startDate && p.PaidAt <= endDate)
-                .SumAsync(p => p.Amount);
-
-            // Calculate service revenue (from packages)
-            report.ServiceRevenue = (decimal)await _context.Payments
-                .Where(p => p.PaidAt >= startDate && p.PaidAt <= endDate)
-                .Join(_context.Appointments,
-                    payment => payment.AppointmentId,
-                    appointment => appointment.AppointmentId,
-                    (payment, appointment) => appointment.PackageId)
-                .Join(_context.ServicePackages,
-                    packageId => packageId,
-                    package => package.PackageId,
-                    (packageId, package) => package.Price)
-                .SumAsync();
-
-            // Calculate parts revenue
-            /*report.PartsRevenue = (decimal)await _context.PartPrices
-                .Where(pu => _context.ServiceHistory
-                    .Any(sh => sh.ServiceId == pu.ServiceId &&
-                              sh.ServiceDate >= startDate &&
-                              sh.ServiceDate <= endDate))
-                .Join(_context.Part,
-                    part => part.PartId,
-                    Part => Part.PartId,
-                    (part, Part) => part.QuantityUsed * Part.UnitPrice)
-                .SumAsync();*/
-
-            // Revenue by service package
-            report.RevenueByPackages = await _context.ServicePackages
-                .Select(sp => new RevenueByPackage
+                // Validate the input dates
+                if (startDate > endDate)
                 {
-                    PackageId = sp.PackageId,
-                    PackageName = sp.Name,
-                    ServiceCount = _context.Appointments
-                        .Count(a => a.PackageId == sp.PackageId &&
-                                   a.AppointmentDate >= startDate &&
-                                   a.AppointmentDate <= endDate),
-                    Revenue = (decimal)_context.Appointments
-                        .Where(a => a.PackageId == sp.PackageId &&
-                                  a.AppointmentDate >= startDate &&
-                                  a.AppointmentDate <= endDate)
-                        .Join(_context.Payments,
-                            appointment => appointment.AppointmentId,
-                            payment => payment.AppointmentId,
-                            (appointment, payment) => payment.Amount)
-                        .Sum()
-                })
-                .Where(r => r.ServiceCount > 0)
-                .ToListAsync();
+                    throw new ArgumentException("Start date must be earlier than end date.");
+                }
 
-            // Revenue by vehicle type
-            report.RevenueByVehicleTypes = await _context.Vehicles
-                .GroupBy(v => v.CarType)
-                .Select(g => new RevenueByVehicleType
+                
+                var orders = await _context.Orders
+                    .Include(o => o.Payments)                                   
+                    .Include(o => o.Appointment)
+                    .ThenInclude(op => op.AppointmentServices)
+                    .Where(o => o.CreatedAt >= startDate && o.CreatedAt <= endDate)
+                    .ToListAsync();
+
+                var totalRevenue = orders.Sum(o => o.Payments.Sum(p => p.Amount) ?? 0);
+                var totalOrders = orders.Count;
+
+                return new RevenueReportDto
                 {
-                    VehicleType = g.Key.TypeName,
-                    VehicleCount = g.Count(),
-                    Revenue = (decimal)g.Join(_context.Appointments,
-                            vehicle => vehicle.VehicleId,
-                            appointment => appointment.VehicleId,
-                            (vehicle, appointment) => appointment)
-                        .Where(a => a.AppointmentDate >= startDate &&
-                                  a.AppointmentDate <= endDate)
-                        .Join(_context.Payments,
-                            appointment => appointment.AppointmentId,
-                            payment => payment.AppointmentId,
-                            (appointment, payment) => payment.Amount)
-                        .Sum()
-                })
-                .Where(r => r.Revenue > 0)
-            .ToListAsync();
+                    TotalOrders = totalOrders,
+                    TotalRevenue = totalRevenue
+                };
+            }
+        
 
-            return report;
-        }
 
 
         public async Task UpdateServiceProgress(UpdateServiceProgressDto dto)
-        {
-            // Validate the input data
-            if (string.IsNullOrEmpty(dto.Status) || !IsValidStatus(dto.Status))
             {
-                throw new ArgumentException("Invalid status provided.");
+                // Validate the input data
+                if (string.IsNullOrEmpty(dto.Status) || !IsValidStatus(dto.Status))
+                {
+                    throw new ArgumentException("Invalid status provided.");
+                }
+
+                // Retrieve the service progress record
+                var serviceProgress = await _context.ServiceProgresses
+                    .FirstOrDefaultAsync(sp => sp.AppointmentId == dto.AppointmentId);
+
+                if (serviceProgress == null)
+                {
+                    throw new InvalidOperationException("Service progress not found for the given appointment.");
+                }
+
+                // Update the status and note
+                serviceProgress.Status = dto.Status;
+                serviceProgress.Note = dto.Note;
+                serviceProgress.UpdatedAt = DateTime.Now;
+
+                // If the status is "Completed", reduce the quantity of parts used
+                if (dto.Status == "Completed")
+                {
+                    await ReduceUsedParts(dto.AppointmentId);
+                }
+
+                // Save changes to the database
+                await _context.SaveChangesAsync();
             }
 
-            // Retrieve the service progress record
-            var serviceProgress = await _context.ServiceProgresses
-                .FirstOrDefaultAsync(sp => sp.AppointmentId == dto.AppointmentId);
-
-            if (serviceProgress == null)
+            private bool IsValidStatus(string status)
             {
-                throw new InvalidOperationException("Service progress not found for the given appointment.");
+                var validStatuses = new[] { "Booked", "Vehicle Received", "In Service", "Completed" };
+                return validStatuses.Contains(status);
             }
 
-            // Update the status and note
-            serviceProgress.Status = dto.Status;
-            serviceProgress.Note = dto.Note;
-            serviceProgress.UpdatedAt = DateTime.Now;
-
-            // If the status is "Completed", reduce the quantity of parts used
-            if (dto.Status == "Completed")
+            private async Task ReduceUsedParts(int appointmentId)
             {
-                await ReduceUsedParts(dto.AppointmentId);
-            }
-
-            // Save changes to the database
-            await _context.SaveChangesAsync();
-        }
-
-        private bool IsValidStatus(string status)
-        {
-            var validStatuses = new[] { "Booked", "Vehicle Received", "In Service", "Completed" };
-            return validStatuses.Contains(status);
-        }
-
-        private async Task ReduceUsedParts(int appointmentId)
-        {
-            // Get the parts used in the appointment
-            var appointmentServices = await _context.AppointmentServices
-                .Include(a => a.Service)
-                .Where(a => a.AppointmentId == appointmentId)
-                .ToListAsync();
-
-            foreach (var appointmentService in appointmentServices)
-            {
-                var serviceParts = await _context.ServiceParts
-                    .Where(sp => sp.ServiceId == appointmentService.ServiceId)
+                // Get the parts used in the appointment
+                var appointmentServices = await _context.AppointmentServices
+                    .Include(a => a.Service)
+                    .Where(a => a.AppointmentId == appointmentId)
                     .ToListAsync();
 
-                foreach (var servicePart in serviceParts)
+                foreach (var appointmentService in appointmentServices)
                 {
-                    var part = await _context.Parts.FindAsync(servicePart.PartId);
-                    if (part != null && part.Quantity.HasValue)
-                    {
+                    var serviceParts = await _context.ServiceParts
+                        .Where(sp => sp.ServiceId == appointmentService.ServiceId)
+                        .ToListAsync();
 
-                        part.Quantity -= servicePart.QuantityRequired;
-                        if (part.Quantity < 0)
+                    foreach (var servicePart in serviceParts)
+                    {
+                        var part = await _context.Parts.FindAsync(servicePart.PartId);
+                        if (part != null && part.Quantity.HasValue)
                         {
-                            part.Quantity = 0;
+                           
+                            part.Quantity -= servicePart.QuantityRequired; 
+                            if (part.Quantity < 0)
+                            {
+                                part.Quantity = 0; 
+                            }
                         }
                     }
                 }
             }
-        }
-
+        
 
 
 
@@ -281,63 +225,33 @@ namespace CarServ.Repository.Repositories
 
         private async Task CheckAndNotifyLowStock(Part item)
         {
-            /* if (item != null && item.Quantity < 3)
-             {
-                 var message = $"Low stock alert: {item.PartName} (ID: {item.PartId}) " +
-                               $"has only {item.Quantity} units remaining!";
+           /* if (item != null && item.Quantity < 3)
+            {
+                var message = $"Low stock alert: {item.PartName} (ID: {item.PartId}) " +
+                              $"has only {item.Quantity} units remaining!";
 
-                 var managers = await _context.PartManagers
-                     .Include(m => m.Manager)
-                     .ToListAsync();
+                var managers = await _context.PartManagers
+                    .Include(m => m.Manager)
+                    .ToListAsync();
 
-                 var Notification = new List<Notification>();
+                var Notification = new List<Notification>();
 
-                 foreach (var manager in managers)
-                 {
-                     Notification.Add(new Notification
-                     {
-                         UserId = manager.ManagerId,
-                         Message = $"Low Stock Alert: {message}",
-                         SentAt = DateTime.Now,
-                         IsRead = false
-                     });
-                 }
+                foreach (var manager in managers)
+                {
+                    Notification.Add(new Notification
+                    {
+                        UserId = manager.ManagerId,
+                        Message = $"Low Stock Alert: {message}",
+                        SentAt = DateTime.Now,
+                        IsRead = false
+                    });
+                }
 
-                 _context.Notification.AddRange(Notification);
-                 await _context.SaveChangesAsync(); 
-             }*/
+                _context.Notification.AddRange(Notification);
+                await _context.SaveChangesAsync(); 
+            }*/
         }
 
-        // Implement IInventoryRepository methods
 
-        public Task<List<Part>> GetAllInventoryItemsAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Part> GetInventoryItemByIdAsync(int partId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<Part>> GetInventoryItemsByNameAsync(string partName)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Part> CreateInventoryItemAsync(string partName, int? quantity, decimal? unitPrice, DateOnly? expiryDate, int? warrantyMonths)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Part> UpdateInventoryItemAsync(int partId, string partName, int? quantity, decimal? unitPrice, DateOnly? expiryDate, int? warrantyMonths)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> RemoveInventoryItemAsync(int partId)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

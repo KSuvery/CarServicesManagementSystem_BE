@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using CarServ.Domain.Entities;
-using CarServ.Service.Services.Interfaces;
+using CarServ.service.Services.Interfaces;
 
 namespace CarServ.API.Controllers
 {
@@ -14,24 +14,24 @@ namespace CarServ.API.Controllers
     [ApiController]
     public class WarrantyClaimController : ControllerBase
     {
-        private readonly IWarrantyClaimService _warrantyClaimService;
+        private readonly IWarrantyClaimervice _WarrantyClaimervice;
 
-        public WarrantyClaimController(IWarrantyClaimService warrantyClaimService)
+        public WarrantyClaimController(IWarrantyClaimervice WarrantyClaimervice)
         {
-            _warrantyClaimService = warrantyClaimService;
+            _WarrantyClaimervice = WarrantyClaimervice;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<WarrantyClaim>>> GetAllWarrantyClaims()
+        public async Task<ActionResult<IEnumerable<WarrantyClaim>>> GetAllWarrantyClaim()
         {
-            var warrantyClaims = await _warrantyClaimService.GetAllWarrantyClaimsAsync();
-            return Ok(warrantyClaims);
+            var WarrantyClaim = await _WarrantyClaimervice.GetAllWarrantyClaimAsync();
+            return Ok(WarrantyClaim);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<WarrantyClaim>> GetWarrantyClaimById(int id)
         {
-            var warrantyClaim = await _warrantyClaimService.GetWarrantyClaimByIdAsync(id);
+            var warrantyClaim = await _WarrantyClaimervice.GetWarrantyClaimByIdAsync(id);
             if (warrantyClaim == null)
             {
                 return NotFound();
@@ -40,47 +40,47 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("supplier/{supplierId}")]
-        public async Task<ActionResult<IEnumerable<WarrantyClaim>>> GetWarrantyClaimsBySupplierId(int supplierId)
+        public async Task<ActionResult<IEnumerable<WarrantyClaim>>> GetWarrantyClaimBySupplierId(int supplierId)
         {
-            var warrantyClaims = await _warrantyClaimService.GetWarrantyClaimsBySupplierIdAsync(supplierId);
-            if (warrantyClaims == null || !warrantyClaims.Any())
+            var WarrantyClaim = await _WarrantyClaimervice.GetWarrantyClaimBySupplierIdAsync(supplierId);
+            if (WarrantyClaim == null || !WarrantyClaim.Any())
             {
                 return NotFound();
             }
-            return Ok(warrantyClaims);
+            return Ok(WarrantyClaim);
         }
 
         [HttpGet("status/{status}")]
-        public async Task<ActionResult<IEnumerable<WarrantyClaim>>> GetWarrantyClaimsByStatus(string status)
+        public async Task<ActionResult<IEnumerable<WarrantyClaim>>> GetWarrantyClaimByStatus(string status)
         {
-            var warrantyClaims = await _warrantyClaimService.GetWarrantyClaimsByStatusAsync(status);
-            if (warrantyClaims == null || !warrantyClaims.Any())
+            var WarrantyClaim = await _WarrantyClaimervice.GetWarrantyClaimByStatusAsync(status);
+            if (WarrantyClaim == null || !WarrantyClaim.Any())
             {
                 return NotFound();
             }
-            return Ok(warrantyClaims);
+            return Ok(WarrantyClaim);
         }
 
         [HttpGet("claimDate/{claimDate}")]
-        public async Task<ActionResult<IEnumerable<WarrantyClaim>>> GetWarrantyClaimsByClaimDate(DateOnly claimDate)
+        public async Task<ActionResult<IEnumerable<WarrantyClaim>>> GetWarrantyClaimByClaimDate(DateOnly claimDate)
         {
-            var warrantyClaims = await _warrantyClaimService.GetWarrantyClaimsByClaimDateAsync(claimDate);
-            if (warrantyClaims == null || !warrantyClaims.Any())
+            var WarrantyClaim = await _WarrantyClaimervice.GetWarrantyClaimByClaimDateAsync(claimDate);
+            if (WarrantyClaim == null || !WarrantyClaim.Any())
             {
                 return NotFound();
             }
-            return Ok(warrantyClaims);
+            return Ok(WarrantyClaim);
         }
 
         [HttpGet("note/{note}")]
-        public async Task<ActionResult<IEnumerable<WarrantyClaim>>> GetWarrantyClaimsByNote(string note)
+        public async Task<ActionResult<IEnumerable<WarrantyClaim>>> GetWarrantyClaimByNote(string note)
         {
-            var warrantyClaims = await _warrantyClaimService.GetWarrantyClaimsByNoteAsync(note);
-            if (warrantyClaims == null || !warrantyClaims.Any())
+            var WarrantyClaim = await _WarrantyClaimervice.GetWarrantyClaimByNoteAsync(note);
+            if (WarrantyClaim == null || !WarrantyClaim.Any())
             {
                 return NotFound();
             }
-            return Ok(warrantyClaims);
+            return Ok(WarrantyClaim);
         }
 
         [HttpPost("create")]
@@ -91,7 +91,7 @@ namespace CarServ.API.Controllers
             string status,
             string notes)
         {
-            var warrantyClaim = await _warrantyClaimService.CreateWarrantyClaimAsync(partId, supplierId, claimDate, status, notes);
+            var warrantyClaim = await _WarrantyClaimervice.CreateWarrantyClaimAsync(partId, supplierId, claimDate, status, notes);
             if (warrantyClaim == null)
             {
                 return BadRequest("Failed to create warranty claim.");
@@ -108,7 +108,7 @@ namespace CarServ.API.Controllers
             string status,
             string notes)
         {
-            var warrantyClaim = await _warrantyClaimService.UpdateWarrantyClaimAsync(claimId, partId, supplierId, claimDate, status, notes);
+            var warrantyClaim = await _WarrantyClaimervice.UpdateWarrantyClaimAsync(claimId, partId, supplierId, claimDate, status, notes);
             if (warrantyClaim == null)
             {
                 return NotFound();
@@ -119,7 +119,7 @@ namespace CarServ.API.Controllers
         [HttpDelete("deactivate/{claimId}")]
         public async Task<ActionResult<WarrantyClaim>> DeactivateWarrantyClaim(int claimId)
         {
-            var warrantyClaim = await _warrantyClaimService.DeactivateWarrantyClaimAsync(claimId);
+            var warrantyClaim = await _WarrantyClaimervice.DeactivateWarrantyClaimAsync(claimId);
             if (warrantyClaim == null)
             {
                 return NotFound();

@@ -1,19 +1,19 @@
 ﻿using CarServ.Domain.Entities;
 using CarServ.Repository.Repositories.Interfaces;
-using CarServ.Service.Services.Interfaces;
+using CarServ.service.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarServ.Service.Services
+namespace CarServ.service.Services
 {
-    public class NotificationService : INotificationService
+    public class Notificationervice : INotificationervice
     {
         private readonly INotificationRepository _notificationRepository;
 
-        public NotificationService(INotificationRepository notificationRepository)
+        public Notificationervice(INotificationRepository notificationRepository)
         {
             _notificationRepository = notificationRepository;
         }
@@ -39,9 +39,9 @@ namespace CarServ.Service.Services
             return await _notificationRepository.GetNotificationByIdAsync(notificationId);
         }
 
-        public async Task<List<Notification>> GetNotificationsByUserIdAsync(int userId)
+        public async Task<List<Notification>> GetNotificationByUserIdAsync(int userId)
         {
-            return await _notificationRepository.GetNotificationsByUserIdAsync(userId);
+            return await _notificationRepository.GetNotificationByUserIdAsync(userId);
         }
 
         public async Task<Notification> MarkNotificationAsReadAsync(int notificationId, bool isRead)

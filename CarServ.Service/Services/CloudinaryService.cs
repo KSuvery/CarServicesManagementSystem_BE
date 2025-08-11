@@ -1,14 +1,14 @@
-﻿using CarServ.Service.Services.Interfaces;
+﻿using CarServ.service.Services.Interfaces;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Http;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
-using Services.Exceptions;
-using CarServ.Service.Services.Configuration;
+using CarServ.service.Services.Exceptions;
+using CarServ.service.Services.Configuration;
 
-namespace CarServ.Service.Services
+namespace CarServ.service.Services
 {
     public class CloudinaryService(IServiceProvider serviceProvider) : ICloudinaryService
     {

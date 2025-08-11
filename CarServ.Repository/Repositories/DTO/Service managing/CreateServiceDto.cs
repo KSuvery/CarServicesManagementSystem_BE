@@ -4,22 +4,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarServ.Repository.Repositories.DTO.Booking_A_Service
+namespace CarServ.Repository.Repositories.DTO.Service_managing
 {
-    public class ServicePackageDto
+    public class CreateServiceDto
     {
-        public int PackageId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public decimal? Price { get; set; }
-        public List<ServiceDto> Services { get; set; }
-
-    }
-    public class ServiceDto
-    {
-        public int ServiceId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
         public decimal? EstimatedLaborHours { get; set; }
     }
+
+    public class CreateServicePackageDto
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public decimal? Price { get; set; }
+        public List<int> ServiceIds { get; set; } = new List<int>();
+    }
+
 }
