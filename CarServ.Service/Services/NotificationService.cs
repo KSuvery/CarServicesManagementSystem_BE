@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace CarServ.Service.Services
 {
-    public class NotificationService : INotificationService
+    public class Notificationervice : INotificationervice
     {
         private readonly INotificationRepository _notificationRepository;
 
-        public NotificationService(INotificationRepository notificationRepository)
+        public Notificationervice(INotificationRepository notificationRepository)
         {
             _notificationRepository = notificationRepository;
         }
@@ -39,9 +39,9 @@ namespace CarServ.Service.Services
             return await _notificationRepository.GetNotificationByIdAsync(notificationId);
         }
 
-        public async Task<List<Notification>> GetNotificationsByUserIdAsync(int userId)
+        public async Task<List<Notification>> GetNotificationByUserIdAsync(int userId)
         {
-            return await _notificationRepository.GetNotificationsByUserIdAsync(userId);
+            return await _notificationRepository.GetNotificationByUserIdAsync(userId);
         }
 
         public async Task<Notification> MarkNotificationAsReadAsync(int notificationId, bool isRead)
