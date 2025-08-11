@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CarServ.Domain.Entities;
-using CarServ.Service.Services.Interfaces;
-using CarServ.Service.Services;
+using CarServ.service.Services.Interfaces;
+using CarServ.service.Services;
 using CarServ.Repository.Repositories.DTO.Logging_part_usage;
 using Microsoft.AspNetCore.Authorization;
 

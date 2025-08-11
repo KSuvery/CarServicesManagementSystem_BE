@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarServ.Service.Services.Interfaces
+namespace CarServ.service.Services.Interfaces
 {
     public interface IPaymentervice
     {

@@ -1,4 +1,4 @@
-﻿namespace Service.ApiModels.VNPay
+﻿namespace CarServ.service.Services.ApiModels.VNPay
 {
     public class VnPaymentRequest
     {

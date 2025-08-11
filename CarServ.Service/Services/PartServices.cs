@@ -2,14 +2,14 @@
 using CarServ.Repository.Repositories.DTO.Logging_part_usage;
 using CarServ.Repository.Repositories.DTO.RevenueReport;
 using CarServ.Repository.Repositories.Interfaces;
-using CarServ.Service.Services.Interfaces;
+using CarServ.service.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarServ.Service.Services
+namespace CarServ.service.Services
 {
     public class PartServices : IPartServices
     {

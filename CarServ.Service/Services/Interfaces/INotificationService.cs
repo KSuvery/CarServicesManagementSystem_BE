@@ -1,4 +1,4 @@
-﻿using CarServ.Service.Services.Interfaces;
+﻿using CarServ.service.Services.Interfaces;
 using CarServ.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarServ.Service.Services.Interfaces
+namespace CarServ.service.Services.Interfaces
 {
     public interface INotificationervice
     {

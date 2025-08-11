@@ -9,9 +9,9 @@ using Microsoft.OpenApi.Models;
 
 using DotNetEnv;
 using CarServ.Repository.Repositories.DTO;
-using CarServ.Service.WorkerService;
-using CarServ.Service.Services.Interfaces;
-using CarServ.Service.Services;
+using CarServ.service.WorkerService;
+using CarServ.service.Services.Interfaces;
+using CarServ.service.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);

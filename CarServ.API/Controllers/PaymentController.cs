@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CarServ.Domain.Entities;
-using CarServ.Service.Services.Interfaces;
-using Service.ApiModels.VNPay;
+using CarServ.service.Services.Interfaces;
 using CarServ.Repository.Repositories.DTO.Payment;
-using CarServ.Service.Services;
+using CarServ.service.Services;
+using CarServ.service.Services.ApiModels.VNPay;
 
 namespace CarServ.API.Controllers
 {

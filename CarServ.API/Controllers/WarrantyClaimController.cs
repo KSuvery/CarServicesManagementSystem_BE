@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using CarServ.Domain.Entities;
-using CarServ.Service.Services.Interfaces;
+using CarServ.service.Services.Interfaces;
 
 namespace CarServ.API.Controllers
 {

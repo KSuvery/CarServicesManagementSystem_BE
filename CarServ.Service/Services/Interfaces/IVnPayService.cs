@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
-using Service.ApiModels.VNPay;
+﻿using CarServ.service.Services.ApiModels.VNPay;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarServ.Service.Services.Interfaces
+namespace CarServ.service.Services.Interfaces
 {
     public interface IVnPayService
     {
