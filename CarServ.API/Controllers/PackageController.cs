@@ -1,4 +1,5 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO.Service_managing;
 using CarServ.service.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +16,35 @@ namespace CarServ.API.Controllers
         public PackageController(IPackageServices service)
         {
             _service = service;
+        }
+
+        [HttpPost("create-service")]
+        [Authorize(Roles = "1")]
+        public async Task<IActionResult> CreateService([FromBody] CreateServiceDto dto)
+        {
+            try
+            {
+                var service = await _service.CreateService(dto);
+                return CreatedAtAction(nameof(CreateService), new { id = service.ServiceId }, service);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPost("create-service-package")]
+        [Authorize(Roles = "1")]
+        public async Task<IActionResult> CreateServicePackage([FromBody] CreateServicePackageDto dto)
+        {
+            try
+            {
+                var servicePackage = await _service.CreateServicePackage(dto);
+                return CreatedAtAction(nameof(CreateServicePackage), new { id = servicePackage.PackageId }, servicePackage);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet]
