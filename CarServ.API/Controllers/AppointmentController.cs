@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CarServ.Domain.Entities;
-using CarServ.Service.Services.Interfaces;
+using CarServ.service.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using CarServ.Repository.Repositories.DTO.Booking_A_Service;
 

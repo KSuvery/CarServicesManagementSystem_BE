@@ -1,6 +1,6 @@
-﻿using CarServ.Service.Services.Interfaces;
-using CarServ.Service.Services;
-using CarServ.Service.WorkerService;
+﻿using CarServ.service.Services.Interfaces;
+using CarServ.service.Services;
+using CarServ.service.WorkerService;
 using CarServ.Repository.Repositories;
 
 namespace CarServ.API.Configuration

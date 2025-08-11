@@ -1,4 +1,4 @@
-﻿using CarServ.Service.Services.Configuration;
+﻿using CarServ.service.Services.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace CarServ.API.Configuration

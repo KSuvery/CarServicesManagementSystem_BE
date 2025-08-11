@@ -1,8 +1,9 @@
 ﻿using CarServ.Domain.Entities;
 using CarServ.Repository.Repositories.DTO;
 using CarServ.Repository.Repositories.DTO.Booking_A_Service;
+using CarServ.Repository.Repositories.DTO.Service_managing;
 using CarServ.Repository.Repositories.Interfaces;
-using CarServ.Service.Services.Interfaces;
+using CarServ.service.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarServ.Service.Services
+namespace CarServ.service.Services
 {
     public class PackageServices : IPackageServices
     {
@@ -19,6 +20,17 @@ namespace CarServ.Service.Services
         {
             _repository = repository;
         }
+
+        public async Task<Service> CreateService(CreateServiceDto dto)
+        {
+            return await _repository.CreateService(dto);
+        }
+
+        public async Task<ServicePackage> CreateServicePackage(CreateServicePackageDto dto)
+        {
+            return await _repository.CreateServicePackage(dto);
+        }
+
         public async Task<ServicePackageListDto> GetAllServicePackages()
         {
             return await _repository.GetAllServicePackages();

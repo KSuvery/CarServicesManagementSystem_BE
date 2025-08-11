@@ -1,6 +1,7 @@
 ﻿using CarServ.Domain.Entities;
 using CarServ.Repository.Repositories.DTO;
 using CarServ.Repository.Repositories.DTO.Booking_A_Service;
+using CarServ.Repository.Repositories.DTO.Service_managing;
 using CarServ.Repository.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
@@ -20,6 +21,53 @@ namespace CarServ.Repository.Repositories
             _context = context;
         }
 
+        public async Task<Service> CreateService(CreateServiceDto dto)
+        {
+            
+            if (string.IsNullOrEmpty(dto.Name))
+            {
+                throw new ArgumentException("Service name is required.");
+            }
+            
+            var service = new Service
+            {
+                Name = dto.Name,
+                Description = dto.Description,
+                Price = dto.Price,
+                EstimatedLaborHours = dto.EstimatedLaborHours
+            };
+            _context.Services.Add(service);
+            await _context.SaveChangesAsync();
+            return service;
+        }
+        public async Task<ServicePackage> CreateServicePackage(CreateServicePackageDto dto)
+        {
+            
+            if (string.IsNullOrEmpty(dto.Name))
+            {
+                throw new ArgumentException("Service package name is required.");
+            }
+            
+            var servicePackage = new ServicePackage
+            {
+                Name = dto.Name,
+                Description = dto.Description,
+                Price = dto.Price,
+                Services = new List<Service>()
+            };
+            // Add selected services to the package
+            foreach (var serviceId in dto.ServiceIds)
+            {
+                var service = await _context.Services.FindAsync(serviceId);
+                if (service != null)
+                {
+                    servicePackage.Services.Add(service);
+                }
+            }
+            _context.ServicePackages.Add(servicePackage);
+            await _context.SaveChangesAsync();
+            return servicePackage;
+        }
         public async Task<ServicePackageListDto> GetAllServicePackages()
         {
             var packages = await _context.ServicePackages

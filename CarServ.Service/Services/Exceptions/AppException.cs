@@ -2,7 +2,7 @@
 using System.Text.Json.Serialization;
 using Serilog;
 
-namespace Services.Exceptions
+namespace CarServ.service.Services.Exceptions
 {
     public class AppException : Exception
     {
