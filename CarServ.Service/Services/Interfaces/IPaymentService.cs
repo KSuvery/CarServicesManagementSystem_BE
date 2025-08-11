@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CarServ.service.Services.Interfaces
 {
-    public interface IPaymentervice
+    public interface IPaymentService
     {
         Task<Payment> GetPaymentByIdAsync(int paymentId);
         Task<List<Payment>> GetPaymentByAppointmentIdAsync(int appointmentId);
@@ -19,6 +19,5 @@ namespace CarServ.service.Services.Interfaces
         Task<List<Payment>> GetPaymentByAmountRangeAsync(decimal minAmount, decimal maxAmount);
         Task<List<Payment>> GetPaymentByPaidDateAsync(DateTime paidDate);
         Task<Payment> CreatePayment(Payment payment);
-        Task<Payment> ProcessPayment(PaymentDto dto);
     }
 }
