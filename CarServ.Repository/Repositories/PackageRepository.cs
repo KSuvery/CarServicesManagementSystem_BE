@@ -22,35 +22,26 @@ namespace CarServ.Repository.Repositories
 
         public async Task<ServicePackageListDto> GetAllServicePackages()
         {
-            var currentDate = DateOnly.FromDateTime(DateTime.Now);
-
-            // PLEASE FIX YOUR CODE BLOCK BELOW (NEW DB DOESN'T HAVE "PromotionServicePackages") AND I DON'T KNOW WHAT TO PUT IN
-
-            var packages = await _context.ServicePackages.Include(c => c.Appointments)
-                .Select(sp => new ServicePackageDto
+            var packages = await _context.ServicePackages
+        .Include(sp => sp.Services) 
+        .ToListAsync();
+            var packageDtos = packages.Select(package => new ServicePackageDto
+            {
+                PackageId = package.PackageId,
+                Name = package.Name,
+                Description = package.Description,
+                Price = package.Price,
+                Services = package.Services.Select(service => new ServiceDto
                 {
-                    PackageID = sp.PackageId,
-                    Name = sp.Name,
-                    Description = sp.Description,
-                    Price = (decimal)sp.Price,
-                    //DiscountedPrice = _context.Promotions
-                    //.Where(p => p.StartDate <= currentDate &&
-                    //           p.EndDate >= currentDate &&
-                    //           p.PromotionServicePackages.Any(psp => psp.PackageID == sp.PackageId))
-                    //.Select(p => sp.Price * (1 - (p.DiscountPercentage / 100)))
-                    //.FirstOrDefault(),
-                    //PromotionTitle = _context.Promotions
-                    //.Where(p => p.StartDate <= currentDate &&
-                    //           p.EndDate >= currentDate &&
-                    //           p.PromotionServicePackages.Any(psp => psp.PackageID == sp.PackageId))
-                    //.Select(p => p.Title)
-                    //.FirstOrDefault()
-                })
-                .ToListAsync();
-
+                    ServiceId = service.ServiceId,
+                    Name = service.Name,
+                    Description = service.Description,
+                    EstimatedLaborHours = service.EstimatedLaborHours
+                }).ToList()
+            }).ToList();
             return new ServicePackageListDto
             {
-                Packages = packages,
+                Packages = packageDtos,
                 CurrentDate = DateTime.Now
             };
 
@@ -61,6 +52,50 @@ namespace CarServ.Repository.Repositories
         public Task<PaginationResult<ServicePackage>> GetAllWithPaging(int pageNum, int pageSize)
         {
             throw new NotImplementedException();
+        }
+        public async Task<List<VehicleDto>> GetVehiclesByCustomerId(int customerId)
+        {
+            var vehicles = await _context.Vehicles
+                .Where(v => v.CustomerId == customerId)
+                .ToListAsync();
+            return vehicles.Select(v => new VehicleDto
+            {
+                VehicleId = v.VehicleId,
+                LicensePlate = v.LicensePlate,
+                Make = v.Make,
+                Model = v.Model,
+                Year = v.Year
+            }).ToList();
+        }
+        //  single service
+        public async Task<List<PartDto>> GetPartsByServiceId(int serviceId)
+        {
+            var serviceParts = await _context.ServiceParts
+                .Include(sp => sp.Part) 
+                .Where(sp => sp.ServiceId == serviceId)
+                .ToListAsync();
+            return serviceParts.Select(sp => new PartDto
+            {
+                PartId = sp.Part.PartId,
+                PartName = sp.Part.PartName,
+                QuantityRequired = sp.QuantityRequired,
+                UnitPrice = sp.Part.UnitPrice
+            }).ToList();
+        }
+        // service package
+        public async Task<List<PartDto>> GetPartsByPackageId(int packageId)
+        {
+            var serviceParts = await _context.ServiceParts
+                .Include(sp => sp.Part) 
+                .Where(sp => sp.Service.Packages.Any(p => p.PackageId == packageId))
+                .ToListAsync();
+            return serviceParts.Select(sp => new PartDto
+            {
+                PartId = sp.Part.PartId,
+                PartName = sp.Part.PartName,
+                QuantityRequired = sp.QuantityRequired,
+                UnitPrice = sp.Part.UnitPrice
+            }).ToList();
         }
     }
 }

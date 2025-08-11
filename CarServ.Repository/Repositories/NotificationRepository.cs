@@ -24,7 +24,7 @@ namespace CarServ.Repository.Repositories
                 .FirstOrDefaultAsync(n => n.NotificationId == notificationId);
         }
 
-        public async Task<List<Notification>> GetNotificationsByUserIdAsync(int userId)
+        public async Task<List<Notification>> GetNotificationByUserIdAsync(int userId)
         {
             return await _context.Notifications
                 .Where(n => n.UserId == userId)
