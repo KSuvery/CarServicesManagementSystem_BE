@@ -91,6 +91,7 @@ using (var scope = app.Services.CreateScope())
 {
     var seeder = scope.ServiceProvider.GetRequiredService<AdminSeederService>();
     await seeder.SeedAdminAsync();
+    await seeder.SeedCustomerAsync();
 }
 
 app.UseSerilogRequestLogging();
