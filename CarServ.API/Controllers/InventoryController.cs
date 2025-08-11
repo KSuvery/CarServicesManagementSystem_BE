@@ -118,7 +118,7 @@ namespace CarServ.API.Controllers
         {
             return await _PartServices.GetPartItemByIdAsync(id) != null;
         }
-
+        
         [HttpGet("revenueReport")]
         [Authorize(Roles = "1")]
         public async Task<IActionResult> GetRevenueReport(
