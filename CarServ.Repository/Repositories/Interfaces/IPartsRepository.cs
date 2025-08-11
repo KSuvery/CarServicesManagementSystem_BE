@@ -1,4 +1,6 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO.Logging_part_usage;
+using CarServ.Repository.Repositories.DTO.RevenueReport;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,5 +30,9 @@ namespace CarServ.Repository.Repositories.Interfaces
             decimal unitPrice,
             DateOnly expiryDate,
             int warrantyMonths);
+        Task<RevenueReportDto> GenerateRevenueReport(DateTime startDate, DateTime endDate);
+
+        Task TrackPartsUsed(PartUsageDto partsUsedDTO);
+        Task UpdateServiceProgress(UpdateServiceProgressDto dto);
     }
 }

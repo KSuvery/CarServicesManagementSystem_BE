@@ -10,6 +10,7 @@ using CarServ.service.Services.Interfaces;
 using CarServ.service.Services;
 using CarServ.Repository.Repositories.DTO.Logging_part_usage;
 using Microsoft.AspNetCore.Authorization;
+using CarServ.Service.Services.Interfaces;
 
 namespace CarServ.API.Controllers
 {
@@ -18,9 +19,9 @@ namespace CarServ.API.Controllers
     [Authorize]
     public class PartController : ControllerBase
     {
-        private readonly IPartServices _PartServices;
+        private readonly IPartsService _PartServices;
 
-        public PartController(IPartServices PartServices)
+        public PartController(IPartsService PartServices)
         {
             _PartServices = PartServices;
         }
@@ -29,14 +30,14 @@ namespace CarServ.API.Controllers
         [Authorize(Roles = "1,3")]
         public async Task<ActionResult<IEnumerable<Part>>> GetPartItems()
         {
-            return await _PartServices.GetAllPartItemsAsync();
+            return await _PartServices.GetAllPartsAsync();
         }
 
         [HttpGet("{id}")]
         [Authorize(Roles = "1,3")]
         public async Task<ActionResult<Part>> GetPartItemById(int id)
         {
-            var PartItem = await _PartServices.GetPartItemByIdAsync(id);
+            var PartItem = await _PartServices.GetPartByIdAsync(id);
             if (PartItem == null)
             {
                 return NotFound();
@@ -48,7 +49,7 @@ namespace CarServ.API.Controllers
         [Authorize(Roles = "1,3")]
         public async Task<ActionResult<IEnumerable<Part>>> GetPartItemsByName(string partName)
         {
-            var PartItems = await _PartServices.GetPartItemsByNameAsync(partName);
+            var PartItems = await _PartServices.GetPartsByPartName(partName);
             if (PartItems == null || !PartItems.Any())
             {
                 return NotFound();
@@ -60,12 +61,12 @@ namespace CarServ.API.Controllers
         [Authorize(Roles = "1,3")]
         public async Task<ActionResult<Part>> CreatePartItem(
             string partName,
-            int? quantity,
-            decimal? unitPrice,
-            DateOnly? expiryDate,
-            int? warrantyMonths)
+            int quantity,
+            decimal unitPrice,
+            DateOnly expiryDate,
+            int warrantyMonths)
         {
-            var newPartItem = await _PartServices.CreatePartItemAsync(
+            var newPartItem = await _PartServices.AddPartAsync(
                 partName, quantity, unitPrice, expiryDate, warrantyMonths);
             if (newPartItem == null)
             {
@@ -80,16 +81,16 @@ namespace CarServ.API.Controllers
         public async Task<ActionResult<Part>> UpdatePartItem(
             int id,
             string partName,
-            int? quantity,
-            decimal? unitPrice,
-            DateOnly? expiryDate,
-            int? warrantyMonths)
+            int quantity,
+            decimal unitPrice,
+            DateOnly expiryDate,
+            int warrantyMonths)
         {
             if (!await PartExists(id))
             {
                 return NotFound();
             }
-            var updatedPartItem = await _PartServices.UpdatePartItemAsync(
+            var updatedPartItem = await _PartServices.UpdatePartAsync(
                 id, partName, quantity, unitPrice, expiryDate, warrantyMonths);
             if (updatedPartItem == null)
             {
@@ -98,25 +99,9 @@ namespace CarServ.API.Controllers
             return Ok(updatedPartItem);
         }
 
-        [HttpDelete("Delete/{id}")]
-        [Authorize(Roles = "1,3")]
-        public async Task<IActionResult> RemovePartItem(int id)
-        {
-            if (!await PartExists(id))
-            {
-                return NotFound();
-            }
-            var result = await _PartServices.RemovePartItemAsync(id);
-            if (!result)
-            {
-                return BadRequest("Failed to delete Part item.");
-            }
-            return NoContent();
-        }
-
         private async Task<bool> PartExists(int id)
         {
-            return await _PartServices.GetPartItemByIdAsync(id) != null;
+            return await _PartServices.GetPartByIdAsync(id) != null;
         }
         
         [HttpGet("revenueReport")]
