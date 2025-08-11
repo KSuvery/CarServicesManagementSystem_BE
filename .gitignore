@@ -365,5 +365,3 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /CarServ.API/.env
-CarServ.API/d41d8cd9.env
-*.env
