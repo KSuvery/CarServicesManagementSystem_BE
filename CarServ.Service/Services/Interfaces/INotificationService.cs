@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace CarServ.Service.Services.Interfaces
 {
-    public interface INotificationervice
+    public interface INotificationService
     {
         Task<Notification> GetNotificationByIdAsync(int notificationId);
-        Task<List<Notification>> GetNotificationByUserIdAsync(int userId);
+        Task<List<Notification>> GetNotificationsByUserIdAsync(int userId);
         Task<Notification> CreateNotificationAsync(
             int userId,            
             string title,

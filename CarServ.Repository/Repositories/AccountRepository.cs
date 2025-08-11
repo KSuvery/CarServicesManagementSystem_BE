@@ -41,7 +41,7 @@ namespace CarServ.Repository.Repositories
 
         public async Task<List<User>> GetAccountByRole(int roleID)
         {
-            var userListTmp = await _context.Users   
+            var userListTmp = await _context.Users
                 .Include(m => m.Role)
             .Where(m =>m.RoleId == roleID).ToListAsync();
             return userListTmp ?? new List<User>();
@@ -85,13 +85,13 @@ namespace CarServ.Repository.Repositories
         public async Task<User> Login(string username, string password)
         {
             
-            // await _context.User
+            // await _context.Users
             //    .FirstOrDefaultAsync(x => x.Phone == username && x.Password == password);
 
-            // await _context.User
+            // await _context.Users
             //    .FirstOrDefaultAsync(x => x.id == username && x.Password == password);
 
-            // await _context.User
+            // await _context.Users
             //    .FirstOrDefaultAsync(x => x.username == username && x.Password == password && x.IsActive);
             
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == username);

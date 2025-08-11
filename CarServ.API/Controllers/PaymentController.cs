@@ -8,8 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using CarServ.Domain.Entities;
 using CarServ.Service.Services.Interfaces;
 using Service.ApiModels.VNPay;
-using CarServ.Repository.Repositories.DTO.Payment;
-using CarServ.Service.Services;
 
 namespace CarServ.API.Controllers
 {
@@ -17,26 +15,37 @@ namespace CarServ.API.Controllers
     [ApiController]
     public class PaymentController : ControllerBase
     {
-        private readonly IPaymentervice _Paymentervice;
+        private readonly IPaymentService _paymentService;
         private readonly IVnPayService _vnPayService;
 
-        public PaymentController(IPaymentervice Paymentervice, IVnPayService vnPayService)
+        public PaymentController(IPaymentService paymentService, IVnPayService vnPayService)
         {
-            _Paymentervice = Paymentervice;
+            _paymentService = paymentService;
             _vnPayService = vnPayService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Payment>>> GetPayment()
+        public async Task<ActionResult<IEnumerable<Payment>>> GetPayments()
         {
-            var Payment = await _Paymentervice.GetAllPaymentAsync();
-            return Ok(Payment);
+            var payments = await _paymentService.GetAllPaymentsAsync();
+            return Ok(payments);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Payment>> GetPaymentById(int id)
         {
-            var payment = await _Paymentervice.GetPaymentByIdAsync(id);
+            var payment = await _paymentService.GetPaymentByIdAsync(id);
+            if (payment == null)
+            {
+                return NotFound();
+            }
+            return Ok(payment);
+        }
+
+        [HttpGet("order/{orderId}")]
+        public async Task<ActionResult<Payment>> GetPaymentByOrderId(int orderId)
+        {
+            var payment = await _paymentService.GetPaymentByOrderIdAsync(orderId);
             if (payment == null)
             {
                 return NotFound();
@@ -45,69 +54,69 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("customer/{customerId}")]
-        public async Task<ActionResult<IEnumerable<Payment>>> GetPaymentByCustomerId(int customerId)
+        public async Task<ActionResult<IEnumerable<Payment>>> GetPaymentsByCustomerId(int customerId)
         {
-            var Payment = await _Paymentervice.GetPaymentByCustomerIdAsync(customerId);
-            if (Payment == null || !Payment.Any())
+            var payments = await _paymentService.GetPaymentsByCustomerIdAsync(customerId);
+            if (payments == null || !payments.Any())
             {
                 return NotFound();
             }
-            return Ok(Payment);
+            return Ok(payments);
         }
 
         [HttpGet("appointment/{appointmentId}")]
-        public async Task<ActionResult<IEnumerable<Payment>>> GetPaymentByAppointmentId(int appointmentId)
+        public async Task<ActionResult<IEnumerable<Payment>>> GetPaymentsByAppointmentId(int appointmentId)
         {
-            var Payment = await _Paymentervice.GetPaymentByAppointmentIdAsync(appointmentId);
-            if (Payment == null || !Payment.Any())
+            var payments = await _paymentService.GetPaymentsByAppointmentIdAsync(appointmentId);
+            if (payments == null || !payments.Any())
             {
                 return NotFound();
             }
-            return Ok(Payment);
+            return Ok(payments);
         }
 
         [HttpGet("method")]
-        public async Task<ActionResult<IEnumerable<Payment>>> GetPaymentByMethod([FromQuery] string method)
+        public async Task<ActionResult<IEnumerable<Payment>>> GetPaymentsByMethod([FromQuery] string method)
         {
-            var Payment = await _Paymentervice.GetPaymentByMethodAsync(method);
-            if (Payment == null || !Payment.Any())
+            var payments = await _paymentService.GetPaymentsByMethodAsync(method);
+            if (payments == null || !payments.Any())
             {
                 return NotFound();
             }
-            return Ok(Payment);
+            return Ok(payments);
         }
 
         [HttpGet("sort/method")]
-        public async Task<ActionResult<IEnumerable<Payment>>> SortPaymentByMethod()
+        public async Task<ActionResult<IEnumerable<Payment>>> SortPaymentsByMethod()
         {
-            var Payment = await _Paymentervice.SortPaymentByMethodAsync();
-            if (Payment == null || !Payment.Any())
+            var payments = await _paymentService.SortPaymentsByMethodAsync();
+            if (payments == null || !payments.Any())
             {
                 return NotFound();
             }
-            return Ok(Payment);
+            return Ok(payments);
         }
 
         [HttpGet("amount-range")]
-        public async Task<ActionResult<IEnumerable<Payment>>> GetPaymentByAmountRange([FromQuery] decimal minAmount, [FromQuery] decimal maxAmount)
+        public async Task<ActionResult<IEnumerable<Payment>>> GetPaymentsByAmountRange([FromQuery] decimal minAmount, [FromQuery] decimal maxAmount)
         {
-            var Payment = await _Paymentervice.GetPaymentByAmountRangeAsync(minAmount, maxAmount);
-            if (Payment == null || !Payment.Any())
+            var payments = await _paymentService.GetPaymentsByAmountRangeAsync(minAmount, maxAmount);
+            if (payments == null || !payments.Any())
             {
                 return NotFound();
             }
-            return Ok(Payment);
+            return Ok(payments);
         }
 
         [HttpGet("paid-date")]
-        public async Task<ActionResult<IEnumerable<Payment>>> GetPaymentByPaidDate([FromQuery] DateTime paidDate)
+        public async Task<ActionResult<IEnumerable<Payment>>> GetPaymentsByPaidDate([FromQuery] DateTime paidDate)
         {
-            var Payment = await _Paymentervice.GetPaymentByPaidDateAsync(paidDate);
-            if (Payment == null || !Payment.Any())
+            var payments = await _paymentService.GetPaymentsByPaidDateAsync(paidDate);
+            if (payments == null || !payments.Any())
             {
                 return NotFound();
             }
-            return Ok(Payment);
+            return Ok(payments);
         }
 
         [HttpPost("create")]
@@ -117,7 +126,7 @@ namespace CarServ.API.Controllers
             {
                 return BadRequest("Payment cannot be null.");
             }
-            var createdPayment = await _Paymentervice.CreatePayment(payment);
+            var createdPayment = await _paymentService.CreatePayment(payment);
             return CreatedAtAction(nameof(GetPaymentById), new { id = createdPayment.PaymentId }, createdPayment);
         }
 
@@ -136,23 +145,9 @@ namespace CarServ.API.Controllers
             return Ok(response);
         }
 
-        private async Task<bool> PaymentExists(int id)
+        private async Task<bool> PaymentsExists(int id)
         {
-            return await _Paymentervice.GetPaymentByIdAsync(id) != null;
-        }
-
-        [HttpPost("processPayment")]
-        public async Task<IActionResult> ProcessPayment([FromBody] PaymentDto dto)
-        {
-            try
-            {
-                var payment = await _Paymentervice.ProcessPayment(dto);
-                return CreatedAtAction(nameof(ProcessPayment), new { id = payment.PaymentId }, payment);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return await _paymentService.GetPaymentByIdAsync(id) != null;
         }
     }
 }

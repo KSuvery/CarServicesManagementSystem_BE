@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace CarServ.Service.Services
 {
-    public class WarrantyClaimervice : IWarrantyClaimervice
+    public class WarrantyClaimService : IWarrantyClaimService
     {
         private readonly IWarrantyClaimRepository _warrantyClaimRepository;
-        public WarrantyClaimervice(IWarrantyClaimRepository warrantyClaimRepository)
+        public WarrantyClaimService(IWarrantyClaimRepository warrantyClaimRepository)
         {
             _warrantyClaimRepository = warrantyClaimRepository;
         }
@@ -22,29 +22,29 @@ namespace CarServ.Service.Services
             return await _warrantyClaimRepository.GetWarrantyClaimByIdAsync(claimId);
         }
 
-        public async Task<List<WarrantyClaim>> GetWarrantyClaimBySupplierIdAsync(int supplierId)
+        public async Task<List<WarrantyClaim>> GetWarrantyClaimsBySupplierIdAsync(int supplierId)
         {
-            return await _warrantyClaimRepository.GetWarrantyClaimBySupplierIdAsync(supplierId);
+            return await _warrantyClaimRepository.GetWarrantyClaimsBySupplierIdAsync(supplierId);
         }
 
-        public async Task<List<WarrantyClaim>> GetAllWarrantyClaimAsync()
+        public async Task<List<WarrantyClaim>> GetAllWarrantyClaimsAsync()
         {
-            return await _warrantyClaimRepository.GetAllWarrantyClaimAsync();
+            return await _warrantyClaimRepository.GetAllWarrantyClaimsAsync();
         }
 
-        public async Task<List<WarrantyClaim>> GetWarrantyClaimByStatusAsync(string status)
+        public async Task<List<WarrantyClaim>> GetWarrantyClaimsByStatusAsync(string status)
         {
-            return await _warrantyClaimRepository.GetWarrantyClaimByStatusAsync(status);
+            return await _warrantyClaimRepository.GetWarrantyClaimsByStatusAsync(status);
         }
 
-        public async Task<List<WarrantyClaim>> GetWarrantyClaimByClaimDateAsync(DateOnly claimDate)
+        public async Task<List<WarrantyClaim>> GetWarrantyClaimsByClaimDateAsync(DateOnly claimDate)
         {
-            return await _warrantyClaimRepository.GetWarrantyClaimByClaimDateAsync(claimDate);
+            return await _warrantyClaimRepository.GetWarrantyClaimsByClaimDateAsync(claimDate);
         }
 
-        public async Task<List<WarrantyClaim>> GetWarrantyClaimByNoteAsync(string note)
+        public async Task<List<WarrantyClaim>> GetWarrantyClaimsByNoteAsync(string note)
         {
-            return await _warrantyClaimRepository.GetWarrantyClaimByNoteAsync(note);
+            return await _warrantyClaimRepository.GetWarrantyClaimsByNoteAsync(note);
         }
 
         public async Task<WarrantyClaim> CreateWarrantyClaimAsync(

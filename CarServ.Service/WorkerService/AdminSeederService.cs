@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,10 +16,12 @@ namespace CarServ.Service.WorkerService
     {
         private readonly CarServicesManagementSystemContext _context;
         private readonly AdminSettings _adminSettings;
+        private readonly AdminSettings _customerSettings;
         public AdminSeederService(CarServicesManagementSystemContext context, IConfiguration configuration)
         {
             _context = context;
             _adminSettings = configuration.GetSection("AdminCredentials").Get<AdminSettings>();
+            _customerSettings = configuration.GetSection("CustomerCredentials").Get<AdminSettings>();
         }
 
         public async Task SeedAdminAsync()
@@ -44,6 +47,32 @@ namespace CarServ.Service.WorkerService
                     RoleId = adminRole.RoleId
                 };
                 _context.Users.Add(adminUser);
+                await _context.SaveChangesAsync();
+            }
+        }
+        public async Task SeedCustomerAsync()
+        {
+            // Check if customer already exists
+            var customerExists = await _context.Users.AnyAsync(u => u.Email == _customerSettings.Email);
+
+            if (!customerExists)
+            {
+                var customerRole = await _context.Roles.FirstOrDefaultAsync(r => r.RoleName == "Customer");
+                if (customerRole == null)
+                {
+                    customerRole = new Domain.Entities.Role { RoleName = "Customer" };
+                    _context.Roles.Add(customerRole);
+                    await _context.SaveChangesAsync();
+                }
+                var customerUser = new User
+                {
+                    FullName = _customerSettings.Username,
+                    Email = _customerSettings.Email,
+                    PhoneNumber = _customerSettings.PhoneNumber,
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword(_customerSettings.Password),
+                    RoleId = customerRole.RoleId
+                };
+                _context.Users.Add(customerUser);
                 await _context.SaveChangesAsync();
             }
         }

@@ -13,4 +13,5 @@ namespace CarServ.Repository.Repositories.DTO
         public string Password { get; set; }
         public string PhoneNumber { get; set; }
     }
+
 }
