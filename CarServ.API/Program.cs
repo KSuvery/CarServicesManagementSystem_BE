@@ -36,7 +36,7 @@ builder.Services.AddDatabaseConfiguration(config);
 builder.Services.AddServiceConfiguration(config);
 builder.Services.AddRepositoryConfiguration(config);
 builder.Services.AddJwtAuthenticationService(config);
-builder.Services.AddThirdPartyServices(config);
+/*builder.Services.AddThirdPartyServices(config);*/
 builder.Services.AddSwaggerService();
 builder.Services.Configure<AdminSettings>(builder.Configuration.GetSection("AdminCredentials"));
 
@@ -61,6 +61,7 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var seeder = scope.ServiceProvider.GetRequiredService<AdminSeederService>();
+    await seeder.SeedCustomerAsync();
     await seeder.SeedAdminAsync();
 }
 
