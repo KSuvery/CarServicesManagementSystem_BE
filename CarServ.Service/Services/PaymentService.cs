@@ -1,4 +1,5 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO.Payment;
 using CarServ.Repository.Repositories.Interfaces;
 using CarServ.Service.Services.Interfaces;
 using System;
@@ -9,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace CarServ.Service.Services
 {
-    public class PaymentService : IPaymentService
+    public class Paymentervice : IPaymentervice
     {
         private readonly IPaymentRepository _paymentRepository;
 
-        public PaymentService(IPaymentRepository paymentRepository)
+        public Paymentervice(IPaymentRepository paymentRepository)
         {
             _paymentRepository = paymentRepository;
         }
@@ -23,49 +24,49 @@ namespace CarServ.Service.Services
             return await _paymentRepository.GetPaymentByIdAsync(paymentId);
         }
 
-        public async Task<Payment> GetPaymentByOrderIdAsync(int orderId)
+        public async Task<List<Payment>> GetPaymentByAppointmentIdAsync(int appointmentId)
         {
-            return await _paymentRepository.GetPaymentByOrderIdAsync(orderId);
+            return await _paymentRepository.GetPaymentByAppointmentIdAsync(appointmentId);
         }
 
-        public async Task<List<Payment>> GetPaymentsByAppointmentIdAsync(int appointmentId)
+        public async Task<List<Payment>> GetPaymentByCustomerIdAsync(int customerId)
         {
-            return await _paymentRepository.GetPaymentsByAppointmentIdAsync(appointmentId);
+            return await _paymentRepository.GetPaymentByCustomerIdAsync(customerId);
         }
 
-        public async Task<List<Payment>> GetPaymentsByCustomerIdAsync(int customerId)
+        public async Task<List<Payment>> GetAllPaymentAsync()
         {
-            return await _paymentRepository.GetPaymentsByCustomerIdAsync(customerId);
+            return await _paymentRepository.GetAllPaymentAsync();
         }
 
-        public async Task<List<Payment>> GetAllPaymentsAsync()
+        public async Task<List<Payment>> GetPaymentByMethodAsync(string method)
         {
-            return await _paymentRepository.GetAllPaymentsAsync();
+            return await _paymentRepository.GetPaymentByMethodAsync(method);
         }
 
-        public async Task<List<Payment>> GetPaymentsByMethodAsync(string method)
+        public async Task<List<Payment>> SortPaymentByMethodAsync()
         {
-            return await _paymentRepository.GetPaymentsByMethodAsync(method);
+            return await _paymentRepository.SortPaymentByMethodAsync();
         }
 
-        public async Task<List<Payment>> SortPaymentsByMethodAsync()
+        public async Task<List<Payment>> GetPaymentByAmountRangeAsync(decimal minAmount, decimal maxAmount)
         {
-            return await _paymentRepository.SortPaymentsByMethodAsync();
+            return await _paymentRepository.GetPaymentByAmountRangeAsync(minAmount, maxAmount);
         }
 
-        public async Task<List<Payment>> GetPaymentsByAmountRangeAsync(decimal minAmount, decimal maxAmount)
+        public async Task<List<Payment>> GetPaymentByPaidDateAsync(DateTime paidDate)
         {
-            return await _paymentRepository.GetPaymentsByAmountRangeAsync(minAmount, maxAmount);
-        }
-
-        public async Task<List<Payment>> GetPaymentsByPaidDateAsync(DateTime paidDate)
-        {
-            return await _paymentRepository.GetPaymentsByPaidDateAsync(paidDate);
+            return await _paymentRepository.GetPaymentByPaidDateAsync(paidDate);
         }
 
         public async Task<Payment> CreatePayment(Payment payment)
         {
             return await _paymentRepository.CreatePayment(payment);
+        }
+
+        public async Task<Payment> ProcessPayment(PaymentDto dto)
+        {
+            return await _paymentRepository.ProcessPayment(dto);
         }
     }
 }

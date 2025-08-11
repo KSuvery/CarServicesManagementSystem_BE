@@ -10,11 +10,11 @@ namespace CarServ.Repository.Repositories.Interfaces
     public interface IWarrantyClaimRepository : IGenericRepository<WarrantyClaim>
     {
         Task<WarrantyClaim> GetWarrantyClaimByIdAsync(int claimId);
-        Task<List<WarrantyClaim>> GetWarrantyClaimsBySupplierIdAsync(int supplierId);
-        Task<List<WarrantyClaim>> GetAllWarrantyClaimsAsync();
-        Task<List<WarrantyClaim>> GetWarrantyClaimsByStatusAsync(string status);
-        Task<List<WarrantyClaim>> GetWarrantyClaimsByClaimDateAsync(DateOnly claimDate);
-        Task<List<WarrantyClaim>> GetWarrantyClaimsByNoteAsync(string note);
+        Task<List<WarrantyClaim>> GetWarrantyClaimBySupplierIdAsync(int supplierId);
+        Task<List<WarrantyClaim>> GetAllWarrantyClaimAsync();
+        Task<List<WarrantyClaim>> GetWarrantyClaimByStatusAsync(string status);
+        Task<List<WarrantyClaim>> GetWarrantyClaimByClaimDateAsync(DateOnly claimDate);
+        Task<List<WarrantyClaim>> GetWarrantyClaimByNoteAsync(string note);
         Task<WarrantyClaim> CreateWarrantyClaimAsync(
             int partId,
             int supplierId,
