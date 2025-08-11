@@ -9,25 +9,25 @@ using System.Threading.Tasks;
 
 namespace CarServ.Repository.Repositories.Interfaces
 {
-    public interface IPartRepository : IGenericRepository<Part>
+    public interface IInventoryRepository : IGenericRepository<Part>
     {
-        Task<List<Part>> GetAllPartItemsAsync();
-        Task<Part> GetPartItemByIdAsync(int partId);
-        Task<List<Part>> GetPartItemsByNameAsync(string partName);
-        Task<Part> CreatePartItemAsync(
+        Task<List<Part>> GetAllInventoryItemsAsync();
+        Task<Part> GetInventoryItemByIdAsync(int partId);
+        Task<List<Part>> GetInventoryItemsByNameAsync(string partName);
+        Task<Part> CreateInventoryItemAsync(
             string partName,
             int? quantity,
             decimal? unitPrice,
             DateOnly? expiryDate,
             int? warrantyMonths);
-        Task<Part> UpdatePartItemAsync(
+        Task<Part> UpdateInventoryItemAsync(
             int partId,
             string partName,
             int? quantity,
             decimal? unitPrice,
             DateOnly? expiryDate,
             int? warrantyMonths);
-        Task<bool> RemovePartItemAsync(int partId);
+        Task<bool> RemoveInventoryItemAsync(int partId);
 
         //This is revenue report, i just put it here 'cause dont know wwhere to put this func
         Task<RevenueReportDto> GenerateRevenueReport(DateTime startDate, DateTime endDate);
