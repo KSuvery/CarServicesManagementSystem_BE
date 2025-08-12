@@ -4,6 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>a6cab283-9849-4393-80ad-7c75cd2a72e3</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,12 +28,6 @@
   <ItemGroup>
     <ProjectReference Include="..\CarServ.Domain\CarServ.Domain.csproj" />
     <ProjectReference Include="..\CarServ.Service\CarServ.Service.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="appsettings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
 </Project>
