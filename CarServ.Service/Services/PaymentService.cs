@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CarServ.service.Services
 {
-    public class Paymentervice : IPaymentervice
+    public class Paymentervice : IPaymentService
     {
         private readonly IPaymentRepository _paymentRepository;
 
@@ -26,47 +26,42 @@ namespace CarServ.service.Services
 
         public async Task<List<Payment>> GetPaymentByAppointmentIdAsync(int appointmentId)
         {
-            return await _paymentRepository.GetPaymentByAppointmentIdAsync(appointmentId);
+            return await _paymentRepository.GetPaymentsByAppointmentIdAsync(appointmentId);
         }
 
         public async Task<List<Payment>> GetPaymentByCustomerIdAsync(int customerId)
         {
-            return await _paymentRepository.GetPaymentByCustomerIdAsync(customerId);
+            return await _paymentRepository.GetPaymentsByCustomerIdAsync(customerId);
         }
 
         public async Task<List<Payment>> GetAllPaymentAsync()
         {
-            return await _paymentRepository.GetAllPaymentAsync();
+            return await _paymentRepository.GetAllPaymentsAsync();
         }
 
         public async Task<List<Payment>> GetPaymentByMethodAsync(string method)
         {
-            return await _paymentRepository.GetPaymentByMethodAsync(method);
+            return await _paymentRepository.GetPaymentsByMethodAsync(method);
         }
 
         public async Task<List<Payment>> SortPaymentByMethodAsync()
         {
-            return await _paymentRepository.SortPaymentByMethodAsync();
+            return await _paymentRepository.SortPaymentsByMethodAsync();
         }
 
         public async Task<List<Payment>> GetPaymentByAmountRangeAsync(decimal minAmount, decimal maxAmount)
         {
-            return await _paymentRepository.GetPaymentByAmountRangeAsync(minAmount, maxAmount);
+            return await _paymentRepository.GetPaymentsByAmountRangeAsync(minAmount, maxAmount);
         }
 
         public async Task<List<Payment>> GetPaymentByPaidDateAsync(DateTime paidDate)
         {
-            return await _paymentRepository.GetPaymentByPaidDateAsync(paidDate);
+            return await _paymentRepository.GetPaymentsByPaidDateAsync(paidDate);
         }
 
         public async Task<Payment> CreatePayment(Payment payment)
         {
             return await _paymentRepository.CreatePayment(payment);
-        }
-
-        public async Task<Payment> ProcessPayment(PaymentDto dto)
-        {
-            return await _paymentRepository.ProcessPayment(dto);
         }
     }
 }

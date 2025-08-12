@@ -21,7 +21,7 @@ namespace CarServ.service.Services
             _repository = repository;
         }
 
-        public async Task<Service> CreateService(CreateServiceDto dto)
+        public async Task<Domain.Entities.Service> CreateService(CreateServiceDto dto)
         {
             return await _repository.CreateService(dto);
         }

@@ -2,6 +2,8 @@
 using CarServ.service.Services;
 using CarServ.service.WorkerService;
 using CarServ.Repository.Repositories;
+using CarServ.Service.Services.Interfaces;
+using CarServ.Service.Services;
 
 namespace CarServ.API.Configuration
 {
@@ -9,17 +11,16 @@ namespace CarServ.API.Configuration
     {
         public static IServiceCollection AddServiceConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddScoped<IPartServices, PartServices>();
+            services.AddScoped<IPartsService, PartsService>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IPackageServices, PackageServices>();
             services.AddScoped<INotificationervice, Notificationervice>();
-            services.AddScoped<IPaymentervice, Paymentervice>();
+            services.AddScoped<IPaymentService, Paymentervice>();
             services.AddScoped<ICloudinaryService, CloudinaryService>();
             services.AddScoped<IVnPayService, VnPayService>();
             services.AddScoped<IAppointmentervices, Appointmentervices>();
             services.AddScoped<IWarrantyClaimervice, WarrantyClaimervice>();
             services.AddScoped<AdminSeederService>();
-            
 
             return services;
         }

@@ -1,0 +1,37 @@
+﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO.Logging_part_usage;
+using CarServ.Repository.Repositories.DTO.RevenueReport;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace CarServ.Service.Services.Interfaces
+{
+    public interface IPartsService
+    {
+        Task<List<Part>> GetAllPartsAsync();
+        Task<Part> GetPartByIdAsync(int partId);
+        Task<List<Part>> GetPartsByPartName(string partName);
+        Task<List<Part>> GetPartsByUnitPriceRange(decimal minPrice, decimal maxPrice);
+        Task<List<Part>> GetPartsByExpiryDateRange(DateOnly startDate, DateOnly endDate);
+        Task<List<Part>> GetPartsByWarrantyMonthsRange(int minMonths, int maxMonths);
+        Task<Part> AddPartAsync(
+            string partName,
+            int quantity,
+            decimal unitPrice,
+            DateOnly expiryDate,
+            int warrantyMonths);
+        Task<Part> UpdatePartAsync(
+            int partId,
+            string partName,
+            int quantity,
+            decimal unitPrice,
+            DateOnly expiryDate,
+            int warrantyMonths);
+        Task<RevenueReportDto> GenerateRevenueReport(DateTime startDate, DateTime endDate);
+        Task TrackPartsUsed(PartUsageDto partUsage);
+        Task UpdateServiceProgress(UpdateServiceProgressDto dto);
+    }
+}
