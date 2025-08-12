@@ -86,7 +86,7 @@ builder.Services.AddSwaggerGen(option =>
 
 var app = builder.Build();
 
-//Auto-generate new admin with admin credentials is in appsetting
+
 using (var scope = app.Services.CreateScope())
 {
     var seeder = scope.ServiceProvider.GetRequiredService<AdminSeederService>();

@@ -97,34 +97,78 @@ namespace CarServ.Repository.Repositories
             return true;
         }
 
+
+
         
 
             public async Task<RevenueReportDto> GenerateRevenueReport(DateTime startDate, DateTime endDate)
             {
-                // Validate the input dates
+                
                 if (startDate > endDate)
                 {
                     throw new ArgumentException("Start date must be earlier than end date.");
                 }
 
-                
+                // Query to get the orders within the specified date range
                 var orders = await _context.Orders
-                    .Include(o => o.Payments)                                   
+                    .Include(o => o.Payments)
+                    .Include(o => o.OrderDetails)                    
                     .Include(o => o.Appointment)
-                    .ThenInclude(op => op.AppointmentServices)
+                    .ThenInclude(od => od.AppointmentServices)
                     .Where(o => o.CreatedAt >= startDate && o.CreatedAt <= endDate)
                     .ToListAsync();
-
+            
                 var totalRevenue = orders.Sum(o => o.Payments.Sum(p => p.Amount) ?? 0);
                 var totalOrders = orders.Count;
+
+                var totalPayments = orders.Sum(o => o.Payments.Count);
+                var totalPaymentAmount = orders.Sum(o => o.Payments.Sum(p => p.Amount) ?? 0);
+
+                var partsUsed = new Dictionary<int, int>(); 
+                foreach (var order in orders)
+                {
+                    var appointment = await _context.Appointments
+                        .Include(a => a.AppointmentServices)
+                        .ThenInclude(ap => ap.Service)
+                        .ThenInclude(s => s.ServiceParts)
+                        .FirstOrDefaultAsync(a => a.AppointmentId == order.AppointmentId);
+
+                    if (appointment != null)
+                    {
+                        foreach (var appointmentService in appointment.AppointmentServices)
+                        {
+                            var serviceParts = await _context.ServiceParts
+                                .Where(sp => sp.ServiceId == appointmentService.ServiceId)
+                                .ToListAsync();
+
+                            foreach (var servicePart in serviceParts)
+                            {
+                                if (partsUsed.ContainsKey(servicePart.PartId))
+                                {
+                                    partsUsed[servicePart.PartId] += servicePart.QuantityRequired; 
+                                }
+                                else
+                                {
+                                    partsUsed[servicePart.PartId] = servicePart.QuantityRequired;
+                                }
+                            }
+                        }
+                    }
+                }
 
                 return new RevenueReportDto
                 {
                     TotalOrders = totalOrders,
-                    TotalRevenue = totalRevenue
+                    TotalRevenue = totalRevenue,
+                    TotalPayments = totalPayments,
+                    TotalPaymentAmount = totalPaymentAmount,
+                    TotalPartsUsed = partsUsed.Count,
+                    PartsQuantity = partsUsed
                 };
             }
         
+
+
 
 
 
