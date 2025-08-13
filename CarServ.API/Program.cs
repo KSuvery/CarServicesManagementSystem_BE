@@ -15,6 +15,15 @@ using CarServ.service.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Add configuration sources
+builder.Configuration
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true) // optional: true allows fallback
+    .AddUserSecrets<Program>(optional: true) // Only works if your project has user secrets enabled
+    .AddEnvironmentVariables()
+    .AddCommandLine(args);
+
 Env.Load();
 var config = builder.Configuration;
 
