@@ -17,6 +17,7 @@ namespace CarServ.Repository.Repositories.Interfaces
         Task<ServicePackage> CreateServicePackage(CreateServicePackageDto dto);
         Task<PaginationResult<ServicePackage>> GetAllWithPaging(int pageNum, int pageSize);
         Task<ServicePackageListDto> GetAllServicePackages();
+        Task<ServiceListDto> GetAllServices();
         Task<List<VehicleDto>> GetVehiclesByCustomerId(int customerId);
 
         Task<List<PartDto>> GetPartsByServiceId(int serviceId);

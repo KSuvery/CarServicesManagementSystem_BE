@@ -47,13 +47,28 @@ namespace CarServ.API.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("get-all-service-packages")]
         [Authorize(Roles = "1,2,4")]
         public async Task<IActionResult> GetAllServicePackages()
         {
             try
             {
                 var packages = await _service.GetAllServicePackages();
+                return Ok(packages);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("get-all-services")]
+        [Authorize(Roles = "1,2,4")]
+        public async Task<IActionResult> GetAllServices()
+        {
+            try
+            {
+                var packages = await _service.GetAllServices();
                 return Ok(packages);
             }
             catch (Exception ex)

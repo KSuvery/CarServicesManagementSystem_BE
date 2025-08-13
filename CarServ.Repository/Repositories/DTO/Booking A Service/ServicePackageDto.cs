@@ -20,6 +20,8 @@ namespace CarServ.Repository.Repositories.DTO.Booking_A_Service
         public int ServiceId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public decimal Price { get; set; }
         public decimal? EstimatedLaborHours { get; set; }
+        public List<PartDto> Parts { get; set; }
     }
 }
