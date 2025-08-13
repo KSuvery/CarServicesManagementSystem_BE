@@ -8,7 +8,7 @@ namespace CarServ.API.Configuration
         {
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo { Title = "StartedIn", Version = "v1" });
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "Car Services Management System", Version = "v1" });
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,
