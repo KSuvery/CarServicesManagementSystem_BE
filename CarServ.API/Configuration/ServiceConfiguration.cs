@@ -17,10 +17,11 @@ namespace CarServ.API.Configuration
             services.AddScoped<INotificationervice, Notificationervice>();
             services.AddScoped<IPaymentService, Paymentervice>();
             services.AddScoped<ICloudinaryService, CloudinaryService>();
-            services.AddScoped<IVnPayService, VnPayService>();
+            services.AddScoped<IVnPayService, VnPayService>();            
             services.AddScoped<IAppointmentervices, Appointmentervices>();
             services.AddScoped<IWarrantyClaimervice, WarrantyClaimervice>();
             services.AddScoped<AdminSeederService>();
+            services.AddScoped<IVehicleService, VehicleService>();
 
             return services;
         }

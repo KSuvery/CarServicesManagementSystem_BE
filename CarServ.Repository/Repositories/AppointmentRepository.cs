@@ -102,6 +102,27 @@ namespace CarServ.Repository.Repositories
                 _context.Appointments.Add(appointment);
                 await _context.SaveChangesAsync();
 
+            // Create a new order as well
+            var order = new Order
+            {
+                AppointmentId = appointment.AppointmentId,
+                CreatedAt = DateTime.Now,
+                PromotionId = dto.PromotionId // Link promotion if yes
+            };
+            _context.Orders.Add(order);
+            await _context.SaveChangesAsync();
+
+            if (dto.PackageId.HasValue)
+            {
+                var packageDetail = new OrderDetail
+                {
+                    OrderId = order.OrderId,
+                    PackageId = dto.PackageId,
+                    Quantity = 1                    
+        };
+                _context.OrderDetails.Add(packageDetail);
+            }
+
             //  a service package
             if (dto.PackageId.HasValue)
             {
