@@ -50,7 +50,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("by-mail/{mail}")]
-        [Authorize(Roles = "1")]
+        [Authorize(Roles = "1,2,3,4")]
         public async Task<ActionResult<User>> GetAccountByMail(string mail)
         {
             var acc = await _accService.GetAccountByMail(mail);
