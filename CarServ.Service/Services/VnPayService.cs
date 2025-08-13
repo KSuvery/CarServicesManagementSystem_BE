@@ -1,6 +1,5 @@
-﻿using CarServ.Service.Services.Interfaces;
-using Service.ApiModels.VNPay;
-using CarServ.Service.Services.Configuration;
+﻿using CarServ.service.Services.Interfaces;
+using CarServ.service.Services.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,12 +7,13 @@ using System.Text;
 using System.Threading.Tasks;
 using CarServ.Repository.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
-using CarServ.Service.Services.ApiModels.VNPay;
+using CarServ.service.Services.ApiModels.VNPay;
 using CarServ.Domain.Entities;
 using Microsoft.Extensions.DependencyInjection;
+using CarServ.service.Services.ApiModels.VNPay;
 
 
-namespace CarServ.Service.Services
+namespace CarServ.service.Services
 {
     public class VnPayService : IVnPayService
     {
@@ -41,6 +41,7 @@ namespace CarServ.Service.Services
                 throw new InvalidOperationException("Order not found.");
             }
 
+            // add beginTransaction unitOfWork here
             var tick = order.PaymentId;
             var vnpay = new VnPayLibrary();
 

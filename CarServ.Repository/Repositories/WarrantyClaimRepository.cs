@@ -23,19 +23,19 @@ namespace CarServ.Repository.Repositories
                 .FirstOrDefaultAsync(c => c.ClaimId == claimId);
         }
 
-        public async Task<List<WarrantyClaim>> GetWarrantyClaimsBySupplierIdAsync(int supplierId)
+        public async Task<List<WarrantyClaim>> GetWarrantyClaimBySupplierIdAsync(int supplierId)
         {
             return await _context.WarrantyClaims
                 .Where(c => c.SupplierId == supplierId)
                 .ToListAsync();
         }
 
-        public async Task<List<WarrantyClaim>> GetAllWarrantyClaimsAsync()
+        public async Task<List<WarrantyClaim>> GetAllWarrantyClaimAsync()
         {
             return await _context.WarrantyClaims.ToListAsync();
         }
 
-        public async Task<List<WarrantyClaim>> GetWarrantyClaimsByStatusAsync(string status)
+        public async Task<List<WarrantyClaim>> GetWarrantyClaimByStatusAsync(string status)
         {
             return await _context.WarrantyClaims
                 .Where(c => c.Status != null &&
@@ -43,14 +43,14 @@ namespace CarServ.Repository.Repositories
                 .ToListAsync();
         }
 
-        public async Task<List<WarrantyClaim>> GetWarrantyClaimsByClaimDateAsync(DateOnly claimDate)
+        public async Task<List<WarrantyClaim>> GetWarrantyClaimByClaimDateAsync(DateOnly claimDate)
         {
             return await _context.WarrantyClaims
                 .Where(c => c.ClaimDate == claimDate)
                 .ToListAsync();
         }
 
-        public async Task<List<WarrantyClaim>> GetWarrantyClaimsByNoteAsync(string note)
+        public async Task<List<WarrantyClaim>> GetWarrantyClaimByNoteAsync(string note)
         {
             return await _context.WarrantyClaims
                 .Where(c => c.Notes != null &&
@@ -67,7 +67,6 @@ namespace CarServ.Repository.Repositories
             )
         {
             status = "Pending";
-            claimDate = DateOnly.FromDateTime(DateTime.Now);
             var warrantyClaim = new WarrantyClaim
             {
                 PartId = partId,
@@ -108,7 +107,7 @@ namespace CarServ.Repository.Repositories
             var warrantyClaim = await GetWarrantyClaimByIdAsync(claimId);
             if (warrantyClaim == null)
                 return null;
-            warrantyClaim.Status = "Rejected";
+            warrantyClaim.Status = "Deactivated";
             _context.WarrantyClaims.Update(warrantyClaim);
             await _context.SaveChangesAsync();
             return warrantyClaim;

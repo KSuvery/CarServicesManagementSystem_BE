@@ -1,4 +1,6 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO.Logging_part_usage;
+using CarServ.Repository.Repositories.DTO.RevenueReport;
 using CarServ.Repository.Repositories.Interfaces;
 using CarServ.Service.Services.Interfaces;
 using System;
@@ -77,6 +79,22 @@ namespace CarServ.Service.Services
                 unitPrice,
                 expiryDate,
                 warrantyMonths);
+        }
+
+        //Nhat's Methods
+        public async Task<RevenueReportDto> GenerateRevenueReport(DateTime startDate, DateTime endDate)
+        {
+            return await _partsRepository.GenerateRevenueReport(startDate, endDate);
+        }
+
+        public async Task TrackPartsUsed(PartUsageDto partUsage)
+        {
+            await _partsRepository.TrackPartsUsed(partUsage);
+        }
+
+        public async Task UpdateServiceProgress(UpdateServiceProgressDto dto)
+        {
+            await _partsRepository.UpdateServiceProgress(dto);
         }
     }
 }

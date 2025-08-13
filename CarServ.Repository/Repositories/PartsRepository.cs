@@ -1,4 +1,6 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO.Logging_part_usage;
+using CarServ.Repository.Repositories.DTO.RevenueReport;
 using CarServ.Repository.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -99,6 +101,150 @@ namespace CarServ.Repository.Repositories
             _context.Parts.Update(part);
             await _context.SaveChangesAsync();
             return part;
+        }
+
+        public async Task<RevenueReportDto> GenerateRevenueReport(DateTime startDate, DateTime endDate)
+        {
+            // Validate the input dates
+            if (startDate > endDate)
+            {
+                throw new ArgumentException("Start date must be earlier than end date.");
+            }
+
+
+            var orders = await _context.Orders
+                .Include(o => o.Payments)
+                .Include(o => o.Appointment)
+                .ThenInclude(op => op.AppointmentServices)
+                .Where(o => o.CreatedAt >= startDate && o.CreatedAt <= endDate)
+                .ToListAsync();
+
+            var totalRevenue = orders.Sum(o => o.Payments.Sum(p => p.Amount) ?? 0);
+            var totalOrders = orders.Count;
+
+            return new RevenueReportDto
+            {
+                TotalOrders = totalOrders,
+                TotalRevenue = totalRevenue
+            };
+        }
+
+        public async Task UpdateServiceProgress(UpdateServiceProgressDto dto)
+        {
+          
+            if (string.IsNullOrEmpty(dto.Status) || !IsValidStatus(dto.Status))
+            {
+                throw new ArgumentException("Invalid status provided.");
+            }
+
+            
+            var serviceProgress = await _context.ServiceProgresses
+                .FirstOrDefaultAsync(sp => sp.AppointmentId == dto.AppointmentId);
+
+            if (serviceProgress == null)
+            {
+                throw new InvalidOperationException("Service progress not found for the given appointment.");
+            }
+
+            
+            serviceProgress.Status = dto.Status;
+            serviceProgress.Note = dto.Note;
+            serviceProgress.UpdatedAt = DateTime.Now;
+
+            
+            if (dto.Status == "Completed")
+            {
+                await ReduceUsedParts(dto.AppointmentId);
+                await CheckLowStockAndNotify();
+            }
+
+            // Save changes to the database
+            await _context.SaveChangesAsync();
+        }
+        private async Task CheckLowStockAndNotify()
+        {
+            
+            var lowStockParts = await _context.Parts
+                .Where(p => p.Quantity < 2)
+                .ToListAsync();
+            
+            var userIdsToNotify = await _context.Users
+                .Where(u => u.RoleId == 1 || u.RoleId == 4)
+                .Select(u => u.UserId)
+                .ToListAsync();
+            foreach (var part in lowStockParts)
+            {
+                foreach (var userId in userIdsToNotify)
+                {
+                    var notification = new Notification
+                    {
+                        UserId = userId,
+                        Message = $"Low stock alert: The quantity of part '{part.PartName}' is low (Current Quantity: {part.Quantity}).",
+                        SentAt = DateTime.Now,
+                        IsRead = false
+                    };
+                    await _context.Notifications.AddAsync(notification);
+                }
+            }
+        }
+            private bool IsValidStatus(string status)
+        {
+            var validStatuses = new[] { "Booked", "Vehicle Received", "In Service", "Completed", "Cancelled" };
+            return validStatuses.Contains(status);
+        }
+
+        private async Task ReduceUsedParts(int appointmentId)
+        {
+            // Get the parts used in the appointment
+            var appointmentServices = await _context.AppointmentServices
+                .Include(a => a.Service)
+                .Where(a => a.AppointmentId == appointmentId)
+                .ToListAsync();
+
+            foreach (var appointmentService in appointmentServices)
+            {
+                var serviceParts = await _context.ServiceParts
+                    .Where(sp => sp.ServiceId == appointmentService.ServiceId)
+                    .ToListAsync();
+
+                foreach (var servicePart in serviceParts)
+                {
+                    var part = await _context.Parts.FindAsync(servicePart.PartId);
+                    if (part != null && part.Quantity.HasValue)
+                    {
+
+                        part.Quantity -= servicePart.QuantityRequired;
+                        if (part.Quantity < 0)
+                        {
+                            part.Quantity = 0;
+                        }
+                    }
+                }
+            }
+        }
+
+        public async Task TrackPartsUsed(PartUsageDto partsUsedDTO)
+        {
+            /*var partsUsed = new PartsUsed
+            {
+                ServiceId = partsUsedDTO.ServiceID,
+                PartId = partsUsedDTO.PartID,
+                QuantityUsed = partsUsedDTO.QuantityUsed
+            };
+
+            _context.PartsUsed.Add(partsUsed);
+
+            // Update the Part stock level
+            var PartItem = _context.Part.Find(partsUsedDTO.PartID);
+            if (PartItem != null)
+            {
+                PartItem.Quantity -= partsUsedDTO.QuantityUsed;
+                _context.Part.Update(PartItem);
+                await _context.SaveChangesAsync();
+                
+            }
+
+            await CheckAndNotifyLowStock(PartItem);*/
         }
     }
 }

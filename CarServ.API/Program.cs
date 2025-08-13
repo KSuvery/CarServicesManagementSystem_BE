@@ -9,12 +9,21 @@ using Microsoft.OpenApi.Models;
 
 using DotNetEnv;
 using CarServ.Repository.Repositories.DTO;
-using CarServ.Service.WorkerService;
-using CarServ.Service.Services.Interfaces;
-using CarServ.Service.Services;
+using CarServ.service.WorkerService;
+using CarServ.service.Services.Interfaces;
+using CarServ.service.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Add configuration sources
+builder.Configuration
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true) // optional: true allows fallback
+    .AddUserSecrets<Program>(optional: true) // Only works if your project has user secrets enabled
+    .AddEnvironmentVariables()
+    .AddCommandLine(args);
+
 Env.Load();
 var config = builder.Configuration;
 
@@ -54,14 +63,44 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
+//builder.Services.AddSwaggerGen(option =>
+//{
+//    option.DescribeAllParametersInCamelCase();
+//    option.ResolveConflictingActions(conf => conf.First());
+//    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+//    {
+//        In = ParameterLocation.Header,
+//        Description = "Please enter a valid token",
+//        Name = "Authorization",
+//        Type = SecuritySchemeType.Http,
+//        BearerFormat = "JWT",
+//        Scheme = "Bearer"
+//    });
+//    option.AddSecurityRequirement(new OpenApiSecurityRequirement
+//    {
+//        {
+//            new OpenApiSecurityScheme
+//            {
+//                Reference = new OpenApiReference
+//                {
+//                    Type=ReferenceType.SecurityScheme,
+//                    Id="Bearer"
+//                }
+//            },
+//            new string[]{}
+//        }
+//    });
+//});
+
 
 var app = builder.Build();
 
-//Auto-generate new admin with admin credentials is in appsetting
+
 using (var scope = app.Services.CreateScope())
 {
     var seeder = scope.ServiceProvider.GetRequiredService<AdminSeederService>();
     await seeder.SeedAdminAsync();
+    await seeder.SeedCustomerAsync();
 }
 
 app.UseSerilogRequestLogging();

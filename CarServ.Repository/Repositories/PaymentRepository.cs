@@ -1,4 +1,5 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO.Payment;
 using CarServ.Repository.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -18,7 +19,7 @@ namespace CarServ.Repository.Repositories
         {
             _context = context;
         }
-        
+
         public async Task<Payment> GetPaymentByIdAsync(int paymentId)
         {
             return await _context.Payments
@@ -53,7 +54,7 @@ namespace CarServ.Repository.Repositories
         public async Task<List<Payment>> GetPaymentsByMethodAsync(string method)
         {
             return await _context.Payments
-                .Where(p => p.PaymentMethod != null && 
+                .Where(p => p.PaymentMethod != null &&
                     p.PaymentMethod.ToLower().Contains(method.ToLower()))
                 .ToListAsync();
         }

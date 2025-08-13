@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarServ.Service.Services.Configuration
+namespace CarServ.service.Services.Configuration
 {
     public class SystemSettingModel
     {
