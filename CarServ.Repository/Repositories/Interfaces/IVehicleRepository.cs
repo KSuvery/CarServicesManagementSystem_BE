@@ -1,4 +1,5 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,5 +18,6 @@ namespace CarServ.Repository.Repositories.Interfaces
         Task<List<Vehicle>> GetVehiclesByModelAsync(string model);
         Task<List<Vehicle>> GetVehiclesByYearRangeAsync(int minYear, int maxYear);
         Task<List<Vehicle>> GetVehiclesByCarTypeIdAsync(int carTypeId);
+        Task<Vehicle> AddVehicleAsync(int customerId, AddVehicleDto dto);
     }
 }

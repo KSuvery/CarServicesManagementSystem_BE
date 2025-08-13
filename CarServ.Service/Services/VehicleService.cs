@@ -1,4 +1,5 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO;
 using CarServ.Repository.Repositories.Interfaces;
 using CarServ.Service.Services.Interfaces;
 using System;
@@ -55,6 +56,11 @@ namespace CarServ.Service.Services
         public async Task<List<Vehicle>> GetVehiclesByCarTypeIdAsync(int carTypeId)
         {
             return await _vehicleRepository.GetVehiclesByCarTypeIdAsync(carTypeId);
+        }
+
+        public async Task<Vehicle> AddVehicleAsync(int customerId, AddVehicleDto dto)
+        {
+            return await _vehicleRepository.AddVehicleAsync(customerId, dto);
         }
     }
 }
