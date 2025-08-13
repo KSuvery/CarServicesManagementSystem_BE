@@ -37,7 +37,7 @@ namespace CarServ.API.Controllers
             return await _accService.GetAllAccountWithPaging(currentPage, pageSize);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("by-id/{id}")]
         [Authorize(Roles = "1")]
         public async Task<ActionResult<User>> GetAccountById(int id)
         {
@@ -49,7 +49,7 @@ namespace CarServ.API.Controllers
             return acc;
         }
 
-        [HttpGet("{mail}")]
+        [HttpGet("by-mail/{mail}")]
         [Authorize(Roles = "1")]
         public async Task<ActionResult<User>> GetAccountByMail(string mail)
         {
@@ -61,7 +61,7 @@ namespace CarServ.API.Controllers
             return acc;
         }
 
-        [HttpGet("{roleID}")]
+        [HttpGet("by-role/{roleID}")]
         [Authorize(Roles = "1")]
         public async Task<List<User>> GetAccountByRole(int roleID)
         {
