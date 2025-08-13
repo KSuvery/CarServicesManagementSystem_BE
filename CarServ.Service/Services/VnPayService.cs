@@ -41,6 +41,7 @@ namespace CarServ.service.Services
                 throw new InvalidOperationException("Order not found.");
             }
 
+            // add beginTransaction unitOfWork here
             var tick = order.PaymentId;
             var vnpay = new VnPayLibrary();
 
