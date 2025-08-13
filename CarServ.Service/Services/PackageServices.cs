@@ -34,7 +34,12 @@ namespace CarServ.service.Services
         public async Task<ServicePackageListDto> GetAllServicePackages()
         {
             return await _repository.GetAllServicePackages();
-        }        
+        }
+
+        public async Task<ServiceListDto> GetAllServices()
+        {
+            return await _repository.GetAllServices();
+        }
 
         public async Task<PaginationResult<ServicePackage>> GetAllWithPaging(int pageNum, int pageSize)
         {

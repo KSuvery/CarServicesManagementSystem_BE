@@ -96,6 +96,32 @@ namespace CarServ.Repository.Repositories
 
         }
 
+        public async Task<ServiceListDto> GetAllServices()
+        {
+            var services = await _context.Services
+        .Include(sp => sp.ServiceParts)
+        .ToListAsync();
+            var serviceDtos = services.Select(service => new ServiceDto
+            {
+                ServiceId = service.ServiceId,
+                Name = service.Name,
+                Description = service.Description,
+                Price = (decimal)service.Price,
+                Parts = service.ServiceParts.Select(service => new PartDto
+                {
+                    PartId = service.PartId,
+                    QuantityRequired = service.QuantityRequired                    
+                }).ToList()
+            }).ToList();
+            return new ServiceListDto
+            {
+                Services = serviceDtos,
+                CurrentDate = DateTime.Now
+            };
+
+
+        }
+
 
         public Task<PaginationResult<ServicePackage>> GetAllWithPaging(int pageNum, int pageSize)
         {

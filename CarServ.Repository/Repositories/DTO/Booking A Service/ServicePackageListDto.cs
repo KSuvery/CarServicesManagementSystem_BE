@@ -11,4 +11,9 @@ namespace CarServ.Repository.Repositories.DTO.Booking_A_Service
         public List<ServicePackageDto> Packages { get; set; }
         public DateTime CurrentDate { get; set; }
     }
+    public class ServiceListDto
+    {
+        public List<ServiceDto> Services { get; set; }
+        public DateTime CurrentDate { get; set; }
+    }
 }

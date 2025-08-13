@@ -163,7 +163,7 @@ namespace CarServ.Repository.Repositories
 
         private bool IsValidStatus(string status)
         {
-            var validStatuses = new[] { "Booked", "Vehicle Received", "In Service", "Completed" };
+            var validStatuses = new[] { "Booked", "Vehicle Received", "In Service", "Completed", "Canceled" };
             return validStatuses.Contains(status);
         }
 
