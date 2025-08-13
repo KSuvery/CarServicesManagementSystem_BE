@@ -102,7 +102,81 @@ namespace CarServ.Repository.Repositories
                 _context.Appointments.Add(appointment);
                 await _context.SaveChangesAsync();
 
-            //  a service package
+            // Create a new order as well
+            var order = new Order
+            {
+                AppointmentId = appointment.AppointmentId,
+                CreatedAt = DateTime.Now,
+                PromotionId = dto.PromotionId // Link promotion if yes
+            };
+            _context.Orders.Add(order);
+            await _context.SaveChangesAsync();
+
+            if (dto.PackageId.HasValue)
+            {
+                var packageDetail = new OrderDetail
+                {
+                    OrderId = order.OrderId,
+                    PackageId = dto.PackageId,
+                    Quantity = 1                    
+        };
+                _context.OrderDetails.Add(packageDetail);
+            }
+            //Retrieve services included in the selected package
+            List<int> packageServiceIds = new List<int>();
+            if (dto.PackageId.HasValue)
+            {
+                packageServiceIds = await _context.ServicePackages
+                    .Where(sp => sp.PackageId == dto.PackageId.Value)
+                    .Select(sp => sp.Services.Select(s => s.ServiceId)) // select IDs
+                    .SelectMany(ids => ids) // flatten nested lists
+                    .ToListAsync();
+            }
+            foreach (var serviceId in packageServiceIds)
+            {
+                
+                
+                    var appointmentService = new AppointmentService
+                    {
+                        AppointmentId = appointment.AppointmentId,
+                        ServiceId = serviceId,
+                        Quantity = 1
+                    };
+                    _context.AppointmentServices.Add(appointmentService);
+                    // Also add the service detail to the order
+                    var serviceDetail = new OrderDetail
+                    {
+                        OrderId = order.OrderId,
+                        ServiceId = serviceId,
+                        Quantity = 1,
+                    };
+                    _context.OrderDetails.Add(serviceDetail);
+                
+            }
+
+            // Add multiple services, skipping those already included in the package
+            foreach (var serviceId in dto.ServiceIds)
+            {
+                if (!packageServiceIds.Contains(serviceId))
+                {
+                    var appointmentService = new AppointmentService
+                    {
+                        AppointmentId = appointment.AppointmentId,
+                        ServiceId = serviceId,
+                        Quantity = 1
+                    };
+                    _context.AppointmentServices.Add(appointmentService);
+                    // Also add the service detail to the order
+                    var serviceDetail = new OrderDetail
+                    {
+                        OrderId = order.OrderId,
+                        ServiceId = serviceId,
+                        Quantity = 1,
+                    };
+                    _context.OrderDetails.Add(serviceDetail);
+                }
+            }
+            /*//  a service package
             if (dto.PackageId.HasValue)
             {
                 appointment.PackageId = dto.PackageId.Value;
@@ -118,10 +192,10 @@ namespace CarServ.Repository.Repositories
                         Quantity = 1 
                     };
                     _context.AppointmentServices.Add(appointmentService);
-                }
+                }*/
 
-             
-                var serviceProgress = new ServiceProgress
+
+            var serviceProgress = new ServiceProgress
                 {
                     AppointmentId = appointment.AppointmentId,
                     Status = "Booked",

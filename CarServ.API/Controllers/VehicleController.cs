@@ -1,4 +1,5 @@
-﻿using CarServ.Service.Services.Interfaces;
+﻿using CarServ.Repository.Repositories.DTO;
+using CarServ.Service.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -155,6 +156,20 @@ namespace CarServ.API.Controllers
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPost("add")]
+        public async Task<IActionResult> AddVehicle(int customerId, [FromBody] AddVehicleDto dto)
+        {
+            try
+            {
+                var vehicle = await _vehicleService.AddVehicleAsync(customerId, dto);
+                return CreatedAtAction(nameof(AddVehicle), new { id = vehicle.VehicleId }, vehicle);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
     }
