@@ -131,13 +131,13 @@ namespace CarServ.Repository.Repositories
 
         public async Task UpdateServiceProgress(UpdateServiceProgressDto dto)
         {
-            // Validate the input data
+          
             if (string.IsNullOrEmpty(dto.Status) || !IsValidStatus(dto.Status))
             {
                 throw new ArgumentException("Invalid status provided.");
             }
 
-            // Retrieve the service progress record
+            
             var serviceProgress = await _context.ServiceProgresses
                 .FirstOrDefaultAsync(sp => sp.AppointmentId == dto.AppointmentId);
 
@@ -146,24 +146,50 @@ namespace CarServ.Repository.Repositories
                 throw new InvalidOperationException("Service progress not found for the given appointment.");
             }
 
-            // Update the status and note
+            
             serviceProgress.Status = dto.Status;
             serviceProgress.Note = dto.Note;
             serviceProgress.UpdatedAt = DateTime.Now;
 
-            // If the status is "Completed", reduce the quantity of parts used
+            
             if (dto.Status == "Completed")
             {
                 await ReduceUsedParts(dto.AppointmentId);
+                await CheckLowStockAndNotify();
             }
 
             // Save changes to the database
             await _context.SaveChangesAsync();
         }
-
-        private bool IsValidStatus(string status)
+        private async Task CheckLowStockAndNotify()
         {
-            var validStatuses = new[] { "Booked", "Vehicle Received", "In Service", "Completed", "Canceled" };
+            
+            var lowStockParts = await _context.Parts
+                .Where(p => p.Quantity < 2)
+                .ToListAsync();
+            
+            var userIdsToNotify = await _context.Users
+                .Where(u => u.RoleId == 1 || u.RoleId == 4)
+                .Select(u => u.UserId)
+                .ToListAsync();
+            foreach (var part in lowStockParts)
+            {
+                foreach (var userId in userIdsToNotify)
+                {
+                    var notification = new Notification
+                    {
+                        UserId = userId,
+                        Message = $"Low stock alert: The quantity of part '{part.PartName}' is low (Current Quantity: {part.Quantity}).",
+                        SentAt = DateTime.Now,
+                        IsRead = false
+                    };
+                    await _context.Notifications.AddAsync(notification);
+                }
+            }
+        }
+            private bool IsValidStatus(string status)
+        {
+            var validStatuses = new[] { "Booked", "Vehicle Received", "In Service", "Completed", "Cancelled" };
             return validStatuses.Contains(status);
         }
 

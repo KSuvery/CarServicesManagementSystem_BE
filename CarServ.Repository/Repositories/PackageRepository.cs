@@ -99,7 +99,7 @@ namespace CarServ.Repository.Repositories
         public async Task<ServiceListDto> GetAllServices()
         {
             var services = await _context.Services
-        .Include(sp => sp.ServiceParts)
+        .Include(sp => sp.ServiceParts)        
         .ToListAsync();
             var serviceDtos = services.Select(service => new ServiceDto
             {
@@ -107,10 +107,12 @@ namespace CarServ.Repository.Repositories
                 Name = service.Name,
                 Description = service.Description,
                 Price = (decimal)service.Price,
-                Parts = service.ServiceParts.Select(service => new PartDto
+                Parts = service.ServiceParts.Select(part => new PartDto
                 {
-                    PartId = service.PartId,
-                    QuantityRequired = service.QuantityRequired                    
+                    PartId = part.PartId,
+                    PartName = part.Part.PartName,
+                    QuantityRequired = part.QuantityRequired         ,
+                    UnitPrice = part.Part.UnitPrice
                 }).ToList()
             }).ToList();
             return new ServiceListDto
