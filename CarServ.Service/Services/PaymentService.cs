@@ -59,9 +59,9 @@ namespace CarServ.service.Services
             return await _paymentRepository.GetPaymentsByPaidDateAsync(paidDate);
         }
 
-        public async Task<Payment> CreatePayment(Payment payment)
+        public async Task<Payment> CreatePayment(PaymentDto dto)
         {
-            return await _paymentRepository.CreatePayment(payment);
+            return await _paymentRepository.CreatePayment(dto);
         }
     }
 }

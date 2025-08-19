@@ -14,10 +14,12 @@ namespace CarServ.Repository.Repositories
     public class PaymentRepository : GenericRepository<Payment>, IPaymentRepository
     {
         private readonly CarServicesManagementSystemContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public PaymentRepository(CarServicesManagementSystemContext context) : base(context)
+        public PaymentRepository(CarServicesManagementSystemContext context, IUnitOfWork unitOfWork) : base(context)
         {
             _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Payment> GetPaymentByIdAsync(int paymentId)
@@ -80,11 +82,30 @@ namespace CarServ.Repository.Repositories
                 .ToListAsync();
         }
 
-        public async Task<Payment> CreatePayment(Payment payment)
+        public async Task<Payment> CreatePayment(PaymentDto dto)
         {
-            _context.Payments.Add(payment);
-            await _context.SaveChangesAsync();
-            return payment;
+            try
+            {
+                _unitOfWork.BeginTransaction();
+                var payment = new Payment
+                {
+                    AppointmentId = dto.AppointmentId,
+                    Amount = dto.Amount,
+                    PaymentMethod = dto.PaymentMethod,
+                    PaidAt = DateTime.Now,
+                    OrderId = dto.OrderId
+                };
+
+                _context.Payments.Add(payment);
+                await _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.CommitTransactionAsync();
+                return payment;
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                throw new Exception("Error creating payment", ex);
+            }
         }
     }
 }
