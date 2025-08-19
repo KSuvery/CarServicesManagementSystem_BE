@@ -3,6 +3,8 @@ using CarServ.Repository.Repositories.DTO;
 using CarServ.Repository.Repositories.DTO.User_return_DTO;
 using CarServ.Repository.Repositories.Interfaces;
 using CarServ.service.Services.Interfaces;
+using CarServ.Service.Services;
+using CarServ.Service.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -15,10 +17,12 @@ namespace CarServ.service.Services
     public class AccountService : IAccountService
     {
         private readonly IAccountRepository _accRepository;
+        private readonly IEmailService _emailService;
 
-        public AccountService(IAccountRepository accRepository)
+        public AccountService(IAccountRepository accRepository, IEmailService emailService)
         {
             _accRepository = accRepository;
+            _emailService = emailService;
         }
         public async Task<User> GetAccountById(int Id)
         {
@@ -51,7 +55,13 @@ namespace CarServ.service.Services
         }
         public async Task<CustomerDTO> SignupNewCustomer(string fullName, string email, string phoneNumber, string password, string address)
         {
-           return await _accRepository.SignupNewCustomer(fullName, email, phoneNumber, password, address);
+           var customerDTO = await _accRepository.SignupNewCustomer(fullName, email, phoneNumber, password, address);
+            await _emailService.SendEmailAsync(
+            email,
+            "Signing up new account confirmation",
+            "<h1>Thank you!</h1><p>you have successfuly registered a new account with the following detail: </p>"
+        );
+            return customerDTO;
         }
         public async Task<StaffDTO> AddingNewStaff(string fullName, string email, string phoneNumber, string password)
         {

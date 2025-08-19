@@ -12,6 +12,8 @@ namespace CarServ.Repository.Repositories.Interfaces
     public interface IPartsRepository : IGenericRepository<Part>
     {
         Task<List<Part>> GetAllPartsAsync();
+        Task<List<Part>> GetLowPartsAsync();
+        Task<List<Part>> GetZeroPartsAsync();
         Task<Part> GetPartByIdAsync(int partId);
         Task<List<Part>> GetPartsByPartName(string partName);
         Task<List<Part>> GetPartsByUnitPriceRange(decimal minPrice, decimal maxPrice);

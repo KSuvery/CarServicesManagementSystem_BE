@@ -12,6 +12,9 @@ using CarServ.Repository.Repositories.DTO;
 using CarServ.service.WorkerService;
 using CarServ.service.Services.Interfaces;
 using CarServ.service.Services;
+using System.Net.Mail;
+using System.Net;
+using CarServ.Service.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -48,6 +51,7 @@ builder.Services.AddJwtAuthenticationService(config);
 builder.Services.AddThirdPartyServices(config);
 builder.Services.AddSwaggerService();
 builder.Services.Configure<AdminSettings>(builder.Configuration.GetSection("AdminCredentials"));
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 
 
 builder.Services.AddControllers().AddJsonOptions(options =>

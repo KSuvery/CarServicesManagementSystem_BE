@@ -24,6 +24,22 @@ namespace CarServ.Repository.Repositories
         {
             return await _context.Parts.ToListAsync();
         }
+        public async Task<List<Part>> GetLowPartsAsync()
+        {
+            var parts = await _context.Parts
+                .Where(p => p.Quantity < 5)
+                .ToListAsync();
+
+            return parts;
+        }
+        public async Task<List<Part>> GetZeroPartsAsync()
+        {
+            var parts = await _context.Parts
+                .Where(p => p.Quantity <= 0)
+                .ToListAsync();
+
+            return parts;
+        }
 
         public async Task<Part> GetPartByIdAsync(int partId)
         {

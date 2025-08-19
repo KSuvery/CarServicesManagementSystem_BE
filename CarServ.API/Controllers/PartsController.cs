@@ -22,6 +22,19 @@ namespace CarServ.API.Controllers
             return Ok(parts);
         }
 
+        [HttpGet("get-low-parts")]
+        public async Task<ActionResult<IEnumerable<Part>>> GetAllLowParts()
+        {
+            var parts = await _partsService.GetLowPartsAsync();
+            return Ok(parts);
+        }
+        [HttpGet("get-out-of-stock-parts")]
+        public async Task<ActionResult<IEnumerable<Part>>> GetZeroParts()
+        {
+            var parts = await _partsService.GetZeroPartsAsync();
+            return Ok(parts);
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<Part>> GetPartById(int id)
         {

@@ -1,16 +1,12 @@
 ﻿using CarServ.service.Services.Interfaces;
 using CarServ.service.Services.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CarServ.Repository.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
 using CarServ.service.Services.ApiModels.VNPay;
 using CarServ.Domain.Entities;
 using Microsoft.Extensions.DependencyInjection;
-using CarServ.service.Services.ApiModels.VNPay;
+using Microsoft.Extensions.Logging;
+using CarServ.Repository.Repositories.DTO.Payment;
 
 
 namespace CarServ.service.Services
@@ -20,12 +16,15 @@ namespace CarServ.service.Services
         private readonly VnPaySetting _vnPaySetting;
         private readonly IOrderRepository _orderRepository;
         private readonly IPaymentRepository _paymentRepository;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly ILogger<VnPayService> _logger;
 
         public VnPayService(IServiceProvider serviceProvider)
         {
             _vnPaySetting = VnPaySetting.Instance;
             _orderRepository = serviceProvider.GetRequiredService<IOrderRepository>();
             _paymentRepository = serviceProvider.GetRequiredService<IPaymentRepository>();
+            _unitOfWork = serviceProvider.GetRequiredService<IUnitOfWork>();
         }
 
         public async Task<string> CreatePaymentUrl(HttpContext context, VnPaymentRequest request)
@@ -34,15 +33,15 @@ namespace CarServ.service.Services
             string hostName = System.Net.Dns.GetHostName();
             string clientIPAddress = System.Net.Dns.GetHostAddresses(hostName).GetValue(0).ToString();
 
-            var order = await _paymentRepository.GetPaymentByIdAsync(request.OrderId);
+            var order = await _orderRepository.GetOrderByIdAsync(request.OrderId);
 
             if (order == null)
             {
                 throw new InvalidOperationException("Order not found.");
             }
 
-            // add beginTransaction unitOfWork here
-            var tick = order.PaymentId;
+            //_unitOfWork.BeginTransaction();
+            var orderId = order.OrderId;
             var vnpay = new VnPayLibrary();
 
             vnpay.AddRequestData("vnp_Version", "2.1.0"); // Version
@@ -52,7 +51,7 @@ namespace CarServ.service.Services
             vnpay.AddRequestData("vnp_Locale", "vn");
             var amount = ((int)(request.Amount * 100));
 
-            // Ensure amount is a whole number (integer), not a decimal or float
+            //Ensure amount is a whole number(integer), not a decimal or float
             int amountInCents = (int)amount;  // Convert to integer
 
             if (amountInCents <= 0)
@@ -68,8 +67,8 @@ namespace CarServ.service.Services
 
             // Order information
             vnpay.AddRequestData("vnp_CurrCode", "VND");
-            vnpay.AddRequestData("vnp_TxnRef", tick.ToString());
-            vnpay.AddRequestData("vnp_OrderInfo", $"Thanh toán đơn hàng ID: {request.OrderId}, Tổng giá trị: {order.Amount} VND");
+            vnpay.AddRequestData("vnp_TxnRef", orderId.ToString());
+            vnpay.AddRequestData("vnp_OrderInfo", $"Thanh toán đơn hàng ID: {request.OrderId}, Tổng giá trị: {request.Amount} VND");
             vnpay.AddRequestData("vnp_ReturnUrl", returnUrl);
             vnpay.AddRequestData("vnp_IpAddr", clientIPAddress);
             vnpay.AddRequestData("vnp_OrderType", "other");
@@ -77,26 +76,29 @@ namespace CarServ.service.Services
             try
             {
                 // Create payment entity in the repository
-                var payment = new Payment
+                var payment = new PaymentDto
                 {
-                    PaymentId = tick,
                     AppointmentId = order.AppointmentId,
-                    Amount = amountInCents,
+                    Amount = request.Amount,
                     PaymentMethod = "VNPay",
                     PaidAt = createDate,
                     OrderId = request.OrderId
                 };
 
-                _paymentRepository.CreatePayment(payment);
-
+                await _paymentRepository.CreatePayment(payment);
 
                 // Generate the payment URL
                 var paymentUrl = vnpay.CreateRequestUrl(_vnPaySetting.BaseUrl, _vnPaySetting.HashSecret);
+
                 return paymentUrl;
             }
             catch (Exception ex)
             {
-                throw new InvalidOperationException("Error creating payment URL", ex);
+                _logger.LogError(ex, "Error creating payment URL for order ID {OrderId}", request.OrderId);
+                await _unitOfWork.RollbackTransactionAsync();
+                throw;
+
+                //throw new InvalidOperationException("Error creating payment URL", ex);
             }
         }
 

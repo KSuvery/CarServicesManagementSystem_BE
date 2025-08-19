@@ -116,7 +116,7 @@ namespace CarServ.Repository.Repositories
                 Email = email,
                 PhoneNumber = phoneNumber,
                 PasswordHash = passwordHash,
-                RoleId = 4 // New user is a customer
+                RoleId = 2
             };
             _context.Users.Add(newUser);
             await _context.SaveChangesAsync();
@@ -127,7 +127,7 @@ namespace CarServ.Repository.Repositories
             };
             
             _context.Customers.Add(customer);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();            
 
             var newlyCreatedCustomer = await this.GetAccountById(customer.CustomerId);
             var userDTO = new CustomerDTO
@@ -156,7 +156,7 @@ namespace CarServ.Repository.Repositories
                 Email = email,
                 PhoneNumber = phoneNumber,
                 PasswordHash = passwordHash,
-                RoleId = 2 // New user is a service staff
+                RoleId = 3 // New user is a service staff
             };
             _context.Users.Add(newUser);
             await _context.SaveChangesAsync();

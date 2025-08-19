@@ -68,31 +68,6 @@ namespace CarServ.API.Controllers
             return Appointment;
         }
 
-        [HttpPost("Schedule_1")]
-        /*[Authorize(Roles = "1,2")]*/
-        public async Task<ActionResult<Appointment>> ScheduleAppointment(
-            int customerId,
-            int vehicleId,
-            int packageId,
-            DateTime appointmentDate,
-            string status = "Pending",
-            int? promotionId = null)
-        {
-            var createdAppointment = await _Appointmentervices.ScheduleAppointmentAsync(
-                customerId,
-                vehicleId,
-                packageId,
-                appointmentDate,
-                status,
-                promotionId);
-
-            if (createdAppointment == null)
-            {
-                return BadRequest("Unable to schedule appointment.");
-            }
-
-            return CreatedAtAction(nameof(GetAppointmentById), new { id = createdAppointment.AppointmentId }, createdAppointment);
-        }
         [HttpPost("schedule")]
         [Authorize(Roles = "1,2,3,4")]
         public async Task<IActionResult> ScheduleAppointment(int customerId, [FromBody] ScheduleAppointmentDto dto)

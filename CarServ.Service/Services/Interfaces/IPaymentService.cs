@@ -18,6 +18,6 @@ namespace CarServ.service.Services.Interfaces
         Task<List<Payment>> SortPaymentByMethodAsync();
         Task<List<Payment>> GetPaymentByAmountRangeAsync(decimal minAmount, decimal maxAmount);
         Task<List<Payment>> GetPaymentByPaidDateAsync(DateTime paidDate);
-        Task<Payment> CreatePayment(Payment payment);
+        Task<Payment> CreatePayment(PaymentDto dto);
     }
 }

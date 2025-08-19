@@ -22,6 +22,7 @@ namespace CarServ.API.Configuration
             services.AddScoped<IWarrantyClaimervice, WarrantyClaimervice>();
             services.AddScoped<AdminSeederService>();
             services.AddScoped<IVehicleService, VehicleService>();
+            services.AddTransient<IEmailService, EmailService>();
 
             return services;
         }
