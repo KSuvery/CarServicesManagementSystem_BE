@@ -96,5 +96,15 @@ namespace CarServ.Service.Services
         {
             await _partsRepository.UpdateServiceProgress(dto);
         }
+
+        public async Task<List<Part>> GetLowPartsAsync()
+        {
+            return await _partsRepository.GetLowPartsAsync();
+        }
+
+        public async Task<List<Part>> GetZeroPartsAsync()
+        {
+            return await _partsRepository.GetZeroPartsAsync();
+        }
     }
 }
