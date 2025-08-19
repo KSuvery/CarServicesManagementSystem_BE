@@ -1,16 +1,11 @@
 ﻿using CarServ.service.Services.Interfaces;
 using CarServ.service.Services.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CarServ.Repository.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
 using CarServ.service.Services.ApiModels.VNPay;
 using CarServ.Domain.Entities;
 using Microsoft.Extensions.DependencyInjection;
-using CarServ.service.Services.ApiModels.VNPay;
+using Microsoft.Extensions.Logging;
 
 
 namespace CarServ.service.Services
@@ -20,6 +15,8 @@ namespace CarServ.service.Services
         private readonly VnPaySetting _vnPaySetting;
         private readonly IOrderRepository _orderRepository;
         private readonly IPaymentRepository _paymentRepository;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly ILogger<VnPayService> _logger;
 
         public VnPayService(IServiceProvider serviceProvider)
         {
@@ -41,7 +38,7 @@ namespace CarServ.service.Services
                 throw new InvalidOperationException("Order not found.");
             }
 
-            // add beginTransaction unitOfWork here
+            _unitOfWork.BeginTransaction();
             var tick = order.PaymentId;
             var vnpay = new VnPayLibrary();
 
@@ -92,11 +89,18 @@ namespace CarServ.service.Services
 
                 // Generate the payment URL
                 var paymentUrl = vnpay.CreateRequestUrl(_vnPaySetting.BaseUrl, _vnPaySetting.HashSecret);
+                await _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.CommitTransactionAsync();
+
                 return paymentUrl;
             }
             catch (Exception ex)
             {
-                throw new InvalidOperationException("Error creating payment URL", ex);
+                _logger.LogError(ex, "Error creating payment URL for order ID {OrderId}", request.OrderId);
+                await _unitOfWork.RollbackTransactionAsync();
+                throw;
+
+                //throw new InvalidOperationException("Error creating payment URL", ex);
             }
         }
 
