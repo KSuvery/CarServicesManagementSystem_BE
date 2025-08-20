@@ -128,10 +128,15 @@ namespace CarServ.API.Controllers
             return Ok(response);
         }
 
-        [HttpPost("payment/vnpay/payment-execute")]
+        [HttpGet("payment/vnpay/payment-execute")]
         public async Task<IActionResult> VnPayPaymentExecute()
         {
             var response = await _vnPayService.PaymentExecute(HttpContext);
+
+            if (response == null)
+            {
+                return BadRequest("Payment execution failed.");
+            }
 
             return Ok(response);
         }

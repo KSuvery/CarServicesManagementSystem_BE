@@ -29,7 +29,7 @@ namespace CarServ.service.Services
 
         public async Task<string> CreatePaymentUrl(HttpContext context, VnPaymentRequest request)
         {
-            string returnUrl = $"https://localhost:5110/api/paymentvnpay/payment-execute";
+            string returnUrl = $"http://localhost:5110/api/Payment/payment/vnpay/payment-execute";
             string hostName = System.Net.Dns.GetHostName();
             string clientIPAddress = System.Net.Dns.GetHostAddresses(hostName).GetValue(0).ToString();
 
@@ -40,7 +40,7 @@ namespace CarServ.service.Services
                 throw new InvalidOperationException("Order not found.");
             }
 
-            //_unitOfWork.BeginTransaction();
+            _unitOfWork.BeginTransaction();
             var orderId = order.OrderId;
             var vnpay = new VnPayLibrary();
 
@@ -68,7 +68,7 @@ namespace CarServ.service.Services
             // Order information
             vnpay.AddRequestData("vnp_CurrCode", "VND");
             vnpay.AddRequestData("vnp_TxnRef", orderId.ToString());
-            vnpay.AddRequestData("vnp_OrderInfo", $"Thanh toán đơn hàng ID: {request.OrderId}, Tổng giá trị: {request.Amount} VND");
+            vnpay.AddRequestData("vnp_OrderInfo", $"Thanh toán đơn hàng ID: {orderId}, Tổng giá trị: {request.Amount} VND");
             vnpay.AddRequestData("vnp_ReturnUrl", returnUrl);
             vnpay.AddRequestData("vnp_IpAddr", clientIPAddress);
             vnpay.AddRequestData("vnp_OrderType", "other");
@@ -86,6 +86,8 @@ namespace CarServ.service.Services
                 };
 
                 await _paymentRepository.CreatePayment(payment);
+                await _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.CommitTransactionAsync();
 
                 // Generate the payment URL
                 var paymentUrl = vnpay.CreateRequestUrl(_vnPaySetting.BaseUrl, _vnPaySetting.HashSecret);
@@ -122,7 +124,7 @@ namespace CarServ.service.Services
 
             var order = await _orderRepository.GetOrderByIdAsync(vnpOrderId);
             var payment = await _paymentRepository.GetPaymentByOrderIdAsync(vnpOrderId);
-            if (payment == null)
+            if (order == null)
             {
                 return new VnPaymentResponse()
                 {

@@ -86,7 +86,6 @@ namespace CarServ.Repository.Repositories
         {
             try
             {
-                _unitOfWork.BeginTransaction();
                 var payment = new Payment
                 {
                     AppointmentId = dto.AppointmentId,
@@ -97,13 +96,11 @@ namespace CarServ.Repository.Repositories
                 };
 
                 _context.Payments.Add(payment);
-                await _unitOfWork.SaveChangesAsync();
-                await _unitOfWork.CommitTransactionAsync();
+                await _context.SaveChangesAsync();
                 return payment;
             }
             catch (Exception ex)
             {
-                await _unitOfWork.RollbackTransactionAsync();
                 throw new Exception("Error creating payment", ex);
             }
         }
