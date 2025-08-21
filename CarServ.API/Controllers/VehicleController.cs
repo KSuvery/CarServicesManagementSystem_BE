@@ -1,6 +1,5 @@
 ﻿using CarServ.Repository.Repositories.DTO;
 using CarServ.Service.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarServ.API.Controllers
@@ -166,6 +165,24 @@ namespace CarServ.API.Controllers
             {
                 var vehicle = await _vehicleService.AddVehicleAsync(customerId, dto);
                 return CreatedAtAction(nameof(AddVehicle), new { id = vehicle.VehicleId }, vehicle);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("remove/{id}")]
+        public async Task<IActionResult> RemoveVehicle(int id)
+        {
+            try
+            {
+                var result = await _vehicleService.RemoveVehicleAsync(id);
+                if (!result)
+                {
+                    return NotFound($"Vehicle with ID {id} not found.");
+                }
+                return NoContent();
             }
             catch (Exception ex)
             {
