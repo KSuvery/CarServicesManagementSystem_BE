@@ -24,6 +24,7 @@ namespace CarServ.API.Configuration
             services.AddScoped<IVehicleService, VehicleService>();
             services.AddTransient<IEmailService, EmailService>();
             services.AddScoped<ICarTypesService, CarTypesService>();
+            services.AddScoped<IOrderService, OrderService>();
 
             return services;
         }
