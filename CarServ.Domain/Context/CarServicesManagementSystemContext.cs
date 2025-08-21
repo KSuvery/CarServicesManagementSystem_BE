@@ -332,6 +332,9 @@ public partial class CarServicesManagementSystemContext : DbContext
 
             entity.Property(e => e.PackageId).HasColumnName("PackageID");
             entity.Property(e => e.Description).HasColumnType("text");
+            entity.Property(e => e.Discount)
+                .HasDefaultValue(0m)
+                .HasColumnType("decimal(5, 2)");
             entity.Property(e => e.Name)
                 .HasMaxLength(100)
                 .IsUnicode(false);
@@ -470,6 +473,7 @@ public partial class CarServicesManagementSystemContext : DbContext
             entity.Property(e => e.Model)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.Status).HasMaxLength(100);
 
             entity.HasOne(d => d.CarType).WithMany(p => p.Vehicles)
                 .HasForeignKey(d => d.CarTypeId)

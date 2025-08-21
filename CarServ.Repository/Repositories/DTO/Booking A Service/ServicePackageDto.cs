@@ -12,6 +12,7 @@ namespace CarServ.Repository.Repositories.DTO.Booking_A_Service
         public string Name { get; set; }
         public string Description { get; set; }
         public decimal? Price { get; set; }
+        public decimal? Discount { get; set; }
         public List<ServiceDto> Services { get; set; }
 
     }

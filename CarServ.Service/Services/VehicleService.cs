@@ -2,11 +2,6 @@
 using CarServ.Repository.Repositories.DTO;
 using CarServ.Repository.Repositories.Interfaces;
 using CarServ.Service.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CarServ.Service.Services
 {
@@ -61,6 +56,11 @@ namespace CarServ.Service.Services
         public async Task<Vehicle> AddVehicleAsync(int customerId, AddVehicleDto dto)
         {
             return await _vehicleRepository.AddVehicleAsync(customerId, dto);
+        }
+
+        public async Task<bool> RemoveVehicleAsync(int vehicleId)
+        {
+            return await _vehicleRepository.RemoveVehicleAsync(vehicleId);
         }
     }
 }
