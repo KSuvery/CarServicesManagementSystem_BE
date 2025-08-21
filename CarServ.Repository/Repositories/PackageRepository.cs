@@ -79,6 +79,7 @@ namespace CarServ.Repository.Repositories
                 Name = package.Name,
                 Description = package.Description,
                 Price = package.Price,
+                Discount = package.Discount,
                 Services = package.Services.Select(service => new ServiceDto
                 {
                     ServiceId = service.ServiceId,
