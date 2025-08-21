@@ -107,6 +107,8 @@ namespace CarServ.service.Services
         public async Task<VnPaymentResponse> PaymentExecute(HttpContext context)
         {
             var vnpay = new VnPayLibrary();
+            
+            _unitOfWork.BeginTransaction();
 
             // Retrieve vnp_TxnRef from the query string directly
             var vnpOrderIdStr = context.Request.Query["vnp_TxnRef"].ToString();
@@ -126,6 +128,7 @@ namespace CarServ.service.Services
             var payment = await _paymentRepository.GetPaymentByOrderIdAsync(vnpOrderId);
             if (order == null)
             {
+                await _unitOfWork.RollbackTransactionAsync();
                 return new VnPaymentResponse()
                 {
                     Success = false,
@@ -155,6 +158,7 @@ namespace CarServ.service.Services
             bool checkSignature = vnpay.ValidateSignature(vnpSecureHash, _vnPaySetting.HashSecret);
             if (!checkSignature)
             {
+                await _unitOfWork.RollbackTransactionAsync();
                 return new VnPaymentResponse()
                 {
                     Success = false,
@@ -171,7 +175,8 @@ namespace CarServ.service.Services
                     Message = $"Payment failed with response code: {vnpResponseCode}"
                 };
             }
-
+            
+            await _unitOfWork.CommitTransactionAsync();
             return new VnPaymentResponse()
             {
                 Success = true,

@@ -19,5 +19,6 @@ namespace CarServ.Repository.Repositories.Interfaces
         Task<List<Vehicle>> GetVehiclesByYearRangeAsync(int minYear, int maxYear);
         Task<List<Vehicle>> GetVehiclesByCarTypeIdAsync(int carTypeId);
         Task<Vehicle> AddVehicleAsync(int customerId, AddVehicleDto dto);
+        Task<bool> RemoveVehicleAsync(int vehicleId);
     }
 }
