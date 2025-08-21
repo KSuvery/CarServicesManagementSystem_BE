@@ -47,7 +47,7 @@ namespace CarServ.API.Controllers
             }
         }
 
-        [HttpGet("search")]
+        [HttpGet("search-by-name")]
         public async Task<IActionResult> SearchCarTypes([FromQuery] string query)
         {
             if (string.IsNullOrWhiteSpace(query))
