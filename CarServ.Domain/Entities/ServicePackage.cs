@@ -15,6 +15,8 @@ public partial class ServicePackage
 
     public decimal? Price { get; set; }
 
+    public decimal? Discount { get; set; }
+
     public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
 
     public virtual ICollection<Service> Services { get; set; } = new List<Service>();

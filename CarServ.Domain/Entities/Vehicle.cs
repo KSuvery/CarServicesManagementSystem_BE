@@ -21,6 +21,8 @@ public partial class Vehicle
 
     public int? CarTypeId { get; set; }
 
+    public string Status { get; set; }
+
     public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
 
     public virtual CarType CarType { get; set; }
