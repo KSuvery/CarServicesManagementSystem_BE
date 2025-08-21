@@ -13,6 +13,5 @@ namespace CarServ.Repository.Repositories.DTO.User_return_DTO
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public string RoleName { get; set; }
-        public string Address { get; set; }
     }
 }

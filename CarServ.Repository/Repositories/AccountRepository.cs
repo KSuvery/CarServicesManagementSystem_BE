@@ -1,15 +1,8 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO;
+using CarServ.Repository.Repositories.DTO.User_return_DTO;
 using CarServ.Repository.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using CarServ.Repository.Repositories.DTO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Reflection.Metadata;
-using CarServ.Repository.Repositories.DTO.User_return_DTO;
-using System.Net;
 
 namespace CarServ.Repository.Repositories
 {
@@ -41,9 +34,9 @@ namespace CarServ.Repository.Repositories
 
         public async Task<List<User>> GetAccountByRole(int roleID)
         {
-            var userListTmp = await _context.Users   
+            var userListTmp = await _context.Users
                 .Include(m => m.Role)
-            .Where(m =>m.RoleId == roleID).ToListAsync();
+            .Where(m => m.RoleId == roleID).ToListAsync();
             return userListTmp ?? new List<User>();
         }
 
@@ -57,13 +50,14 @@ namespace CarServ.Repository.Repositories
                                 FullName = u.FullName,
                                 Email = u.Email,
                                 PhoneNumber = u.PhoneNumber,
-                                RoleName = u.Role.RoleName // Only include the role name
+                                RoleName = u.Role.RoleName, // Only include the role name
+                                Address = u.Address
                             })
                             .ToListAsync();
             return userListTmp ?? new List<GetAllUserDTO>();
         }
 
-            public async Task<PaginationResult<List<GetAllUserDTO>>> GetAllAccountWithPaging(int currentPage, int pageSize)
+        public async Task<PaginationResult<List<GetAllUserDTO>>> GetAllAccountWithPaging(int currentPage, int pageSize)
         {
             var userListTmp = await this.GetAllAccount();
 
@@ -84,7 +78,7 @@ namespace CarServ.Repository.Repositories
 
         public async Task<User> Login(string username, string password)
         {
-            
+
             // await _context.User
             //    .FirstOrDefaultAsync(x => x.Phone == username && x.Password == password);
 
@@ -93,9 +87,9 @@ namespace CarServ.Repository.Repositories
 
             // await _context.User
             //    .FirstOrDefaultAsync(x => x.username == username && x.Password == password && x.IsActive);
-            
+
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == username);
-            
+
             if (user != null && BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
             {
                 return user;
@@ -121,13 +115,12 @@ namespace CarServ.Repository.Repositories
             _context.Users.Add(newUser);
             await _context.SaveChangesAsync();
             var customer = new Customer
-            {   
+            {
                 CustomerId = newUser.UserId,
-                Address = address
             };
-            
+
             _context.Customers.Add(customer);
-            await _context.SaveChangesAsync();            
+            await _context.SaveChangesAsync();
 
             var newlyCreatedCustomer = await this.GetAccountById(customer.CustomerId);
             var userDTO = new CustomerDTO
@@ -136,7 +129,6 @@ namespace CarServ.Repository.Repositories
                 FullName = newlyCreatedCustomer.FullName,
                 Email = newlyCreatedCustomer.Email,
                 PhoneNumber = newlyCreatedCustomer.PhoneNumber,
-                Address = newlyCreatedCustomer.Customer.Address,
                 RoleName = newlyCreatedCustomer.Role.RoleName
             };
             return userDTO;
@@ -163,7 +155,7 @@ namespace CarServ.Repository.Repositories
             var staff = new ServiceStaff
             {
                 StaffId = newUser.UserId
-                
+
             };
 
             _context.ServiceStaffs.Add(staff);
@@ -175,7 +167,7 @@ namespace CarServ.Repository.Repositories
                 UserID = newlyCreatedStaff.UserId,
                 FullName = newlyCreatedStaff.FullName,
                 Email = newlyCreatedStaff.Email,
-                PhoneNumber = newlyCreatedStaff.PhoneNumber,                
+                PhoneNumber = newlyCreatedStaff.PhoneNumber,
                 RoleName = newlyCreatedStaff.Role.RoleName
             };
             return staffDTO;

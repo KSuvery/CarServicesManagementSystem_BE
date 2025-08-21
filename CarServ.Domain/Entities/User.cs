@@ -21,6 +21,8 @@ public partial class User
 
     public DateTime? CreatedAt { get; set; }
 
+    public string Address { get; set; }
+
     public virtual Customer Customer { get; set; }
 
     public virtual InventoryManager InventoryManager { get; set; }
