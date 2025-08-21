@@ -8,10 +8,6 @@ namespace CarServ.Domain.Entities;
 
 public partial class CarServicesManagementSystemContext : DbContext
 {
-    public CarServicesManagementSystemContext()
-    {
-    }
-
     public CarServicesManagementSystemContext(DbContextOptions<CarServicesManagementSystemContext> options)
         : base(options)
     {
@@ -134,9 +130,6 @@ public partial class CarServicesManagementSystemContext : DbContext
             entity.Property(e => e.CustomerId)
                 .ValueGeneratedNever()
                 .HasColumnName("CustomerID");
-            entity.Property(e => e.Address)
-                .HasMaxLength(255)
-                .IsUnicode(false);
 
             entity.HasOne(d => d.CustomerNavigation).WithOne(p => p.Customer)
                 .HasForeignKey<Customer>(d => d.CustomerId)
@@ -436,6 +429,9 @@ public partial class CarServicesManagementSystemContext : DbContext
             entity.HasIndex(e => e.Email, "UQ__Users__A9D105345AB19D45").IsUnique();
 
             entity.Property(e => e.UserId).HasColumnName("UserID");
+            entity.Property(e => e.Address)
+                .HasMaxLength(255)
+                .IsUnicode(false);
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
