@@ -1,4 +1,5 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,14 +10,13 @@ namespace CarServ.Repository.Repositories.Interfaces
 {
     public interface INotificationRepository : IGenericRepository<Notification>
     {
+        Task<List<Notification>> GetAllNotificationsAsync();
         Task<Notification> GetNotificationByIdAsync(int notificationId);
         Task<List<Notification>> GetNotificationByUserIdAsync(int userId);
-        Task<Notification> CreateNotificationAsync(
-            int userId,
-            string title,
-            string message,
-            DateTime? sentAt = null,
-            bool isRead = false);
+        Task<Notification> CreateNotificationAsync(NotificationDTO dto);
+        Task<Notification> UpdateNotificationAsync(
+            int notificationId,
+            NotificationDTO dto);
         Task<Notification> MarkNotificationAsReadAsync(
             int notificationId,
             bool isRead);

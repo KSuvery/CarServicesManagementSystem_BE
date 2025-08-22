@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CarServ.Domain.Entities;
 using CarServ.service.Services.Interfaces;
+using CarServ.Repository.Repositories.DTO;
 
 namespace CarServ.API.Controllers
 {
@@ -19,6 +20,17 @@ namespace CarServ.API.Controllers
         public NotificationController(INotificationervice Notificationervice)
         {
             _Notificationervice = Notificationervice;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<List<Notification>>> GetAllNotifications()
+        {
+            var notifications = await _Notificationervice.GetAllNotificationsAsync();
+            if (notifications == null || !notifications.Any())
+            {
+                return NotFound();
+            }
+            return notifications;
         }
 
         [HttpGet("{id}")]
@@ -59,21 +71,37 @@ namespace CarServ.API.Controllers
         }
 
         [HttpPost("Create")]
-        public async Task<ActionResult<Notification>> CreateNotification(
-            int userId,
-            string title,
-            string message,
-            DateTime? notificationDate = null,
-            bool isRead = false)
+        public async Task<ActionResult<Notification>> CreateNotification([FromBody] NotificationDTO dto)
         {
-            notificationDate ??= DateTime.UtcNow;
-            var newNotification = await _Notificationervice.CreateNotificationAsync(
-                userId, title, message, notificationDate, isRead);
-            if (newNotification == null)
+            if (dto == null)
+            {
+                return BadRequest("Notification data is required.");
+            }
+            var createdNotification = await _Notificationervice.CreateNotificationAsync(dto);
+            if (createdNotification == null)
             {
                 return BadRequest("Failed to create notification.");
             }
-            return CreatedAtAction(nameof(GetNotificationById), new { id = newNotification.NotificationId }, newNotification);
+            return CreatedAtAction(nameof(GetNotificationById), new { id = createdNotification.NotificationId }, createdNotification);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateNotification(int id, [FromBody] NotificationDTO dto)
+        {
+            if (dto == null)
+            {
+                return BadRequest("Invalid notification data.");
+            }
+            if (!await NotificationExists(id))
+            {
+                return NotFound();
+            }
+            var updatedNotification = await _Notificationervice.UpdateNotificationAsync(id, dto);
+            if (updatedNotification == null)
+            {
+                return BadRequest("Failed to update notification.");
+            }
+            return NoContent();
         }
 
         [HttpPut("MarkAsRead/{id}")]

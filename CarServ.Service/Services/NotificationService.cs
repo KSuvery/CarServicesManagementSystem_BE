@@ -1,4 +1,5 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO;
 using CarServ.Repository.Repositories.Interfaces;
 using CarServ.service.Services.Interfaces;
 using System;
@@ -18,15 +19,9 @@ namespace CarServ.service.Services
             _notificationRepository = notificationRepository;
         }
 
-        public async Task<Notification> CreateNotificationAsync(
-            int userId,
-            string title,
-            string message,
-            DateTime? sentAt,
-            bool isRead = false)
+        public async Task<List<Notification>> GetAllNotificationsAsync()
         {
-            sentAt ??= DateTime.UtcNow;
-            return await _notificationRepository.CreateNotificationAsync(userId, title, message, sentAt, isRead);
+            return await _notificationRepository.GetAllNotificationsAsync();
         }
 
         public async Task<bool> DeleteNotificationAsync(int notificationId)
@@ -42,6 +37,16 @@ namespace CarServ.service.Services
         public async Task<List<Notification>> GetNotificationByUserIdAsync(int userId)
         {
             return await _notificationRepository.GetNotificationByUserIdAsync(userId);
+        }
+
+        public async Task<Notification> CreateNotificationAsync(NotificationDTO dto)
+        {
+            return await _notificationRepository.CreateNotificationAsync(dto);
+        }
+
+        public async Task<Notification> UpdateNotificationAsync(int notificationId, NotificationDTO dto)
+        {
+            return await _notificationRepository.UpdateNotificationAsync(notificationId, dto);
         }
 
         public async Task<Notification> MarkNotificationAsReadAsync(int notificationId, bool isRead)
