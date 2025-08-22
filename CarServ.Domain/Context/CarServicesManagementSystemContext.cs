@@ -153,7 +153,7 @@ public partial class CarServicesManagementSystemContext : DbContext
 
         modelBuilder.Entity<Notification>(entity =>
         {
-            entity.HasKey(e => e.NotificationId).HasName("PK__Notifica__20CF2E3225954BD0");
+            entity.HasKey(e => e.NotificationId).HasName("PK__Notifica__20CF2E32CC1A6E75");
 
             entity.Property(e => e.NotificationId).HasColumnName("NotificationID");
             entity.Property(e => e.IsRead).HasDefaultValue(false);
@@ -161,12 +161,15 @@ public partial class CarServicesManagementSystemContext : DbContext
             entity.Property(e => e.SentAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
+            entity.Property(e => e.Title)
+                .IsRequired()
+                .HasMaxLength(255);
             entity.Property(e => e.Type).HasMaxLength(50);
             entity.Property(e => e.UserId).HasColumnName("UserID");
 
             entity.HasOne(d => d.User).WithMany(p => p.Notifications)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__Notificat__UserI__74AE54BC");
+                .HasConstraintName("FK__Notificat__UserI__3E1D39E1");
         });
 
         modelBuilder.Entity<Order>(entity =>
