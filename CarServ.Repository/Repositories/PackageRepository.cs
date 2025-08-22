@@ -1,6 +1,7 @@
 ﻿using CarServ.Domain.Entities;
 using CarServ.Repository.Repositories.DTO;
 using CarServ.Repository.Repositories.DTO.Booking_A_Service;
+using CarServ.Repository.Repositories.DTO.Service_._ServicePackage;
 using CarServ.Repository.Repositories.DTO.Service_managing;
 using CarServ.Repository.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static CarServ.Repository.Repositories.PackageRepository;
 
 namespace CarServ.Repository.Repositories
 {
@@ -175,5 +177,77 @@ namespace CarServ.Repository.Repositories
                 UnitPrice = sp.Part.UnitPrice
             }).ToList();
         }
+
+        
+
+            public async Task<Service> UpdateServiceAsync(int serviceId, UpdateServiceDto dto)
+            {
+                var service = await _context.Services
+                    .Include(s => s.ServiceParts) 
+                    .FirstOrDefaultAsync(s => s.ServiceId == serviceId);
+
+                if (service == null)
+                {
+                    throw new Exception("Service not found.");
+                }
+
+                // Update service properties
+                service.Name = dto.Name;
+                service.Description = dto.Description;
+                service.Price = dto.Price;
+                service.EstimatedLaborHours = dto.EstimatedLaborHours;
+
+              
+                service.ServiceParts.Clear(); 
+
+                foreach (var partDto in dto.ServiceParts)
+                {
+                    var servicePart = new ServicePart
+                    {
+                        ServiceId = serviceId,
+                        PartId = partDto.PartId,
+                        QuantityRequired = partDto.QuantityRequired
+                    };
+                    service.ServiceParts.Add(servicePart);
+                }
+
+                await _context.SaveChangesAsync();
+                return service;
+            }
+
+            public async Task<ServicePackage> UpdateServicePackageAsync(int packageId, UpdateServicePackageDto dto)
+            {
+                var package = await _context.ServicePackages
+                    .Include(p => p.Services)
+                    .FirstOrDefaultAsync(p => p.PackageId == packageId);
+
+                if (package == null)
+                {
+                    throw new Exception("Service package not found.");
+                }
+
+                // Update package properties
+                package.Name = dto.Name;
+                package.Description = dto.Description;
+                package.Price = dto.Price;
+                package.Discount = dto.Discount;
+
+                
+                package.Services.Clear(); 
+
+                foreach (var serviceId in dto.ServiceIds)
+                {
+                    var service = await _context.Services.FindAsync(serviceId);
+                    if (service != null)
+                    {
+                        package.Services.Add(service);
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+                return package;
+            }
+        
+
     }
 }
