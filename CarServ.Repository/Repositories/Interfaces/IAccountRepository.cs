@@ -21,5 +21,7 @@ namespace CarServ.Repository.Repositories.Interfaces
         Task<User> Login(string username, string password);
         Task<CustomerDTO> SignupNewCustomer(string fullName, string email, string phoneNumber, string password, string address);
         Task<StaffDTO> AddingNewStaff(string fullName, string email, string phoneNumber, string password);
+        Task<List<ServiceStaff>> GetAllServiceStaff();
+        Task<ServiceStaff> GetServiceStaffById(int id);
     }
 }

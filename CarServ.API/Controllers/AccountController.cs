@@ -68,6 +68,21 @@ namespace CarServ.API.Controllers
             return await _accService.GetAccountByRole(roleID);
         }
 
+        [HttpGet("service-staff")]
+        public async Task<List<ServiceStaff>> GetAllServiceStaff()
+        {
+            return await _accService.GetAllServiceStaff();
+        }
 
+        [HttpGet("service-staff/{id}")]
+        public async Task<ActionResult<ServiceStaff>> GetServiceStaffById(int id)
+        {
+            var staff = await _accService.GetServiceStaffById(id);
+            if (staff == null)
+            {
+                return NotFound();
+            }
+            return staff;
+        }
     }
 }

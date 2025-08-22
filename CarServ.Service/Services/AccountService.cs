@@ -67,5 +67,15 @@ namespace CarServ.service.Services
         {
             return await _accRepository.AddingNewStaff(fullName, email, phoneNumber, password);
         }
+
+        public async Task<List<ServiceStaff>> GetAllServiceStaff()
+        {
+            return await _accRepository.GetAllServiceStaff();
+        }
+
+        public async Task<ServiceStaff> GetServiceStaffById(int id)
+        {
+            return await _accRepository.GetServiceStaffById(id);
+        }
     }
 }

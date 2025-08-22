@@ -173,6 +173,19 @@ namespace CarServ.Repository.Repositories
             return staffDTO;
         }
 
+        public async Task<List<ServiceStaff>> GetAllServiceStaff()
+        {
+            return await _context.ServiceStaffs
+                .Include(s => s.Staff)
+                .ToListAsync();
+        }
+
+        public async Task<ServiceStaff> GetServiceStaffById(int id)
+        {
+            return await _context.ServiceStaffs
+                .FirstOrDefaultAsync(s => s.StaffId == id);
+        }
+
 
         private string HashPassword(string password)
         {
