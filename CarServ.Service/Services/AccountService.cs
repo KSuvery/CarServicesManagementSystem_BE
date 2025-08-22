@@ -29,7 +29,7 @@ namespace CarServ.service.Services
             return await _accRepository.GetAccountById(Id);
         }
 
-        public async Task<User> GetAccountByMail(string mail)
+        public async Task<CustomerWithVehiclesDTO> GetAccountByMail(string mail)
         {
             return await _accRepository.GetAccountByMail(mail);
         }
@@ -66,6 +66,11 @@ namespace CarServ.service.Services
         public async Task<StaffDTO> AddingNewStaff(string fullName, string email, string phoneNumber, string password)
         {
             return await _accRepository.AddingNewStaff(fullName, email, phoneNumber, password);
+        }
+
+        public async Task<User> UpdateProfileAsync(int userId, UpdateProfileDto dto)
+        {
+            return await _accRepository.UpdateProfileAsync(userId, dto);
         }
     }
 }
