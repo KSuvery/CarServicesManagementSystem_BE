@@ -67,10 +67,14 @@ namespace CarServ.Repository.Repositories
             return appointment;
 
         }
-        
-           
 
-            public async Task<Appointment> ScheduleAppointment(int customerId, ScheduleAppointmentDto dto)
+        private async Task<Vehicle> GetVehicleByIdAsync(int id)
+        {
+            return await _context.Vehicles
+                .FirstOrDefaultAsync(v => v.VehicleId == id);
+        }
+
+        public async Task<Appointment> ScheduleAppointment(int customerId, ScheduleAppointmentDto dto)
             {
                 if (dto.VehicleId == null)
                 {
@@ -102,6 +106,11 @@ namespace CarServ.Repository.Repositories
                 _context.Appointments.Add(appointment);
                 await _context.SaveChangesAsync();
 
+
+            var vehicle = await GetVehicleByIdAsync((int)dto.VehicleId);            
+            vehicle.Status = "In Service";
+            _context.Vehicles.Update(vehicle);
+            await _context.SaveChangesAsync();
             // Create a new order as well
             var order = new Order
             {
