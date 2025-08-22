@@ -14,6 +14,32 @@ namespace CarServ.Repository.Repositories
             _context = context;
         }
 
+        public async Task<User> UpdateProfileAsync(int userId, UpdateProfileDto dto)
+        {
+            
+            var user = await _context.Users
+                .Include(u => u.Customer) 
+                .FirstOrDefaultAsync(u => u.UserId == userId);
+
+            if (user == null)
+            {
+                throw new Exception("User  not found.");
+            }
+            
+            user.FullName = dto.FullName;
+            user.Email = dto.Email;
+            user.PhoneNumber = dto.PhoneNumber;
+            user.Address = dto.Address;
+            
+            if (await _context.Users.AnyAsync(u => u.Email == dto.Email && u.UserId != userId))
+            {
+                throw new Exception("Email already exists.");
+            }
+            
+            await _context.SaveChangesAsync();
+
+            return user; 
+        }
 
         public async Task<bool> DisableAccount(int Id)
         {
@@ -26,10 +52,30 @@ namespace CarServ.Repository.Repositories
             return userListTmp ?? new User();
         }
 
-        public async Task<User> GetAccountByMail(string mail)
+        public async Task<CustomerWithVehiclesDTO> GetAccountByMail(string mail)
         {
-            var userListTmp = await _context.Users.Include(m => m.Role).FirstOrDefaultAsync(m => m.Email == mail);
-            return userListTmp ?? new User();
+            var customer = await _context.Users.Include(m => m.Role).
+                                    FirstOrDefaultAsync(m => m.Email == mail);                        
+            if(customer != null)
+            {
+                var listVehicles = await _context.Vehicles
+                .Where(v => v.CustomerId == customer.UserId)
+                .ToListAsync();
+                var userDTO = new CustomerWithVehiclesDTO
+                {
+                    UserID = customer.UserId,
+                    FullName = customer.FullName,
+                    Email = customer.Email,
+                    PhoneNumber = customer.PhoneNumber,
+                    RoleName = customer.Role.RoleName,
+                    Address = customer.Address,
+                    vehicles = listVehicles
+
+                };
+                return userDTO ?? new CustomerWithVehiclesDTO();
+            }
+            throw new Exception("Cannot find user with mail: " + mail);
+
         }
 
         public async Task<List<User>> GetAccountByRole(int roleID)
@@ -129,7 +175,8 @@ namespace CarServ.Repository.Repositories
                 FullName = newlyCreatedCustomer.FullName,
                 Email = newlyCreatedCustomer.Email,
                 PhoneNumber = newlyCreatedCustomer.PhoneNumber,
-                RoleName = newlyCreatedCustomer.Role.RoleName
+                RoleName = newlyCreatedCustomer.Role.RoleName,
+                Address = newlyCreatedCustomer.Address
             };
             return userDTO;
         }
@@ -192,4 +239,5 @@ namespace CarServ.Repository.Repositories
             return BCrypt.Net.BCrypt.HashPassword(password);
         }
     }
+
 }

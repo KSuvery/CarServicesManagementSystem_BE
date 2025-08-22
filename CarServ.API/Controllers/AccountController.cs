@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using CarServ.Repository.Repositories.DTO.User_return_DTO;
 
 namespace CarServ.API.Controllers
 {
@@ -26,9 +27,22 @@ namespace CarServ.API.Controllers
         public AccountController( IAccountService accService)
         {          
             _accService = accService;
-        }        
+        }
 
-
+        [HttpPut("update-profile/{userId}")]
+        [Authorize(Roles = "2")]
+        public async Task<IActionResult> UpdateProfile(int userId, [FromBody] UpdateProfileDto dto)
+        {
+            try
+            {
+                var updatedUser = await _accService.UpdateProfileAsync(userId, dto);
+                return Ok(updatedUser);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         [HttpGet]
         [Authorize(Roles = "1")]
