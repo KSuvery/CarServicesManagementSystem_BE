@@ -161,6 +161,7 @@ public partial class CarServicesManagementSystemContext : DbContext
             entity.Property(e => e.SentAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
+            entity.Property(e => e.Type).HasMaxLength(50);
             entity.Property(e => e.UserId).HasColumnName("UserID");
 
             entity.HasOne(d => d.User).WithMany(p => p.Notifications)
@@ -459,6 +460,7 @@ public partial class CarServicesManagementSystemContext : DbContext
             entity.Property(e => e.VehicleId).HasColumnName("VehicleID");
             entity.Property(e => e.CarTypeId).HasColumnName("CarTypeID");
             entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+            entity.Property(e => e.LastService).HasMaxLength(255);
             entity.Property(e => e.LicensePlate)
                 .HasMaxLength(20)
                 .IsUnicode(false);
@@ -468,6 +470,7 @@ public partial class CarServicesManagementSystemContext : DbContext
             entity.Property(e => e.Model)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.NextService).HasMaxLength(255);
             entity.Property(e => e.Status).HasMaxLength(100);
 
             entity.HasOne(d => d.CarType).WithMany(p => p.Vehicles)

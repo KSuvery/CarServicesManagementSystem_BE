@@ -17,5 +17,7 @@ public partial class Notification
 
     public bool? IsRead { get; set; }
 
+    public string Type { get; set; }
+
     public virtual User User { get; set; }
 }
