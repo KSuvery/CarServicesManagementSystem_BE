@@ -445,6 +445,7 @@ public partial class CarServicesManagementSystemContext : DbContext
             entity.Property(e => e.FullName)
                 .HasMaxLength(100)
                 .IsUnicode(false);
+            entity.Property(e => e.IsActive).HasDefaultValue(true);
             entity.Property(e => e.PasswordHash).HasMaxLength(255);
             entity.Property(e => e.PhoneNumber)
                 .HasMaxLength(20)

@@ -23,6 +23,8 @@ public partial class User
 
     public string Address { get; set; }
 
+    public bool? IsActive { get; set; }
+
     public virtual Customer Customer { get; set; }
 
     public virtual InventoryManager InventoryManager { get; set; }
