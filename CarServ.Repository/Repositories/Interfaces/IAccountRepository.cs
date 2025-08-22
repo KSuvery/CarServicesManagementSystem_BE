@@ -11,10 +11,11 @@ namespace CarServ.Repository.Repositories.Interfaces
 {
     public interface IAccountRepository
     {
+        Task<User> UpdateProfileAsync(int userId, UpdateProfileDto dto);
         Task<List<GetAllUserDTO>> GetAllAccount();
         Task<PaginationResult<List<GetAllUserDTO>>> GetAllAccountWithPaging(int currentPage, int pageSize);
         Task<User> GetAccountById(int Id);
-        Task<User> GetAccountByMail(string mail);
+        Task<CustomerWithVehiclesDTO> GetAccountByMail(string mail);
         Task<List<User>> GetAccountByRole(int roleID);
 
         Task<bool> DisableAccount(int Id);
