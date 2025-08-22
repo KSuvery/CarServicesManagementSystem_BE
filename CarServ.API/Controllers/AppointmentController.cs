@@ -14,7 +14,7 @@ namespace CarServ.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class AppointmentController : ControllerBase
     {
         private readonly IAppointmentervices _Appointmentervices;
@@ -26,14 +26,14 @@ namespace CarServ.API.Controllers
 
         // GET: api/Appointment
         [HttpGet]
-        [Authorize(Roles = "1")]
+        //[Authorize(Roles = "1")]
         public async Task<ActionResult<IEnumerable<Appointment>>> GetAppointment()
         {
             return await _Appointmentervices.GetAllAppointmentAsync();
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "1")]
+        //[Authorize(Roles = "1")]
         public async Task<ActionResult<Appointment>> GetAppointmentById(int id)
         {
             var appointment = await _Appointmentervices.GetAppointmentByIdAsync(id);
@@ -45,7 +45,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("GetByCustomerId/{customerId}")]
-        [Authorize(Roles = "1")]
+        //[Authorize(Roles = "1")]
         public async Task<ActionResult<IEnumerable<Appointment>>> GetAppointmentByCustomerId(int customerId)
         {
             var Appointment = await _Appointmentervices.GetAppointmentByCustomerIdAsync(customerId);
@@ -57,7 +57,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("GetByVehicleId/{vehicleId}")]
-        [Authorize(Roles = "1")]
+        //[Authorize(Roles = "1")]
         public async Task<ActionResult<IEnumerable<Appointment>>> GetAppointmentByVehicleId(int vehicleId)
         {
             var Appointment = await _Appointmentervices.GetAppointmentByVehicleIdAsync(vehicleId);
@@ -69,7 +69,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpPost("schedule")]
-        [Authorize(Roles = "1,2,3,4")]
+        //[Authorize(Roles = "1,2,3")]
         public async Task<IActionResult> ScheduleAppointment(int customerId, [FromBody] ScheduleAppointmentDto dto)
         {
             try

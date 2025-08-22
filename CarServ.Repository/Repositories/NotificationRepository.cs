@@ -1,4 +1,5 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO;
 using CarServ.Repository.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -18,6 +19,13 @@ namespace CarServ.Repository.Repositories
             _context = context;
         }
 
+        public async Task<List<Notification>> GetAllNotificationsAsync()
+        {
+            return await _context.Notifications
+                .Include(n => n.User)
+                .ToListAsync();
+        }
+
         public async Task<Notification> GetNotificationByIdAsync(int notificationId)
         {
             return await _context.Notifications
@@ -31,21 +39,37 @@ namespace CarServ.Repository.Repositories
                 .ToListAsync();
         }
 
-        public async Task<Notification> CreateNotificationAsync(
-            int userId,
-            string title,
-            string message,
-            DateTime? sentAt = null,
-            bool isRead = false)
+        public async Task<Notification> CreateNotificationAsync(NotificationDTO dto)
         {
             var notification = new Notification
             {
-                UserId = userId,
-                Message = $"{title}: {message}",
-                SentAt = sentAt ?? DateTime.Now,
-                IsRead = isRead
+                UserId = dto.userId,
+                Title = dto.title,
+                Message = dto.message,
+                SentAt = dto.sentAt ?? DateTime.Now,
+                IsRead = false,
+                Type = dto.type
             };
             _context.Notifications.Add(notification);
+            await _context.SaveChangesAsync();
+            return notification;
+        }
+
+        public async Task<Notification> UpdateNotificationAsync(
+            int notificationId,
+            NotificationDTO dto)
+        {
+            var notification = await GetNotificationByIdAsync(notificationId);
+            if (notification == null)
+            {
+                return null;
+            }
+            notification.Title = dto.title;
+            notification.Message = dto.message;
+            notification.SentAt = dto.sentAt ?? DateTime.Now;
+            notification.IsRead = dto.isRead;
+            notification.Type = dto.type;
+            _context.Notifications.Update(notification);
             await _context.SaveChangesAsync();
             return notification;
         }

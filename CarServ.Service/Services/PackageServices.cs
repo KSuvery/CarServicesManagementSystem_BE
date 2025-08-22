@@ -1,6 +1,7 @@
 ﻿using CarServ.Domain.Entities;
 using CarServ.Repository.Repositories.DTO;
 using CarServ.Repository.Repositories.DTO.Booking_A_Service;
+using CarServ.Repository.Repositories.DTO.Service_._ServicePackage;
 using CarServ.Repository.Repositories.DTO.Service_managing;
 using CarServ.Repository.Repositories.Interfaces;
 using CarServ.service.Services.Interfaces;
@@ -59,6 +60,16 @@ namespace CarServ.service.Services
         public async Task<List<VehicleDto>> GetVehiclesByCustomerId(int customerId)
         {
             return await _repository.GetVehiclesByCustomerId(customerId);
+        }
+
+        public async Task<Domain.Entities.Service> UpdateServiceAsync(int serviceId, UpdateServiceDto dto)
+        {
+            return await _repository.UpdateServiceAsync(serviceId, dto);
+        }
+
+        public async Task<ServicePackage> UpdateServicePackageAsync(int packageId, UpdateServicePackageDto dto)
+        {
+            return await _repository.UpdateServicePackageAsync(packageId, dto);
         }
     }
 }

@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using CarServ.Repository.Repositories.DTO.User_return_DTO;
 
 namespace CarServ.API.Controllers
 {
@@ -26,9 +27,41 @@ namespace CarServ.API.Controllers
         public AccountController( IAccountService accService)
         {          
             _accService = accService;
-        }        
+        }
 
+        [HttpPut("update-profile/{userId}")]
+        [Authorize(Roles = "2")]
+        public async Task<IActionResult> UpdateProfile(int userId, [FromBody] UpdateProfileDto dto)
+        {
+            try
+            {
+                var updatedUser = await _accService.UpdateProfileAsync(userId, dto);
+                return Ok(updatedUser);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
+        [HttpPut("account-status/{userId}")]
+        [Authorize(Roles = "1")]
+        public async Task<IActionResult> UpdateAccountStatus(int userId, [FromBody] bool status)
+        {
+            try
+            {
+                var updatedUser = await _accService.UpdateAccountStatusAsync(userId, status);
+                return Ok(new
+                {
+                    message = $"Account {(status ? "enabled" : "disabled")} successfully.",
+                    user = updatedUser
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         [HttpGet]
         [Authorize(Roles = "1")]
@@ -51,7 +84,7 @@ namespace CarServ.API.Controllers
 
         [HttpGet("by-mail/{mail}")]
         [Authorize(Roles = "1,2,3,4")]
-        public async Task<ActionResult<User>> GetAccountByMail(string mail)
+        public async Task<ActionResult<CustomerWithVehiclesDTO>> GetAccountByMail(string mail)
         {
             var acc = await _accService.GetAccountByMail(mail);
             if (acc == null)
@@ -68,6 +101,39 @@ namespace CarServ.API.Controllers
             return await _accService.GetAccountByRole(roleID);
         }
 
+        [HttpGet("service-staff")]
+        public async Task<List<ServiceStaff>> GetAllServiceStaff()
+        {
+            return await _accService.GetAllServiceStaff();
+        }
 
+        [HttpGet("service-staff/{id}")]
+        public async Task<ActionResult<ServiceStaff>> GetServiceStaffById(int id)
+        {
+            var staff = await _accService.GetServiceStaffById(id);
+            if (staff == null)
+            {
+                return NotFound();
+            }
+            return staff;
+        }
+        [HttpPost("create-new-account")]
+        [Authorize(Roles = "1")]
+        public async Task<IActionResult> CreateStaffAccount([FromBody] StaffDTO dto)
+        {
+            try
+            {
+                int roleID = 0;
+                if (dto.RoleName.Equals("ServiceStaff") || dto.RoleName.Equals("Staff")) roleID = 3;
+                if (dto.RoleName.Equals("InventoryManager")) roleID = 4;
+                var staff = await _accService.AddingNewStaff(dto.FullName, dto.Email, dto.PhoneNumber, "123@", roleID);
+                return CreatedAtAction(nameof(CreateStaffAccount), new { name = staff.FullName }, staff);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
     }
 }

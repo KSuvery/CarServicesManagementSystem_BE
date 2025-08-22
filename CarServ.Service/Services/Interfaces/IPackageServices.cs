@@ -1,6 +1,7 @@
 ﻿using CarServ.Domain.Entities;
 using CarServ.Repository.Repositories.DTO;
 using CarServ.Repository.Repositories.DTO.Booking_A_Service;
+using CarServ.Repository.Repositories.DTO.Service_._ServicePackage;
 using CarServ.Repository.Repositories.DTO.Service_managing;
 using System;
 using System.Collections.Generic;
@@ -20,5 +21,7 @@ namespace CarServ.service.Services.Interfaces
         Task<List<VehicleDto>> GetVehiclesByCustomerId(int customerId);
         Task<List<PartDto>> GetPartsByServiceId(int serviceId);
         Task<List<PartDto>> GetPartsByPackageId(int packageId);
+        Task<ServicePackage> UpdateServicePackageAsync(int packageId, UpdateServicePackageDto dto);
+        Task<Domain.Entities.Service> UpdateServiceAsync(int serviceId, UpdateServiceDto dto);
     }
 }

@@ -167,14 +167,22 @@ namespace CarServ.Repository.Repositories
             serviceProgress.Note = dto.Note;
             serviceProgress.UpdatedAt = DateTime.Now;
 
+            var appointment = await _context.Appointments.FirstOrDefaultAsync(a => a.AppointmentId == dto.AppointmentId);
             
             if (dto.Status == "Completed")
             {
+                if (appointment != null)
+                {
+                    var vehicle = await _context.Vehicles.FirstOrDefaultAsync(v => v.VehicleId == appointment.VehicleId);
+                    vehicle.Status = "Available";
+                    _context.Vehicles.Update(vehicle);
+                    await _context.SaveChangesAsync();
+
+                }
                 await ReduceUsedParts(dto.AppointmentId);
                 await CheckLowStockAndNotify();
             }
-
-            // Save changes to the database
+           
             await _context.SaveChangesAsync();
         }
         private async Task CheckLowStockAndNotify()

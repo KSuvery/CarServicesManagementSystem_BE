@@ -11,15 +11,18 @@ namespace CarServ.Repository.Repositories.Interfaces
 {
     public interface IAccountRepository
     {
+        Task<User> UpdateProfileAsync(int userId, UpdateProfileDto dto);
         Task<List<GetAllUserDTO>> GetAllAccount();
         Task<PaginationResult<List<GetAllUserDTO>>> GetAllAccountWithPaging(int currentPage, int pageSize);
         Task<User> GetAccountById(int Id);
-        Task<User> GetAccountByMail(string mail);
+        Task<CustomerWithVehiclesDTO> GetAccountByMail(string mail);
         Task<List<User>> GetAccountByRole(int roleID);
 
-        Task<bool> DisableAccount(int Id);
+        Task<User> UpdateAccountStatusAsync(int userId, bool status);
         Task<User> Login(string username, string password);
         Task<CustomerDTO> SignupNewCustomer(string fullName, string email, string phoneNumber, string password, string address);
-        Task<StaffDTO> AddingNewStaff(string fullName, string email, string phoneNumber, string password);
+        Task<StaffDTO> AddingNewStaff(string fullName, string email, string phoneNumber, string password, int roleID);
+        Task<List<ServiceStaff>> GetAllServiceStaff();
+        Task<ServiceStaff> GetServiceStaffById(int id);
     }
 }

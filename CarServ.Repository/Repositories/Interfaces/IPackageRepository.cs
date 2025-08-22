@@ -1,6 +1,7 @@
 ﻿using CarServ.Domain.Entities;
 using CarServ.Repository.Repositories.DTO;
 using CarServ.Repository.Repositories.DTO.Booking_A_Service;
+using CarServ.Repository.Repositories.DTO.Service_._ServicePackage;
 using CarServ.Repository.Repositories.DTO.Service_managing;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -23,6 +24,9 @@ namespace CarServ.Repository.Repositories.Interfaces
         Task<List<PartDto>> GetPartsByServiceId(int serviceId);
 
         Task<List<PartDto>> GetPartsByPackageId(int packageId);
-        
+        Task<ServicePackage> UpdateServicePackageAsync(int packageId, UpdateServicePackageDto dto);
+        Task<Service> UpdateServiceAsync(int serviceId, UpdateServiceDto dto);
+
+
     }
 }
