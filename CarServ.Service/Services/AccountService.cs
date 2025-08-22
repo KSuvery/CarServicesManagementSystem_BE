@@ -63,14 +63,15 @@ namespace CarServ.service.Services
         );
             return customerDTO;
         }
-        public async Task<StaffDTO> AddingNewStaff(string fullName, string email, string phoneNumber, string password)
+        public async Task<StaffDTO> AddingNewStaff(string fullName, string email, string phoneNumber, string password, int roleID)
         {
-            return await _accRepository.AddingNewStaff(fullName, email, phoneNumber, password);
+            return await _accRepository.AddingNewStaff(fullName, email, phoneNumber, password, roleID);
         }
 
         public async Task<User> UpdateProfileAsync(int userId, UpdateProfileDto dto)
         {
             return await _accRepository.UpdateProfileAsync(userId, dto);
+        }
         public async Task<List<ServiceStaff>> GetAllServiceStaff()
         {
             return await _accRepository.GetAllServiceStaff();
@@ -79,6 +80,10 @@ namespace CarServ.service.Services
         public async Task<ServiceStaff> GetServiceStaffById(int id)
         {
             return await _accRepository.GetServiceStaffById(id);
+        }
+        public async Task<User> UpdateAccountStatusAsync(int userId, bool status)
+        {
+            return await _accRepository.UpdateAccountStatusAsync(userId, status);
         }
     }
 }

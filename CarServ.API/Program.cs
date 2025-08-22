@@ -48,7 +48,7 @@ builder.Services.AddDatabaseConfiguration(config);
 builder.Services.AddServiceConfiguration(config);
 builder.Services.AddRepositoryConfiguration(config);
 builder.Services.AddJwtAuthenticationService(config);
-builder.Services.AddThirdPartyServices(config);
+/*builder.Services.AddThirdPartyServices(config);*/
 builder.Services.AddSwaggerService();
 builder.Services.Configure<AdminSettings>(builder.Configuration.GetSection("AdminCredentials"));
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));

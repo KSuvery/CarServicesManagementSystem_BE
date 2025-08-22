@@ -41,9 +41,23 @@ namespace CarServ.Repository.Repositories
             return user; 
         }
 
-        public async Task<bool> DisableAccount(int Id)
+        public async Task<User> UpdateAccountStatusAsync(int userId, bool status)
         {
-            throw new NotImplementedException();
+            // Retrieve the user from the database
+            var user = await _context.Users.FindAsync(userId);
+
+            if (user == null)
+            {
+                throw new Exception("User not found.");
+            }
+
+            // Update the account status
+            user.IsActive = status;
+
+            // Save changes to the database
+            await _context.SaveChangesAsync();
+
+            return user;
         }
 
         public async Task<User> GetAccountById(int Id)
@@ -182,7 +196,7 @@ namespace CarServ.Repository.Repositories
         }
 
 
-        public async Task<StaffDTO> AddingNewStaff(string fullName, string email, string phoneNumber, string password)
+        public async Task<StaffDTO> AddingNewStaff(string fullName, string email, string phoneNumber, string password, int roleID)
         {
             if (await _context.Users.AnyAsync(x => x.Email == email))
             {
@@ -195,23 +209,36 @@ namespace CarServ.Repository.Repositories
                 Email = email,
                 PhoneNumber = phoneNumber,
                 PasswordHash = passwordHash,
-                RoleId = 3 // New user is a service staff
+                RoleId = roleID
             };
             _context.Users.Add(newUser);
             await _context.SaveChangesAsync();
-            var staff = new ServiceStaff
+            if(roleID == 3)
             {
-                StaffId = newUser.UserId
+                var staff = new ServiceStaff
+                {
+                    StaffId = newUser.UserId
 
-            };
+                };
 
-            _context.ServiceStaffs.Add(staff);
-            await _context.SaveChangesAsync();
+                _context.ServiceStaffs.Add(staff);
+                await _context.SaveChangesAsync();
+            }else if(roleID == 4)
+            {
+                var inventoryManager = new InventoryManager
+                {
+                    ManagerId = newUser.UserId
 
-            var newlyCreatedStaff = await this.GetAccountById(staff.StaffId);
+                };
+
+                _context.InventoryManagers.Add(inventoryManager);
+                await _context.SaveChangesAsync();
+            }
+           
+
+            var newlyCreatedStaff = await this.GetAccountById(newUser.UserId);
             var staffDTO = new StaffDTO
-            {
-                UserID = newlyCreatedStaff.UserId,
+            {                
                 FullName = newlyCreatedStaff.FullName,
                 Email = newlyCreatedStaff.Email,
                 PhoneNumber = newlyCreatedStaff.PhoneNumber,

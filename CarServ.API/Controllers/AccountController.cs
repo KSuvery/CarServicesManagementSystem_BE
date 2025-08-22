@@ -44,6 +44,25 @@ namespace CarServ.API.Controllers
             }
         }
 
+        [HttpPut("account-status/{userId}")]
+        [Authorize(Roles = "1")]
+        public async Task<IActionResult> UpdateAccountStatus(int userId, [FromBody] bool status)
+        {
+            try
+            {
+                var updatedUser = await _accService.UpdateAccountStatusAsync(userId, status);
+                return Ok(new
+                {
+                    message = $"Account {(status ? "enabled" : "disabled")} successfully.",
+                    user = updatedUser
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet]
         [Authorize(Roles = "1")]
         public async Task<PaginationResult<List<GetAllUserDTO>>> Get(int currentPage = 1, int pageSize = 5)
@@ -65,7 +84,7 @@ namespace CarServ.API.Controllers
 
         [HttpGet("by-mail/{mail}")]
         [Authorize(Roles = "1,2,3,4")]
-        public async Task<ActionResult<User>> GetAccountByMail(string mail)
+        public async Task<ActionResult<CustomerWithVehiclesDTO>> GetAccountByMail(string mail)
         {
             var acc = await _accService.GetAccountByMail(mail);
             if (acc == null)
@@ -97,6 +116,24 @@ namespace CarServ.API.Controllers
                 return NotFound();
             }
             return staff;
+        }
+        [HttpPost("create-new-account")]
+        [Authorize(Roles = "1")]
+        public async Task<IActionResult> CreateStaffAccount([FromBody] StaffDTO dto)
+        {
+            try
+            {
+                int roleID = 0;
+                if (dto.RoleName.Equals("ServiceStaff") || dto.RoleName.Equals("Staff")) roleID = 3;
+                if (dto.RoleName.Equals("InventoryManager")) roleID = 4;
+                var staff = await _accService.AddingNewStaff(dto.FullName, dto.Email, dto.PhoneNumber, "123@", roleID);
+                return CreatedAtAction(nameof(CreateStaffAccount), new { name = staff.FullName }, staff);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
     }
 }
