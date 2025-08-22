@@ -17,8 +17,7 @@ namespace CarServ.Repository.Repositories
         public async Task<User> UpdateProfileAsync(int userId, UpdateProfileDto dto)
         {
             
-            var user = await _context.Users
-                .Include(u => u.Customer) 
+            var user = await _context.Users                
                 .FirstOrDefaultAsync(u => u.UserId == userId);
 
             if (user == null)
@@ -41,10 +40,25 @@ namespace CarServ.Repository.Repositories
             return user; 
         }
 
-        public async Task<bool> DisableAccount(int Id)
+        public async Task<User> UpdateAccountStatusAsync(int userId, bool status)
         {
-            throw new NotImplementedException();
+            // Retrieve the user from the database
+            var user = await _context.Users.FindAsync(userId);
+
+            if (user == null)
+            {
+                throw new Exception("User not found.");
+            }
+
+            // Update the account status
+            user.IsActive = status;
+
+            // Save changes to the database
+            await _context.SaveChangesAsync();
+
+            return user;
         }
+
 
         public async Task<User> GetAccountById(int Id)
         {
@@ -138,6 +152,10 @@ namespace CarServ.Repository.Repositories
 
             if (user != null && BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
             {
+                if ((bool)!user.IsActive)
+                {
+                    throw new Exception("Account is disabled. Please contact administrator.");
+                }
                 return user;
             }
             return null;

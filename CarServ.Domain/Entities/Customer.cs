@@ -11,7 +11,5 @@ public partial class Customer
 
     public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
 
-    public virtual User CustomerNavigation { get; set; }
-
     public virtual ICollection<Vehicle> Vehicles { get; set; } = new List<Vehicle>();
 }

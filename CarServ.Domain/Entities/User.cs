@@ -23,13 +23,7 @@ public partial class User
 
     public string Address { get; set; }
 
-    public virtual Customer Customer { get; set; }
-
-    public virtual InventoryManager InventoryManager { get; set; }
-
-    public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
+    public bool? IsActive { get; set; }
 
     public virtual Role Role { get; set; }
-
-    public virtual ServiceStaff ServiceStaff { get; set; }
 }

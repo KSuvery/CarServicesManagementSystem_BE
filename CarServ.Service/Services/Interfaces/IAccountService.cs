@@ -16,6 +16,7 @@ namespace CarServ.service.Services.Interfaces
         Task<PaginationResult<List<GetAllUserDTO>>> GetAllAccountWithPaging(int currentPage, int pageSize);
         Task<User> GetAccountById(int Id);
         Task<CustomerWithVehiclesDTO> GetAccountByMail(string mail);
+        Task<User> UpdateAccountStatusAsync(int userId, bool status);
         Task<List<User>> GetAccountByRole(int roleID);
         Task<User> Login(string username, string password);
         Task<CustomerDTO> SignupNewCustomer(string fullName, string email, string phoneNumber, string password, string address);

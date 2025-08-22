@@ -8,6 +8,4 @@ namespace CarServ.Domain.Entities;
 public partial class InventoryManager
 {
     public int ManagerId { get; set; }
-
-    public virtual User Manager { get; set; }
 }

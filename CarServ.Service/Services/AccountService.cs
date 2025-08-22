@@ -72,5 +72,10 @@ namespace CarServ.service.Services
         {
             return await _accRepository.UpdateProfileAsync(userId, dto);
         }
+
+        public async Task<User> UpdateAccountStatusAsync(int userId, bool status)
+        {
+            return await _accRepository.UpdateAccountStatusAsync(userId, status);
+        }
     }
 }

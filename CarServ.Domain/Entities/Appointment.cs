@@ -36,6 +36,4 @@ public partial class Appointment
     public virtual ServiceHistory ServiceHistory { get; set; }
 
     public virtual ICollection<ServiceProgress> ServiceProgresses { get; set; } = new List<ServiceProgress>();
-
-    public virtual Vehicle Vehicle { get; set; }
 }

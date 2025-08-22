@@ -12,6 +12,4 @@ public partial class ServiceStaff
     public decimal? WorkingHours { get; set; }
 
     public virtual ICollection<ServiceHistory> ServiceHistories { get; set; } = new List<ServiceHistory>();
-
-    public virtual User Staff { get; set; }
 }

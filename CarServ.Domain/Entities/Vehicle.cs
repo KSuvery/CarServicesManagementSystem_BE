@@ -23,7 +23,9 @@ public partial class Vehicle
 
     public string Status { get; set; }
 
-    public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
+    public string LastService { get; set; }
+
+    public string NextService { get; set; }
 
     public virtual CarType CarType { get; set; }
 
