@@ -178,9 +178,65 @@ namespace CarServ.Repository.Repositories
             }).ToList();
         }
 
-        
+        public async Task<ServiceDto> GetService(int serviceId)
+        {
+            var service = await _context.Services
+                .Include(p => p.ServiceParts)
+                .ThenInclude(sp => sp.Part)
+                .FirstOrDefaultAsync(p => p.ServiceId == serviceId);
 
-            public async Task<Service> UpdateServiceAsync(int serviceId, UpdateServiceDto dto)
+            if (service == null)
+            {
+                throw new Exception("Service not found.");
+            }
+            var serviceDto = new ServiceDto
+            {
+                ServiceId = service.ServiceId,
+                Name = service.Name,
+                Description = service.Description,
+                Price = service.Price ?? 0,
+                Parts = service.ServiceParts.Select(part => new PartDto
+                {
+                    PartId = part.PartId,
+                    PartName = part.Part?.PartName ?? "Unknown",
+                    QuantityRequired = part.QuantityRequired,
+                    UnitPrice = part.Part?.UnitPrice ?? 0
+                }).ToList()
+            };
+            return serviceDto;
+
+        }
+
+        public async Task<ServicePackageDto> GetServicePackage(int id)
+        {
+            var package = await _context.ServicePackages
+                .Include(sp => sp.Services)
+                .FirstOrDefaultAsync(p => p.PackageId == id);
+
+            if (package == null)
+            {
+                throw new Exception("Service not found.");
+            }
+            var packageDto = new ServicePackageDto
+            {
+                PackageId = package.PackageId,
+                Name = package.Name,
+                Description = package.Description,
+                Price = package.Price,
+                Discount = package.Discount,
+                Services = package.Services.Select(service => new ServiceDto
+                {
+                    ServiceId = service.ServiceId,
+                    Name = service.Name,
+                    Description = service.Description,
+                    EstimatedLaborHours = service.EstimatedLaborHours
+                }).ToList()
+            };
+            return packageDto;         
+
+        }
+
+        public async Task<Service> UpdateServiceAsync(int serviceId, UpdateServiceDto dto)
             {
                 var service = await _context.Services
                     .Include(s => s.ServiceParts) 
@@ -213,9 +269,9 @@ namespace CarServ.Repository.Repositories
 
                 await _context.SaveChangesAsync();
                 return service;
-            }
+            }        
 
-            public async Task<ServicePackage> UpdateServicePackageAsync(int packageId, UpdateServicePackageDto dto)
+        public async Task<ServicePackage> UpdateServicePackageAsync(int packageId, UpdateServicePackageDto dto)
             {
                 var package = await _context.ServicePackages
                     .Include(p => p.Services)
@@ -247,7 +303,52 @@ namespace CarServ.Repository.Repositories
                 await _context.SaveChangesAsync();
                 return package;
             }
-        
+            public async Task DeleteServiceAsync(int serviceId)
+            {
+                var service = await _context.Services
+                    .Include(s => s.AppointmentServices)
+                        .ThenInclude(a => a.Appointment)
+                        .ThenInclude(a => a.ServiceProgresses)
+                    .FirstOrDefaultAsync(s => s.ServiceId == serviceId);
+                if (service == null)
+                {
+                    throw new Exception("Service not found.");
+                }
+          
+                var hasInProgressAppointments = service.AppointmentServices
+                    .Any(a => a.Appointment.ServiceProgresses
+                        .Any(sp => sp.Status != "Completed"));
+                if (hasInProgressAppointments)
+                {
+                    throw new Exception("Cannot delete service that is associated with appointments that are not completed.");
+                }
+            
+                _context.Services.Remove(service);
+                await _context.SaveChangesAsync();
+            }
+
+            public async Task DeleteServicePackageAsync(int packageId)
+            {
+                var package = await _context.ServicePackages
+                .Include(p => p.Appointments)
+                    .ThenInclude(a => a.ServiceProgresses) 
+                .FirstOrDefaultAsync(p => p.PackageId == packageId);
+                    if (package == null)
+                    {
+                        throw new Exception("Service package not found.");
+                    }
+                 
+                    var hasInProgressAppointments = package.Appointments
+                        .Any(a => a.ServiceProgresses
+                            .Any(sp => sp.Status != "Completed"));
+                    if (hasInProgressAppointments)
+                    {
+                        throw new Exception("Cannot delete service package that is associated with appointments that are not completed.");
+                    }
+            
+                    _context.ServicePackages.Remove(package);
+                    await _context.SaveChangesAsync();
+            }        
 
     }
 }

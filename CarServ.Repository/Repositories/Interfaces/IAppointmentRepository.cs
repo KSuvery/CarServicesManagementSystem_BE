@@ -10,7 +10,7 @@ namespace CarServ.Repository.Repositories.Interfaces
 {
     public interface IAppointmentRepository : IGenericRepository<Appointment>
     {
-        Task<List<Appointment>> GetAllAppointmentsAsync();
+        Task<List<AppointmentDto>> GetAllAppointmentsAsync();
         Task<Appointment> GetAppointmentByIdAsync(int appointmentId);
         Task<List<Appointment>> GetAppointmentsByCustomerIdAsync(int customerId);
         Task<List<Appointment>> GetAppointmentsByVehicleIdAsync(int vehicleId);

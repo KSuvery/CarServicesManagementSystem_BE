@@ -43,7 +43,7 @@ namespace CarServ.Repository.Repositories
 
         public async Task<User> UpdateAccountStatusAsync(int userId, bool status)
         {
-            // Retrieve the user from the database
+            
             var user = await _context.Users.FindAsync(userId);
 
             if (user == null)
@@ -51,10 +51,10 @@ namespace CarServ.Repository.Repositories
                 throw new Exception("User not found.");
             }
 
-            // Update the account status
+            
             user.IsActive = status;
 
-            // Save changes to the database
+            
             await _context.SaveChangesAsync();
 
             return user;
