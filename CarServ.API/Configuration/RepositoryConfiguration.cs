@@ -18,6 +18,7 @@ namespace CarServ.API.Configuration
             services.AddScoped<IPartsRepository, PartsRepository>();
             services.AddScoped<ICarTypesRepository, CarTypesRepository>();
             services.AddScoped<IVehicleRepository, VehicleRepository>();
+            services.AddScoped<IPromotionRepository, PromotionRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;

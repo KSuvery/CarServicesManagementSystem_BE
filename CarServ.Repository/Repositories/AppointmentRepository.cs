@@ -19,10 +19,27 @@ namespace CarServ.Repository.Repositories
             _context = context;
         }
 
-        public async Task<List<Appointment>> GetAllAppointmentsAsync()
+        public async Task<List<AppointmentDto>> GetAllAppointmentsAsync()
         {
-            return await _context.Appointments.ToListAsync();
+            var appointments = await _context.Appointments
+                .Include(a => a.Customer) 
+                .Select(a => new AppointmentDto
+                {
+                    AppointmentId = a.AppointmentId,
+                    CustomerName = a.Customer.CustomerNavigation.FullName, 
+                    CustomerPhone = a.Customer.CustomerNavigation.PhoneNumber,
+                    CustomerAddress = a.Customer.CustomerNavigation.Address,
+                    VehicleLicensePlate = a.Vehicle.LicensePlate,
+                    VehicleMake = a.Vehicle.Make,
+                    VehicleModel = a.Vehicle.Model,
+                    AppointmentDate = a.AppointmentDate,
+                    Status = a.Status
+                })
+                .ToListAsync();
+
+            return appointments;
         }
+
 
         public async Task<Appointment> GetAppointmentByIdAsync(int appointmentId)
         {

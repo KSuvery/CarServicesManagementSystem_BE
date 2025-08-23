@@ -19,10 +19,34 @@ namespace CarServ.Repository.Repositories
         {
             _context = context;
         }
-        
-        public async Task<List<Part>> GetAllPartsAsync()
+                
+        public async Task<List<PartDto>> GetAllPartsAsync()
         {
-            return await _context.Parts.ToListAsync();
+            var parts = await _context.Parts
+                .Include(p => p.PartPrices) 
+                .Include(p => p.WarrantyClaims) 
+                    .ThenInclude(w => w.Supplier) 
+                .ToListAsync();
+            var partDtos = parts.Select(p => new PartDto
+            {
+                PartId = p.PartId,
+                PartName = p.PartName,
+                Quantity = p.Quantity,
+                CurrentUnitPrice = p.UnitPrice,
+                ExpiryDate = p.ExpiryDate,
+                WarrantyMonths = p.WarrantyMonths,
+                SupplierName = p.WarrantyClaims.FirstOrDefault()?.Supplier?.Name ?? "Someone", 
+                PartPrices = p.PartPrices.Select(pp => new PartPriceDto
+                {
+                    Price = pp.Price,
+                    EffectiveFrom = pp.EffectiveFrom
+                }).ToList()
+            }).ToList();
+            return partDtos;
+        }
+        public async Task<List<Supplier>> GetAllSuppliersAsync()
+        {
+            return await _context.Suppliers.ToListAsync();
         }
         public async Task<List<Part>> GetLowPartsAsync()
         {

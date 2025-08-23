@@ -10,7 +10,7 @@ namespace CarServ.service.Services.Interfaces
 {
     public interface IAppointmentervices
     {
-        Task<List<Appointment>> GetAllAppointmentAsync();
+        Task<List<AppointmentDto>> GetAllAppointmentAsync();
         Task<Appointment> GetAppointmentByIdAsync(int appointmentId);
         Task<List<Appointment>> GetAppointmentByCustomerIdAsync(int customerId);
         Task<List<Appointment>> GetAppointmentByVehicleIdAsync(int vehicleId);

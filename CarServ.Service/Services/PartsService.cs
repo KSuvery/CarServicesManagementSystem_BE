@@ -19,7 +19,7 @@ namespace CarServ.Service.Services
             _partsRepository = partsRepository;
         }
 
-        public async Task<List<Part>> GetAllPartsAsync()
+        public async Task<List<PartDto>> GetAllPartsAsync()
         {
             return await _partsRepository.GetAllPartsAsync();
         }
@@ -105,6 +105,11 @@ namespace CarServ.Service.Services
         public async Task<List<Part>> GetZeroPartsAsync()
         {
             return await _partsRepository.GetZeroPartsAsync();
+        }
+
+        public async Task<List<Supplier>> GetAllSuppliersAsync()
+        {
+            return await _partsRepository.GetAllSuppliersAsync();
         }
     }
 }

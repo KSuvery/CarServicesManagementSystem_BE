@@ -19,7 +19,7 @@ namespace CarServ.service.Services
             _appointmentRepository = appointmentRepository;
         }
 
-        public async Task<List<Appointment>> GetAllAppointmentAsync()
+        public async Task<List<AppointmentDto>> GetAllAppointmentAsync()
         {
             return await _appointmentRepository.GetAllAppointmentsAsync();
         }

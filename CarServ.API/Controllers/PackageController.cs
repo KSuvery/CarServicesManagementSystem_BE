@@ -76,7 +76,7 @@ namespace CarServ.API.Controllers
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
-        }
+        }        
 
         [HttpGet("GetAllAvailableVehicleWithCustomerId/{id}")]
         [Authorize(Roles = "1,2,3,4")]
@@ -149,7 +149,65 @@ namespace CarServ.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpDelete("delete-service/{serviceId}")]
+        [Authorize(Roles = "1")]
+        public async Task<IActionResult> DeleteService(int serviceId)
+        {
+            try
+            {
+                await _service.DeleteServiceAsync(serviceId);
+                return Ok(new { message = "Service deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
+        [HttpDelete("delete-service-package/{packageId}")]
+        [Authorize(Roles = "1")]
+        public async Task<IActionResult> DeleteServicePackage(int packageId)
+        {
+            try
+            {
+                await _service.DeleteServicePackageAsync(packageId);
+                return Ok(new { message = "Service package deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("get-service-package/{packageId}")]
+        [Authorize(Roles = "1,2,3,4")]
+        public async Task<IActionResult> GetServicePackage(int packageId)
+        {
+            try
+            {
+                var package = await _service.GetServicePackage(packageId);
+                return Ok(package);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("get-service/{serviceId}")]
+        [Authorize(Roles = "1,2,4")]
+        public async Task<IActionResult> GetService(int serviceId)
+        {
+            try
+            {
+                var serviceDto = await _service.GetService(serviceId);
+                return Ok(serviceDto);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 
 }
