@@ -28,7 +28,7 @@ namespace CarServ.API.Controllers
 
         [HttpGet]
         [Authorize(Roles = "1,3")]
-        public async Task<ActionResult<IEnumerable<Part>>> GetPartItems()
+        public async Task<ActionResult<IEnumerable<PartDto>>> GetPartItems()
         {
             return await _PartServices.GetAllPartsAsync();
         }
