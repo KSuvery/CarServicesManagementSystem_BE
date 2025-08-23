@@ -1,5 +1,7 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO.Logging_part_usage;
 using CarServ.Service.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,6 +9,7 @@ namespace CarServ.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class PartsController : ControllerBase
     {
         private readonly IPartsService _partsService;
@@ -16,19 +19,29 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Part>>> GetAllParts()
+        [Authorize(Roles = "1,4")]
+        public async Task<ActionResult<IEnumerable<PartDto>>> GetAllParts()
         {
             var parts = await _partsService.GetAllPartsAsync();
             return Ok(parts);
         }
+        [HttpGet("suppliers")]
+        [Authorize(Roles = "1,4")]
+        public async Task<ActionResult<IEnumerable<Supplier>>> GetSuppliers()
+        {
+            var suppliers = await _partsService.GetAllSuppliersAsync();
+            return Ok(suppliers);
+        }
 
         [HttpGet("get-low-parts")]
+        [Authorize(Roles = "1,4")]
         public async Task<ActionResult<IEnumerable<Part>>> GetAllLowParts()
         {
             var parts = await _partsService.GetLowPartsAsync();
             return Ok(parts);
         }
         [HttpGet("get-out-of-stock-parts")]
+        [Authorize(Roles = "1,4")]
         public async Task<ActionResult<IEnumerable<Part>>> GetZeroParts()
         {
             var parts = await _partsService.GetZeroPartsAsync();
@@ -36,6 +49,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "1,4")]
         public async Task<ActionResult<Part>> GetPartById(int id)
         {
             var part = await _partsService.GetPartByIdAsync(id);
@@ -47,6 +61,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("search")]
+        [Authorize(Roles = "1,4")]
         public async Task<ActionResult<IEnumerable<Part>>> SearchParts([FromQuery] string query)
         {
             if (string.IsNullOrWhiteSpace(query))
@@ -58,6 +73,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("price")]
+        [Authorize(Roles = "1,4")]
         public async Task<ActionResult<IEnumerable<Part>>> GetPartsByPriceRange([FromQuery] decimal minPrice, [FromQuery] decimal maxPrice)
         {
             if (minPrice < 0 || maxPrice < 0 || minPrice > maxPrice)
@@ -69,6 +85,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("expiryDate")]
+        [Authorize(Roles = "1,4")]
         public async Task<ActionResult<IEnumerable<Part>>> GetPartsByExpiryDateRange([FromQuery] DateOnly startDate, DateOnly endDate)
         {
             if (startDate > endDate)
@@ -80,6 +97,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("warrantyMonths")]
+        [Authorize(Roles = "1,4")]
         public async Task<ActionResult<IEnumerable<Part>>> GetPartsByWarrantyMonths([FromQuery] int minMonths, [FromQuery] int maxMonths)
         {
             if (minMonths < 0 || maxMonths < 0 || minMonths > maxMonths)
@@ -91,6 +109,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpPost("create")]
+        [Authorize(Roles = "1,4")]
         public async Task<ActionResult<Part>> CreatePart(
             string partName,
             int quantity,
@@ -109,6 +128,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpPut("update")]
+        [Authorize(Roles = "1,4")]
         public async Task<ActionResult<Part>> UpdatePart(
             int partId,
             string partName,

@@ -4,6 +4,7 @@ using CarServ.service.WorkerService;
 using CarServ.Repository.Repositories;
 using CarServ.Service.Services.Interfaces;
 using CarServ.Service.Services;
+using CarServ.Repository.Repositories.Interfaces;
 
 namespace CarServ.API.Configuration
 {
@@ -24,6 +25,7 @@ namespace CarServ.API.Configuration
             services.AddScoped<IVehicleService, VehicleService>();
             services.AddTransient<IEmailService, EmailService>();
             services.AddScoped<ICarTypesService, CarTypesService>();
+            services.AddScoped<IPromotionService, PromotionService>();
             services.AddScoped<IOrderService, OrderService>();
 
             return services;

@@ -32,6 +32,16 @@ namespace CarServ.service.Services
             return await _repository.CreateServicePackage(dto);
         }
 
+        public async Task DeleteServiceAsync(int serviceId)
+        {
+            await _repository.DeleteServiceAsync(serviceId);
+        }
+
+        public async Task DeleteServicePackageAsync(int packageId)
+        {
+            await _repository.DeleteServicePackageAsync(packageId);
+        }
+
         public async Task<ServicePackageListDto> GetAllServicePackages()
         {
             return await _repository.GetAllServicePackages();
@@ -55,6 +65,16 @@ namespace CarServ.service.Services
         public async Task<List<PartDto>> GetPartsByServiceId(int serviceId)
         {
             return await _repository.GetPartsByServiceId(serviceId);
+        }
+
+        public async Task<ServiceDto> GetService(int serviceId)
+        {
+            return await _repository.GetService(serviceId); 
+        }
+
+        public async Task<ServicePackageDto> GetServicePackage(int id)
+        {
+            return await _repository.GetServicePackage(id);
         }
 
         public async Task<List<VehicleDto>> GetVehiclesByCustomerId(int customerId)

@@ -27,7 +27,7 @@ namespace CarServ.API.Controllers
         // GET: api/Appointment
         [HttpGet]
         //[Authorize(Roles = "1")]
-        public async Task<ActionResult<IEnumerable<Appointment>>> GetAppointment()
+        public async Task<ActionResult<IEnumerable<AppointmentDto>>> GetAppointment()
         {
             return await _Appointmentervices.GetAllAppointmentAsync();
         }
