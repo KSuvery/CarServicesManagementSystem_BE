@@ -1,4 +1,5 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO.Service_._ServicePackage;
 using CarServ.Repository.Repositories.DTO.Service_managing;
 using CarServ.service.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -117,6 +118,35 @@ namespace CarServ.API.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+        [HttpPut("update-service/{serviceId}")]
+        [Authorize(Roles = "1,4")] 
+        public async Task<IActionResult> UpdateService(int serviceId, [FromBody] UpdateServiceDto dto)
+        {
+            try
+            {
+                var updatedService = await _service.UpdateServiceAsync(serviceId, dto);
+                return Ok(updatedService);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("update-service-package/{packageId}")]
+        [Authorize(Roles = "1,4")] 
+        public async Task<IActionResult> UpdateServicePackage(int packageId, [FromBody] UpdateServicePackageDto dto)
+        {
+            try
+            {
+                var updatedPackage = await _service.UpdateServicePackageAsync(packageId, dto);
+                return Ok(updatedPackage);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
 

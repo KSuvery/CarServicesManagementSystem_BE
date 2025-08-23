@@ -14,10 +14,50 @@ namespace CarServ.Repository.Repositories
             _context = context;
         }
 
-
-        public async Task<bool> DisableAccount(int Id)
+        public async Task<User> UpdateProfileAsync(int userId, UpdateProfileDto dto)
         {
-            throw new NotImplementedException();
+            
+            var user = await _context.Users
+                .Include(u => u.Customer) 
+                .FirstOrDefaultAsync(u => u.UserId == userId);
+
+            if (user == null)
+            {
+                throw new Exception("User  not found.");
+            }
+            
+            user.FullName = dto.FullName;
+            user.Email = dto.Email;
+            user.PhoneNumber = dto.PhoneNumber;
+            user.Address = dto.Address;
+            
+            if (await _context.Users.AnyAsync(u => u.Email == dto.Email && u.UserId != userId))
+            {
+                throw new Exception("Email already exists.");
+            }
+            
+            await _context.SaveChangesAsync();
+
+            return user; 
+        }
+
+        public async Task<User> UpdateAccountStatusAsync(int userId, bool status)
+        {
+            // Retrieve the user from the database
+            var user = await _context.Users.FindAsync(userId);
+
+            if (user == null)
+            {
+                throw new Exception("User not found.");
+            }
+
+            // Update the account status
+            user.IsActive = status;
+
+            // Save changes to the database
+            await _context.SaveChangesAsync();
+
+            return user;
         }
 
         public async Task<User> GetAccountById(int Id)
@@ -26,10 +66,30 @@ namespace CarServ.Repository.Repositories
             return userListTmp ?? new User();
         }
 
-        public async Task<User> GetAccountByMail(string mail)
+        public async Task<CustomerWithVehiclesDTO> GetAccountByMail(string mail)
         {
-            var userListTmp = await _context.Users.Include(m => m.Role).FirstOrDefaultAsync(m => m.Email == mail);
-            return userListTmp ?? new User();
+            var customer = await _context.Users.Include(m => m.Role).
+                                    FirstOrDefaultAsync(m => m.Email == mail);                        
+            if(customer != null)
+            {
+                var listVehicles = await _context.Vehicles
+                .Where(v => v.CustomerId == customer.UserId)
+                .ToListAsync();
+                var userDTO = new CustomerWithVehiclesDTO
+                {
+                    UserID = customer.UserId,
+                    FullName = customer.FullName,
+                    Email = customer.Email,
+                    PhoneNumber = customer.PhoneNumber,
+                    RoleName = customer.Role.RoleName,
+                    Address = customer.Address,
+                    vehicles = listVehicles
+
+                };
+                return userDTO ?? new CustomerWithVehiclesDTO();
+            }
+            throw new Exception("Cannot find user with mail: " + mail);
+
         }
 
         public async Task<List<User>> GetAccountByRole(int roleID)
@@ -129,13 +189,14 @@ namespace CarServ.Repository.Repositories
                 FullName = newlyCreatedCustomer.FullName,
                 Email = newlyCreatedCustomer.Email,
                 PhoneNumber = newlyCreatedCustomer.PhoneNumber,
-                RoleName = newlyCreatedCustomer.Role.RoleName
+                RoleName = newlyCreatedCustomer.Role.RoleName,
+                Address = newlyCreatedCustomer.Address
             };
             return userDTO;
         }
 
 
-        public async Task<StaffDTO> AddingNewStaff(string fullName, string email, string phoneNumber, string password)
+        public async Task<StaffDTO> AddingNewStaff(string fullName, string email, string phoneNumber, string password, int roleID)
         {
             if (await _context.Users.AnyAsync(x => x.Email == email))
             {
@@ -148,23 +209,36 @@ namespace CarServ.Repository.Repositories
                 Email = email,
                 PhoneNumber = phoneNumber,
                 PasswordHash = passwordHash,
-                RoleId = 3 // New user is a service staff
+                RoleId = roleID
             };
             _context.Users.Add(newUser);
             await _context.SaveChangesAsync();
-            var staff = new ServiceStaff
+            if(roleID == 3)
             {
-                StaffId = newUser.UserId
+                var staff = new ServiceStaff
+                {
+                    StaffId = newUser.UserId
 
-            };
+                };
 
-            _context.ServiceStaffs.Add(staff);
-            await _context.SaveChangesAsync();
+                _context.ServiceStaffs.Add(staff);
+                await _context.SaveChangesAsync();
+            }else if(roleID == 4)
+            {
+                var inventoryManager = new InventoryManager
+                {
+                    ManagerId = newUser.UserId
 
-            var newlyCreatedStaff = await this.GetAccountById(staff.StaffId);
+                };
+
+                _context.InventoryManagers.Add(inventoryManager);
+                await _context.SaveChangesAsync();
+            }
+           
+
+            var newlyCreatedStaff = await this.GetAccountById(newUser.UserId);
             var staffDTO = new StaffDTO
-            {
-                UserID = newlyCreatedStaff.UserId,
+            {                
                 FullName = newlyCreatedStaff.FullName,
                 Email = newlyCreatedStaff.Email,
                 PhoneNumber = newlyCreatedStaff.PhoneNumber,
@@ -192,4 +266,5 @@ namespace CarServ.Repository.Repositories
             return BCrypt.Net.BCrypt.HashPassword(password);
         }
     }
+
 }
