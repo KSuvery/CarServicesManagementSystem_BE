@@ -158,6 +158,34 @@ namespace CarServ.API.Controllers
             }
         }
 
+        [HttpGet("booked-vehicles")]
+        public async Task<IActionResult> GetBookedVehicles()
+        {
+            try
+            {
+                var vehicles = await _vehicleService.GetBookedVehiclesAsync();
+                return Ok(vehicles);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("available-vehicles")]
+        public async Task<IActionResult> GetAvailableVehicles()
+        {
+            try
+            {
+                var vehicles = await _vehicleService.GetAvailableVehiclesAsync();
+                return Ok(vehicles);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
+            }
+        }
+
         [HttpPost("add")]
         public async Task<IActionResult> AddVehicle(int customerId, [FromBody] AddVehicleDto dto)
         {

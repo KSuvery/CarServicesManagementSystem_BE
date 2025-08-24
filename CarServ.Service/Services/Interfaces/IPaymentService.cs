@@ -18,6 +18,9 @@ namespace CarServ.service.Services.Interfaces
         Task<List<Payment>> SortPaymentByMethodAsync();
         Task<List<Payment>> GetPaymentByAmountRangeAsync(decimal minAmount, decimal maxAmount);
         Task<List<Payment>> GetPaymentByPaidDateAsync(DateTime paidDate);
+        Task<List<Payment>> GetPaymentsByStatus(string status);
+        Task<List<Payment>> GetPendingPayments(string status = "Pending");
+        Task<List<Payment>> GetPaidPayments(string status = "Paid");
         Task<Payment> CreatePayment(PaymentDto dto);
     }
 }

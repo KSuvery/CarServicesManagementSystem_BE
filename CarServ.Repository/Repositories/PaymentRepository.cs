@@ -82,6 +82,27 @@ namespace CarServ.Repository.Repositories
                 .ToListAsync();
         }
 
+        public async Task<List<Payment>> GetPaymentsByStatus(string status)
+        {
+            return await _context.Payments
+                .Where(p => p.Status.ToLower().Contains(status.ToLower()))
+                .ToListAsync();
+        }
+
+        public async Task<List<Payment>> GetPendingPayments(string status = "Pending")
+        {
+            return await _context.Payments
+                .Where(p => p.Status.ToLower() == status.ToLower())
+                .ToListAsync();
+        }
+
+        public async Task<List<Payment>> GetPaidPayments(string status = "Paid")
+        {
+            return await _context.Payments
+                .Where(p => p.Status.ToLower() == status.ToLower())
+                .ToListAsync();
+        }
+
         public async Task<Payment> CreatePayment(PaymentDto dto)
         {
             try

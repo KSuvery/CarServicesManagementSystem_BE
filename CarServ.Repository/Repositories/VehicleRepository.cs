@@ -65,6 +65,19 @@ namespace CarServ.Repository.Repositories
                 .ToListAsync();
         }
 
+        public async Task<List<Vehicle>> GetBookedVehiclesAsync(string status = "Booked")
+        {
+            return await _context.Vehicles
+                .Where(v => v.Status.ToLower() == status.ToLower())
+                .ToListAsync();
+        }
+
+        public async Task<List<Vehicle>> GetAvailableVehiclesAsync(string status = "Available")
+        {
+            return await _context.Vehicles
+                .Where(v => v.Status.ToLower() == status.ToLower())
+                .ToListAsync();
+        }
 
         public async Task<Vehicle> AddVehicleAsync(int customerId, AddVehicleDto dto)
         {
