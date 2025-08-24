@@ -53,6 +53,16 @@ namespace CarServ.Service.Services
             return await _vehicleRepository.GetVehiclesByCarTypeIdAsync(carTypeId);
         }
 
+        public async Task<List<Vehicle>> GetBookedVehiclesAsync(string status = "Booked")
+        {
+            return await _vehicleRepository.GetBookedVehiclesAsync(status);
+        }
+
+        public async Task<List<Vehicle>> GetAvailableVehiclesAsync(string status = "Available")
+        {
+            return await _vehicleRepository.GetAvailableVehiclesAsync(status);
+        }
+
         public async Task<Vehicle> AddVehicleAsync(int customerId, AddVehicleDto dto)
         {
             return await _vehicleRepository.AddVehicleAsync(customerId, dto);
