@@ -250,7 +250,7 @@ namespace CarServ.Repository.Repositories
         public async Task<List<ServiceStaff>> GetAllServiceStaff()
         {
             return await _context.ServiceStaffs
-                .Include(s => s.Staff)
+                .Include(s => s.User) 
                 .ToListAsync();
         }
 

@@ -9,9 +9,19 @@ public partial class ServiceStaff
 {
     public int StaffId { get; set; }
 
+    public int UserId { get; set; }
+
+    public string Specialty { get; set; }
+
+    public string Experience { get; set; }
+
     public decimal? WorkingHours { get; set; }
+
+    public decimal? Rating { get; set; }
+
+    public string Avatar { get; set; }
 
     public virtual ICollection<ServiceHistory> ServiceHistories { get; set; } = new List<ServiceHistory>();
 
-    public virtual User Staff { get; set; }
+    public virtual User User { get; set; }
 }
