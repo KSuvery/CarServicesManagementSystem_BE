@@ -130,7 +130,7 @@ namespace CarServ.Service.Services
 
         public async Task DeletePartAsync(int partId)
         {
-            return await _partsRepository.DeletePartAsync(partId);  
+            await _partsRepository.DeletePartAsync(partId);  
         }
     }
 }

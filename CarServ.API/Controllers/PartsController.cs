@@ -142,6 +142,21 @@ namespace CarServ.API.Controllers
 
         }
 
+        [HttpDelete("delete-part/{partId}")]
+        [Authorize(Roles = "1,4")]
+        public async Task<IActionResult> DeleteService(int partId)
+        {
+            try
+            {
+                await _partsService.DeletePartAsync(partId);
+                return Ok(new { message = "Part deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         private async Task<bool> PartExists(int id)
         {
             var part = await _partsService.GetPartByIdAsync(id);

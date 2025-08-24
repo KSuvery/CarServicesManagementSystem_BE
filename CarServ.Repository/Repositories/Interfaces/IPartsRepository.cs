@@ -41,5 +41,6 @@ namespace CarServ.Repository.Repositories.Interfaces
 
         Task TrackPartsUsed(PartUsageDto partsUsedDTO);
         Task UpdateServiceProgress(UpdateServiceProgressDto dto);
+        Task DeletePartAsync(int partId);
     }
 }
