@@ -1,4 +1,5 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO;
 using CarServ.Repository.Repositories.DTO.Logging_part_usage;
 using CarServ.Service.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -20,17 +21,16 @@ namespace CarServ.API.Controllers
 
         [HttpGet]
         [Authorize(Roles = "1,4")]
-        public async Task<ActionResult<IEnumerable<PartDto>>> GetAllParts()
+        public async Task<PaginationResult<List<PartDto>>> GetAllParts(int currentPage = 1, int pageSize = 5)
         {
-            var parts = await _partsService.GetAllPartsAsync();
-            return Ok(parts);
+            return await _partsService.GetAllPartsWithPaging(currentPage, pageSize);           
         }
         [HttpGet("suppliers")]
         [Authorize(Roles = "1,4")]
-        public async Task<ActionResult<IEnumerable<Supplier>>> GetSuppliers()
+        public async Task<PaginationResult<List<Supplier>>> GetSuppliers(int currentPage = 1, int pageSize = 5)
         {
-            var suppliers = await _partsService.GetAllSuppliersAsync();
-            return Ok(suppliers);
+            return await _partsService.GetAllSuppliersAsync(currentPage, pageSize);
+            
         }
 
         [HttpGet("get-low-parts")]

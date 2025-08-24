@@ -1,4 +1,5 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO;
 using CarServ.Repository.Repositories.DTO.Payment;
 using CarServ.Repository.Repositories.Interfaces;
 using CarServ.Service.Services.Interfaces;
@@ -26,6 +27,11 @@ namespace CarServ.Service.Services
         public async Task<List<Promotion>> GetAllPromotionsAsync()
         {
             return await _repository.GetAllPromotionsAsync();
+        }
+
+        public async Task<PaginationResult<List<Promotion>>> GetAllPromotionsWithPaging(int currentPage, int pageSize)
+        {
+            return await _repository.GetAllPromotionsWithPaging(currentPage, pageSize);
         }
 
         public async Task<Promotion> GetPromotionByIdAsync(int promotionId)

@@ -1,4 +1,5 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO;
 using CarServ.Repository.Repositories.DTO.Logging_part_usage;
 using CarServ.Repository.Repositories.DTO.RevenueReport;
 using System;
@@ -12,7 +13,8 @@ namespace CarServ.Service.Services.Interfaces
     public interface IPartsService
     {
         Task<List<PartDto>> GetAllPartsAsync();
-        Task<List<Supplier>> GetAllSuppliersAsync();
+        Task<PaginationResult<List<PartDto>>> GetAllPartsWithPaging(int currentPage, int pageSize);
+        Task<PaginationResult<List<Supplier>>> GetAllSuppliersAsync(int currentPage, int pageSize);
         Task<List<Part>> GetLowPartsAsync();
         Task<List<Part>> GetZeroPartsAsync();
         Task<Part> GetPartByIdAsync(int partId);

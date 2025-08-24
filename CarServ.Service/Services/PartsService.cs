@@ -1,4 +1,5 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO;
 using CarServ.Repository.Repositories.DTO.Logging_part_usage;
 using CarServ.Repository.Repositories.DTO.RevenueReport;
 using CarServ.Repository.Repositories.Interfaces;
@@ -107,9 +108,14 @@ namespace CarServ.Service.Services
             return await _partsRepository.GetZeroPartsAsync();
         }
 
-        public async Task<List<Supplier>> GetAllSuppliersAsync()
+        public async Task<PaginationResult<List<PartDto>>> GetAllPartsWithPaging(int currentPage, int pageSize)
         {
-            return await _partsRepository.GetAllSuppliersAsync();
+            return await _partsRepository.GetAllPartsWithPaging(currentPage, pageSize);
+        }
+
+        public async Task<PaginationResult<List<Supplier>>> GetAllSuppliersAsync(int currentPage, int pageSize)
+        {
+            return await _partsRepository.GetAllSuppliersAsync(currentPage, pageSize);
         }
     }
 }
