@@ -153,7 +153,7 @@ namespace CarServ.Repository.Repositories
                 Name = service.Name,
                 Description = service.Description,
                 Price = service.Price ?? 0,
-                Parts = service.ServiceParts.Select(part => new PartDto
+                Parts = service.ServiceParts.Select(part => new PartDTO_Copy
                 {
                     PartId = part.PartId,
                     PartName = part.Part?.PartName ?? "Unknown",
@@ -181,7 +181,7 @@ namespace CarServ.Repository.Repositories
                 Name = service.Name,
                 Description = service.Description,
                 Price = service.Price ?? 0,
-                Parts = service.ServiceParts.Select(part => new PartDto
+                Parts = service.ServiceParts.Select(part => new PartDTO_Copy
                 {
                     PartId = part.PartId,
                     PartName = part.Part?.PartName ?? "Unknown",
@@ -229,13 +229,13 @@ namespace CarServ.Repository.Repositories
             }).ToList();
         }
         //  single service
-        public async Task<List<PartDto>> GetPartsByServiceId(int serviceId)
+        public async Task<List<PartDTO_Copy>> GetPartsByServiceId(int serviceId)
         {
             var serviceParts = await _context.ServiceParts
                 .Include(sp => sp.Part) 
                 .Where(sp => sp.ServiceId == serviceId)
                 .ToListAsync();
-            return serviceParts.Select(sp => new PartDto
+            return serviceParts.Select(sp => new PartDTO_Copy
             {
                 PartId = sp.Part.PartId,
                 PartName = sp.Part.PartName,
@@ -244,13 +244,13 @@ namespace CarServ.Repository.Repositories
             }).ToList();
         }
         // service package
-        public async Task<List<PartDto>> GetPartsByPackageId(int packageId)
+        public async Task<List<PartDTO_Copy>> GetPartsByPackageId(int packageId)
         {
             var serviceParts = await _context.ServiceParts
                 .Include(sp => sp.Part) 
                 .Where(sp => sp.Service.Packages.Any(p => p.PackageId == packageId))
                 .ToListAsync();
-            return serviceParts.Select(sp => new PartDto
+            return serviceParts.Select(sp => new PartDTO_Copy
             {
                 PartId = sp.Part.PartId,
                 PartName = sp.Part.PartName,
@@ -276,7 +276,7 @@ namespace CarServ.Repository.Repositories
                 Name = service.Name,
                 Description = service.Description,
                 Price = service.Price ?? 0,
-                Parts = service.ServiceParts.Select(part => new PartDto
+                Parts = service.ServiceParts.Select(part => new PartDTO_Copy
                 {
                     PartId = part.PartId,
                     PartName = part.Part?.PartName ?? "Unknown",

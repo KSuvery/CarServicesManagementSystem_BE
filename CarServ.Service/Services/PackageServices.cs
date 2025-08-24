@@ -67,12 +67,12 @@ namespace CarServ.service.Services
             return await _repository.GetAllWithPaging(pageNum, pageSize);
         }
 
-        public async Task<List<PartDto>> GetPartsByPackageId(int packageId)
+        public async Task<List<PartDTO_Copy>> GetPartsByPackageId(int packageId)
         {
             return await _repository.GetPartsByPackageId(packageId);
         }
 
-        public async Task<List<PartDto>> GetPartsByServiceId(int serviceId)
+        public async Task<List<PartDTO_Copy>> GetPartsByServiceId(int serviceId)
         {
             return await _repository.GetPartsByServiceId(serviceId);
         }

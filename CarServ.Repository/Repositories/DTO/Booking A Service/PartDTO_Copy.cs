@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CarServ.Repository.Repositories.DTO.Booking_A_Service
 {
-    public class PartDto
+    public class PartDTO_Copy
     {
         public int PartId { get; set; }
         public string PartName { get; set; }
