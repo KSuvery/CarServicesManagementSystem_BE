@@ -1,4 +1,5 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO;
 using CarServ.Repository.Repositories.DTO.Logging_part_usage;
 using CarServ.Repository.Repositories.DTO.RevenueReport;
 using CarServ.Repository.Repositories.Interfaces;
@@ -44,10 +45,44 @@ namespace CarServ.Repository.Repositories
             }).ToList();
             return partDtos;
         }
-        public async Task<List<Supplier>> GetAllSuppliersAsync()
+
+        public async Task<PaginationResult<List<PartDto>>> GetAllPartsWithPaging(int currentPage, int pageSize)
         {
-            return await _context.Suppliers.ToListAsync();
+            var userListTmp = await this.GetAllPartsAsync();
+
+            var totalItems = userListTmp.Count();
+            var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+            userListTmp = userListTmp.Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
+
+            return new PaginationResult<List<PartDto>>
+            {
+                TotalItems = totalItems,
+                TotalPages = totalPages,
+                CurrentPage = currentPage,
+                PageSize = pageSize,
+                Items = userListTmp
+            };
         }
+        public async Task<PaginationResult<List<Supplier>>> GetAllSuppliersAsync(int currentPage, int pageSize)
+        {
+            var userListTmp = await _context.Suppliers.ToListAsync();            
+
+            var totalItems = userListTmp.Count();
+            var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+            userListTmp = userListTmp.Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
+
+            return new PaginationResult<List<Supplier>>
+            {
+                TotalItems = totalItems,
+                TotalPages = totalPages,
+                CurrentPage = currentPage,
+                PageSize = pageSize,
+                Items = userListTmp
+            };
+        }
+
         public async Task<List<Part>> GetLowPartsAsync()
         {
             var parts = await _context.Parts

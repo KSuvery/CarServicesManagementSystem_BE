@@ -1,4 +1,5 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO;
 using CarServ.Repository.Repositories.DTO.Booking_A_Service;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace CarServ.service.Services.Interfaces
     public interface IAppointmentervices
     {
         Task<List<AppointmentDto>> GetAllAppointmentAsync();
+        Task<PaginationResult<List<AppointmentDto>>> GetAllApppointmentsWithPaging(int currentPage, int pageSize);
         Task<Appointment> GetAppointmentByIdAsync(int appointmentId);
         Task<List<Appointment>> GetAppointmentByCustomerIdAsync(int customerId);
         Task<List<Appointment>> GetAppointmentByVehicleIdAsync(int vehicleId);

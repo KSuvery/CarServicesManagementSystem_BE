@@ -1,4 +1,5 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO;
 using CarServ.Repository.Repositories.Interfaces;
 using CarServ.Service.Services.Interfaces;
 using System;
@@ -41,6 +42,16 @@ namespace CarServ.Service.Services
         public async Task<Order> UpdateOrderAsync(int orderId, int appointmentId, int? promotionId, DateTime createdAt)
         {
             return await _orderRepository.UpdateOrderAsync(orderId, appointmentId, promotionId, createdAt);
+        }
+
+        public async Task<PaginationResult<List<Order>>> GetAllOrdersWithPaging(int currentPage, int pageSize)
+        {
+            return await _orderRepository.GetAllOrdersWithPaging(currentPage, pageSize);
+        }
+
+        public async Task<PaginationResult<List<Order>>> GetAllOrdersByCustomerIdWithPaging(int currentPage, int pageSize, int customerId)
+        {
+            return await _orderRepository.GetAllOrdersByCustomerIdWithPaging(currentPage, pageSize, customerId);
         }
     }
 }

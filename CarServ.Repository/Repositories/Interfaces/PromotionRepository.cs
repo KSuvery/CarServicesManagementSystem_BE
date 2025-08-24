@@ -1,4 +1,5 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO;
 using CarServ.Repository.Repositories.DTO.Payment;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -60,7 +61,27 @@ namespace CarServ.Repository.Repositories.Interfaces
                 return await _context.Promotions.ToListAsync();
             }
 
-            public async Task<Promotion> GetPromotionByIdAsync(int promotionId)
+
+        public async Task<PaginationResult<List<Promotion>>> GetAllPromotionsWithPaging(int currentPage, int pageSize)
+        {
+            var userListTmp = await this.GetAllPromotionsAsync();
+
+            var totalItems = userListTmp.Count();
+            var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+            userListTmp = userListTmp.Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
+
+            return new PaginationResult<List<Promotion>>
+            {
+                TotalItems = totalItems,
+                TotalPages = totalPages,
+                CurrentPage = currentPage,
+                PageSize = pageSize,
+                Items = userListTmp
+            };
+        }
+
+        public async Task<Promotion> GetPromotionByIdAsync(int promotionId)
             {
                 var promotion = await _context.Promotions.FindAsync(promotionId);
                 if (promotion == null)

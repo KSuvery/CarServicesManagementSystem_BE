@@ -9,6 +9,7 @@ using CarServ.Domain.Entities;
 using CarServ.service.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using CarServ.Repository.Repositories.DTO.Booking_A_Service;
+using CarServ.Repository.Repositories.DTO;
 
 namespace CarServ.API.Controllers
 {
@@ -26,14 +27,14 @@ namespace CarServ.API.Controllers
 
         // GET: api/Appointment
         [HttpGet]
-        //[Authorize(Roles = "1")]
-        public async Task<ActionResult<IEnumerable<AppointmentDto>>> GetAppointment()
+        [Authorize(Roles = "1")]
+        public async Task<PaginationResult<List<AppointmentDto>>> GetAppointment(int currentPage = 1, int pageSize = 5)
         {
-            return await _Appointmentervices.GetAllAppointmentAsync();
+            return await _Appointmentervices.GetAllApppointmentsWithPaging(currentPage, pageSize);
         }
 
         [HttpGet("{id}")]
-        //[Authorize(Roles = "1")]
+        [Authorize(Roles = "1")]
         public async Task<ActionResult<Appointment>> GetAppointmentById(int id)
         {
             var appointment = await _Appointmentervices.GetAppointmentByIdAsync(id);
@@ -45,7 +46,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("GetByCustomerId/{customerId}")]
-        //[Authorize(Roles = "1")]
+        [Authorize(Roles = "1")]
         public async Task<ActionResult<IEnumerable<Appointment>>> GetAppointmentByCustomerId(int customerId)
         {
             var Appointment = await _Appointmentervices.GetAppointmentByCustomerIdAsync(customerId);
@@ -57,7 +58,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("GetByVehicleId/{vehicleId}")]
-        //[Authorize(Roles = "1")]
+        [Authorize(Roles = "1")]
         public async Task<ActionResult<IEnumerable<Appointment>>> GetAppointmentByVehicleId(int vehicleId)
         {
             var Appointment = await _Appointmentervices.GetAppointmentByVehicleIdAsync(vehicleId);
@@ -69,7 +70,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpPost("schedule")]
-        //[Authorize(Roles = "1,2,3")]
+        [Authorize(Roles = "1,2,3")]
         public async Task<IActionResult> ScheduleAppointment(int customerId, [FromBody] ScheduleAppointmentDto dto)
         {
             try
@@ -84,7 +85,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpPut("{appointmentId}")]
-        /*[Authorize(Roles = "1,2")]*/
+        [Authorize(Roles = "1,2")]
         public async Task<ActionResult<Appointment>> UpdateAppointment(int appointmentId, string status)
         {
             if (!await AppointmentExists(appointmentId))

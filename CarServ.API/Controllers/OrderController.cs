@@ -1,4 +1,5 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO;
 using CarServ.Service.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,10 +16,9 @@ namespace CarServ.API.Controllers
             _orderService = orderService;
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
+        public async Task<PaginationResult<List<Order>>> GetOrders(int currentPage = 1, int pageSize = 5)
         {
-            var orders = await _orderService.GetAllOrdersAsync();
-            return Ok(orders);
+            return await _orderService.GetAllOrdersWithPaging(currentPage, pageSize);            
         }
 
         [HttpGet("{id}")]
@@ -33,14 +33,14 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("customer/{customerId}")]
-        public async Task<ActionResult<IEnumerable<Order>>> GetOrdersByCustomerId(int customerId)
+        public async Task<PaginationResult<List<Order>>> GetOrdersByCustomerId(int customerId, int currentPage = 1, int pageSize = 5)
         {
-            var orders = await _orderService.GetOrdersByCustomerIdAsync(customerId);
-            if (orders == null || !orders.Any())
+            return await _orderService.GetAllOrdersByCustomerIdWithPaging(customerId, currentPage, pageSize);
+            /*if (orders == null)
             {
                 return NotFound();
             }
-            return Ok(orders);
+            return Ok(orders);*/
         }
 
         [HttpPost("create")]

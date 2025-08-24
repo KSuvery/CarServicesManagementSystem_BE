@@ -1,4 +1,5 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO;
 using CarServ.Repository.Repositories.DTO.Booking_A_Service;
 using CarServ.Repository.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -39,7 +40,24 @@ namespace CarServ.Repository.Repositories
 
             return appointments;
         }
+        public async Task<PaginationResult<List<AppointmentDto>>> GetAllApppointmentsWithPaging(int currentPage, int pageSize)
+        {
+            var userListTmp = await this.GetAllAppointmentsAsync();
 
+            var totalItems = userListTmp.Count();
+            var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+            userListTmp = userListTmp.Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
+
+            return new PaginationResult<List<AppointmentDto>>
+            {
+                TotalItems = totalItems,
+                TotalPages = totalPages,
+                CurrentPage = currentPage,
+                PageSize = pageSize,
+                Items = userListTmp
+            };
+        }
 
         public async Task<Appointment> GetAppointmentByIdAsync(int appointmentId)
         {

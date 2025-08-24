@@ -1,4 +1,6 @@
-﻿using CarServ.Repository.Repositories.DTO.Payment;
+﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO;
+using CarServ.Repository.Repositories.DTO.Payment;
 using CarServ.Service.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -49,17 +51,11 @@ namespace CarServ.API.Controllers
 
         [HttpGet("retrieve-all-promotion")]
         [Authorize(Roles = "1")] 
-        public async Task<IActionResult> GetAllPromotions()
+        public async Task<PaginationResult<List<Promotion>>> GetAllPromotions(int currentPage = 1, int pageSize = 5)
         {
-            try
-            {
-                var promotions = await _promotionService.GetAllPromotionsAsync();
-                return Ok(promotions);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            
+                return await _promotionService.GetAllPromotionsWithPaging(currentPage, pageSize);
+                           
         }
 
         [HttpGet("retrieve-promotion/{promotionId}")]

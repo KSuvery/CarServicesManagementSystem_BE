@@ -1,4 +1,5 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO;
 using CarServ.Repository.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -30,9 +31,47 @@ namespace CarServ.Repository.Repositories
                 .ToListAsync();
         }
 
+        public async Task<PaginationResult<List<Order>>> GetAllOrdersByCustomerIdWithPaging(int currentPage, int pageSize, int customerId)
+        {
+            var userListTmp = await this.GetOrdersByCustomerIdAsync(customerId);
+
+            var totalItems = userListTmp.Count();
+            var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+            userListTmp = userListTmp.Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
+
+            return new PaginationResult<List<Order>>
+            {
+                TotalItems = totalItems,
+                TotalPages = totalPages,
+                CurrentPage = currentPage,
+                PageSize = pageSize,
+                Items = userListTmp
+            };
+        }
+
         public async Task<List<Order>> GetAllOrdersAsync()
         {
             return await _context.Orders.ToListAsync();
+        }
+
+        public async Task<PaginationResult<List<Order>>> GetAllOrdersWithPaging(int currentPage, int pageSize)
+        {
+            var userListTmp = await this.GetAllOrdersAsync();
+
+            var totalItems = userListTmp.Count();
+            var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+            userListTmp = userListTmp.Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
+
+            return new PaginationResult<List<Order>>
+            {
+                TotalItems = totalItems,
+                TotalPages = totalPages,
+                CurrentPage = currentPage,
+                PageSize = pageSize,
+                Items = userListTmp
+            };
         }
 
         public async Task<Order> CreateOrderAsync(
