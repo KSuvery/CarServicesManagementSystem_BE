@@ -17,6 +17,8 @@ public partial class Promotion
 
     public DateOnly? EndDate { get; set; }
 
+    public string Status { get; set; }
+
     public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();

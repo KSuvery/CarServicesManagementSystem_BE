@@ -1,12 +1,11 @@
-﻿using CarServ.service.Services.Interfaces;
-using CarServ.service.Services.Configuration;
+﻿using CarServ.Repository.Repositories.DTO.Payment;
 using CarServ.Repository.Repositories.Interfaces;
-using Microsoft.AspNetCore.Http;
 using CarServ.service.Services.ApiModels.VNPay;
-using CarServ.Domain.Entities;
+using CarServ.service.Services.Configuration;
+using CarServ.service.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using CarServ.Repository.Repositories.DTO.Payment;
 
 
 namespace CarServ.service.Services
@@ -82,6 +81,7 @@ namespace CarServ.service.Services
                     Amount = request.Amount,
                     PaymentMethod = "VNPay",
                     PaidAt = createDate,
+                    Status = "Pending",
                     OrderId = request.OrderId
                 };
 
@@ -107,8 +107,6 @@ namespace CarServ.service.Services
         public async Task<VnPaymentResponse> PaymentExecute(HttpContext context)
         {
             var vnpay = new VnPayLibrary();
-            
-            _unitOfWork.BeginTransaction();
 
             // Retrieve vnp_TxnRef from the query string directly
             var vnpOrderIdStr = context.Request.Query["vnp_TxnRef"].ToString();
@@ -158,7 +156,6 @@ namespace CarServ.service.Services
             bool checkSignature = vnpay.ValidateSignature(vnpSecureHash, _vnPaySetting.HashSecret);
             if (!checkSignature)
             {
-                await _unitOfWork.RollbackTransactionAsync();
                 return new VnPaymentResponse()
                 {
                     Success = false,
@@ -169,13 +166,25 @@ namespace CarServ.service.Services
             // Handle the response based on the VNPay response code
             if (vnpResponseCode != "00") // Failed
             {
+                await _paymentRepository.RemoveAsync(payment);
+                await _unitOfWork.SaveChangesAsync();
                 return new VnPaymentResponse()
                 {
                     Success = false,
                     Message = $"Payment failed with response code: {vnpResponseCode}"
                 };
             }
-            
+            else
+            {
+                // Update payment status to "Paid"
+                if (payment != null)
+                {
+                    payment.Status = "Paid";
+                    payment.PaidAt = DateTime.Now;
+                    await _paymentRepository.UpdateAsync(payment);
+                }
+            }
+
             await _unitOfWork.CommitTransactionAsync();
             return new VnPaymentResponse()
             {

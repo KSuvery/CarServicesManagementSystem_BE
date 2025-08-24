@@ -1,5 +1,6 @@
 ﻿using CarServ.Domain.Entities;
 using CarServ.Repository.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
@@ -27,11 +28,13 @@ namespace CarServ.Repository.Repositories
         public async Task CommitTransactionAsync()
         {
             await _transaction.CommitAsync();
+            await _transaction.DisposeAsync();
         }
 
         public async Task RollbackTransactionAsync()
         {
             await _transaction.RollbackAsync();
+            await _transaction.DisposeAsync();
         }
 
         public async Task SaveChangesAsync()

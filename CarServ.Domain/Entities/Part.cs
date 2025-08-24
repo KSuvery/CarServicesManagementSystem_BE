@@ -19,6 +19,8 @@ public partial class Part
 
     public int? WarrantyMonths { get; set; }
 
+    public string Unit { get; set; }
+
     public virtual ICollection<PartPrice> PartPrices { get; set; } = new List<PartPrice>();
 
     public virtual ICollection<ServicePart> ServiceParts { get; set; } = new List<ServicePart>();

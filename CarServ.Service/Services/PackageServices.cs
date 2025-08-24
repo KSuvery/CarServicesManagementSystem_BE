@@ -47,9 +47,19 @@ namespace CarServ.service.Services
             return await _repository.GetAllServicePackages();
         }
 
+        public async Task<PaginationResult<List<ServicePackageDto>>> GetAllServicePackageWithPaging(int currentPage, int pageSize)
+        {
+            return await _repository.GetAllServicePackageWithPaging(currentPage, pageSize);
+        }
+
         public async Task<ServiceListDto> GetAllServices()
         {
             return await _repository.GetAllServices();
+        }
+
+        public async Task<PaginationResult<List<ServiceDto>>> GetAllServicesWithPaging(int currentPage, int pageSize)
+        {
+            return await _repository.GetAllServicesWithPaging(currentPage, pageSize);
         }
 
         public async Task<PaginationResult<ServicePackage>> GetAllWithPaging(int pageNum, int pageSize)
@@ -57,12 +67,12 @@ namespace CarServ.service.Services
             return await _repository.GetAllWithPaging(pageNum, pageSize);
         }
 
-        public async Task<List<PartDto>> GetPartsByPackageId(int packageId)
+        public async Task<List<PartDTO_Copy>> GetPartsByPackageId(int packageId)
         {
             return await _repository.GetPartsByPackageId(packageId);
         }
 
-        public async Task<List<PartDto>> GetPartsByServiceId(int serviceId)
+        public async Task<List<PartDTO_Copy>> GetPartsByServiceId(int serviceId)
         {
             return await _repository.GetPartsByServiceId(serviceId);
         }

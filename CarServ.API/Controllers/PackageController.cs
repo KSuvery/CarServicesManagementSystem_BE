@@ -1,4 +1,6 @@
 ﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO;
+using CarServ.Repository.Repositories.DTO.Booking_A_Service;
 using CarServ.Repository.Repositories.DTO.Service_._ServicePackage;
 using CarServ.Repository.Repositories.DTO.Service_managing;
 using CarServ.service.Services.Interfaces;
@@ -50,32 +52,16 @@ namespace CarServ.API.Controllers
 
         [HttpGet("get-all-service-packages")]
         [Authorize(Roles = "1,2,4")]
-        public async Task<IActionResult> GetAllServicePackages()
-        {
-            try
-            {
-                var packages = await _service.GetAllServicePackages();
-                return Ok(packages);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+        public async Task<PaginationResult<List<ServicePackageDto>>> GetAllServicePackages(int currentPage = 1, int pageSize = 5)
+        {   
+                return await _service.GetAllServicePackageWithPaging(currentPage, pageSize);           
         }
 
         [HttpGet("get-all-services")]
         [Authorize(Roles = "1,2,4")]
-        public async Task<IActionResult> GetAllServices()
+        public async Task<PaginationResult<List<ServiceDto>>> GetAllServices(int currentPage = 1, int pageSize = 5)
         {
-            try
-            {
-                var packages = await _service.GetAllServices();
-                return Ok(packages);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+                return await _service.GetAllServicesWithPaging(currentPage, pageSize);
         }        
 
         [HttpGet("GetAllAvailableVehicleWithCustomerId/{id}")]
