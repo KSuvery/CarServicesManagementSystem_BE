@@ -410,6 +410,7 @@ public partial class CarServicesManagementSystemContext : DbContext
             entity.ToTable("ServiceStaff", tb => tb.HasTrigger("trg_ValidateUserRole"));
 
             entity.Property(e => e.StaffId).HasColumnName("StaffID");
+            entity.Property(e => e.Avatar).HasMaxLength(255);
             entity.Property(e => e.Experience).HasMaxLength(255);
             entity.Property(e => e.Rating).HasColumnType("decimal(2, 1)");
             entity.Property(e => e.Specialty).HasMaxLength(100);

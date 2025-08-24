@@ -19,6 +19,8 @@ public partial class ServiceStaff
 
     public decimal? Rating { get; set; }
 
+    public string Avatar { get; set; }
+
     public virtual ICollection<ServiceHistory> ServiceHistories { get; set; } = new List<ServiceHistory>();
 
     public virtual User User { get; set; }
