@@ -132,6 +132,28 @@ namespace CarServ.API.Controllers
             return Ok(payments);
         }
 
+        [HttpGet("status/pending")]
+        public async Task<ActionResult<IEnumerable<Payment>>> GetPendingPayments()
+        {
+            var payments = await _PaymentService.GetPendingPayments();
+            if (payments == null || !payments.Any())
+            {
+                return NotFound();
+            }
+            return Ok(payments);
+        }
+
+        [HttpGet("status/paid")]
+        public async Task<ActionResult<IEnumerable<Payment>>> GetPaidPayments()
+        {
+            var payments = await _PaymentService.GetPaidPayments();
+            if (payments == null || !payments.Any())
+            {
+                return NotFound();
+            }
+            return Ok(payments);
+        }
+
         [HttpPost("payment/vnpay/payment-url")]
         public async Task<IActionResult> VnPayCreatePaymentUrl([FromBody] VnPaymentRequest request)
         {

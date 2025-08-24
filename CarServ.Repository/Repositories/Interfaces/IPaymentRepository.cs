@@ -20,6 +20,8 @@ namespace CarServ.Repository.Repositories.Interfaces
         Task<List<Payment>> GetPaymentsByAmountRangeAsync(decimal minAmount, decimal maxAmount);
         Task<List<Payment>> GetPaymentsByPaidDateAsync(DateTime paidDate);
         Task<List<Payment>> GetPaymentsByStatus(string status);
+        Task<List<Payment>> GetPendingPayments(string status = "Pending");
+        Task<List<Payment>> GetPaidPayments(string status = "Paid");
         Task<Payment> CreatePayment(PaymentDto dto);
     }
 }

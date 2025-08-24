@@ -64,6 +64,16 @@ namespace CarServ.service.Services
             return await _paymentRepository.GetPaymentsByStatus(status);
         }
 
+        public async Task<List<Payment>> GetPendingPayments(string status = "Pending")
+        {
+            return await _paymentRepository.GetPendingPayments(status);
+        }
+
+        public async Task<List<Payment>> GetPaidPayments(string status = "Paid")
+        {
+            return await _paymentRepository.GetPaidPayments(status);
+        }
+
         public async Task<Payment> CreatePayment(PaymentDto dto)
         {
             return await _paymentRepository.CreatePayment(dto);
