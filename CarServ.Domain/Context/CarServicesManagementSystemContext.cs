@@ -307,7 +307,7 @@ public partial class CarServicesManagementSystemContext : DbContext
 
         modelBuilder.Entity<ServiceHistory>(entity =>
         {
-            entity.HasKey(e => e.ServiceId).HasName("PK__ServiceH__C51BB0EA92FE208F");
+            entity.HasKey(e => e.ServiceId).HasName("PK__ServiceH__C51BB0EA7AD1F5D5");
 
             entity.ToTable("ServiceHistory");
 
@@ -322,11 +322,11 @@ public partial class CarServicesManagementSystemContext : DbContext
 
             entity.HasOne(d => d.Service).WithOne(p => p.ServiceHistory)
                 .HasForeignKey<ServiceHistory>(d => d.ServiceId)
-                .HasConstraintName("FK__ServiceHi__Servi__7D439ABD");
+                .HasConstraintName("FK__ServiceHi__Servi__02C769E9");
 
             entity.HasOne(d => d.Staff).WithMany(p => p.ServiceHistories)
                 .HasForeignKey(d => d.StaffId)
-                .HasConstraintName("FK__ServiceHi__Staff__7E37BEF6");
+                .HasConstraintName("FK__ServiceHi__Staff__0697FACD");
         });
 
         modelBuilder.Entity<ServicePackage>(entity =>
@@ -405,19 +405,21 @@ public partial class CarServicesManagementSystemContext : DbContext
 
         modelBuilder.Entity<ServiceStaff>(entity =>
         {
-            entity.HasKey(e => e.StaffId).HasName("PK__ServiceS__96D4AAF7E3D95AAB");
+            entity.HasKey(e => e.StaffId).HasName("PK__ServiceS__96D4AAF702A03FC3");
 
-            entity.ToTable("ServiceStaff");
+            entity.ToTable("ServiceStaff", tb => tb.HasTrigger("trg_ValidateUserRole"));
 
-            entity.Property(e => e.StaffId)
-                .ValueGeneratedNever()
-                .HasColumnName("StaffID");
+            entity.Property(e => e.StaffId).HasColumnName("StaffID");
+            entity.Property(e => e.Experience).HasMaxLength(255);
+            entity.Property(e => e.Rating).HasColumnType("decimal(2, 1)");
+            entity.Property(e => e.Specialty).HasMaxLength(100);
+            entity.Property(e => e.UserId).HasColumnName("UserID");
             entity.Property(e => e.WorkingHours).HasColumnType("decimal(5, 2)");
 
-            entity.HasOne(d => d.Staff).WithOne(p => p.ServiceStaff)
-                .HasForeignKey<ServiceStaff>(d => d.StaffId)
+            entity.HasOne(d => d.User).WithMany(p => p.ServiceStaffs)
+                .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__ServiceSt__Staff__02084FDA");
+                .HasConstraintName("FK_ServiceStaff_Users");
         });
 
         modelBuilder.Entity<Supplier>(entity =>

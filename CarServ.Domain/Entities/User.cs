@@ -33,5 +33,5 @@ public partial class User
 
     public virtual Role Role { get; set; }
 
-    public virtual ServiceStaff ServiceStaff { get; set; }
+    public virtual ICollection<ServiceStaff> ServiceStaffs { get; set; } = new List<ServiceStaff>();
 }
