@@ -221,6 +221,7 @@ public partial class CarServicesManagementSystemContext : DbContext
             entity.Property(e => e.PartName)
                 .HasMaxLength(100)
                 .IsUnicode(false);
+            entity.Property(e => e.Unit).HasMaxLength(255);
             entity.Property(e => e.UnitPrice).HasColumnType("decimal(10, 2)");
         });
 
@@ -252,6 +253,9 @@ public partial class CarServicesManagementSystemContext : DbContext
             entity.Property(e => e.PaymentMethod)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.Status)
+                .HasMaxLength(50)
+                .HasDefaultValue("Pending");
 
             entity.HasOne(d => d.Appointment).WithMany(p => p.Payments)
                 .HasForeignKey(d => d.AppointmentId)
@@ -268,6 +272,9 @@ public partial class CarServicesManagementSystemContext : DbContext
 
             entity.Property(e => e.PromotionId).HasColumnName("PromotionID");
             entity.Property(e => e.DiscountPercentage).HasColumnType("decimal(5, 2)");
+            entity.Property(e => e.Status)
+                .HasMaxLength(50)
+                .HasDefaultValue("Active");
             entity.Property(e => e.Title)
                 .HasMaxLength(100)
                 .IsUnicode(false);
