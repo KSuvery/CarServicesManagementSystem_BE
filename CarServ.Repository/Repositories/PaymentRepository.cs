@@ -82,6 +82,13 @@ namespace CarServ.Repository.Repositories
                 .ToListAsync();
         }
 
+        public async Task<List<Payment>> GetPaymentsByStatus(string status)
+        {
+            return await _context.Payments
+                .Where(p => p.Status.ToLower().Contains(status.ToLower()))
+                .ToListAsync();
+        }
+
         public async Task<Payment> CreatePayment(PaymentDto dto)
         {
             try
