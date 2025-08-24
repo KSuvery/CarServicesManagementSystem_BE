@@ -30,6 +30,8 @@ namespace CarServ.Repository.Repositories.Interfaces
         Task DeleteServicePackageAsync(int packageId);
         Task<ServiceDto> GetService(int serviceId);
         Task<ServicePackageDto> GetServicePackage(int id);
+        Task<PaginationResult<List<ServiceDto>>> GetAllServicesWithPaging(int currentPage, int pageSize);
+        Task<PaginationResult<List<ServicePackageDto>>> GetAllServicePackageWithPaging(int currentPage, int pageSize);
 
     }
 }

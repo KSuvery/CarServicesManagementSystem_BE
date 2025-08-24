@@ -99,6 +99,48 @@ namespace CarServ.Repository.Repositories
 
         }
 
+        private async Task<List<ServicePackageDto>> GetServicePackages()
+        {
+            var packages = await _context.ServicePackages
+        .Include(sp => sp.Services)
+        .ToListAsync();
+            var packageDtos = packages.Select(package => new ServicePackageDto
+            {
+                PackageId = package.PackageId,
+                Name = package.Name,
+                Description = package.Description,
+                Price = package.Price,
+                Discount = package.Discount,
+                Services = package.Services.Select(service => new ServiceDto
+                {
+                    ServiceId = service.ServiceId,
+                    Name = service.Name,
+                    Description = service.Description,
+                    EstimatedLaborHours = service.EstimatedLaborHours
+                }).ToList()
+            }).ToList();
+            return packageDtos;
+        }
+
+        public async Task<PaginationResult<List<ServicePackageDto>>> GetAllServicePackageWithPaging(int currentPage, int pageSize)
+        {
+            var userListTmp = await this.GetServicePackages();
+
+            var totalItems = userListTmp.Count();
+            var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+            userListTmp = userListTmp.Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
+
+            return new PaginationResult<List<ServicePackageDto>>
+            {
+                TotalItems = totalItems,
+                TotalPages = totalPages,
+                CurrentPage = currentPage,
+                PageSize = pageSize,
+                Items = userListTmp
+            };
+        }
+
         public async Task<ServiceListDto> GetAllServices()
         {
             var services = await _context.Services
@@ -127,7 +169,46 @@ namespace CarServ.Repository.Repositories
 
 
         }
+        private async Task<List<ServiceDto>> GetServices()
+        {
+            var services = await _context.Services
+                       .Include(sp => sp.ServiceParts)
+                       .ThenInclude(sp => sp.Part)
+                       .ToListAsync();
+            var serviceDtos = services.Select(service => new ServiceDto
+            {
+                ServiceId = service.ServiceId,
+                Name = service.Name,
+                Description = service.Description,
+                Price = service.Price ?? 0,
+                Parts = service.ServiceParts.Select(part => new PartDto
+                {
+                    PartId = part.PartId,
+                    PartName = part.Part?.PartName ?? "Unknown",
+                    QuantityRequired = part.QuantityRequired,
+                    UnitPrice = part.Part?.UnitPrice ?? 0
+                }).ToList()
+            }).ToList();
+            return serviceDtos;
+        }
+        public async Task<PaginationResult<List<ServiceDto>>> GetAllServicesWithPaging(int currentPage, int pageSize)
+        {
+            var userListTmp = await this.GetServices();
 
+            var totalItems = userListTmp.Count();
+            var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+            userListTmp = userListTmp.Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
+
+            return new PaginationResult<List<ServiceDto>>
+            {
+                TotalItems = totalItems,
+                TotalPages = totalPages,
+                CurrentPage = currentPage,
+                PageSize = pageSize,
+                Items = userListTmp
+            };
+        }
 
         public Task<PaginationResult<ServicePackage>> GetAllWithPaging(int pageNum, int pageSize)
         {
