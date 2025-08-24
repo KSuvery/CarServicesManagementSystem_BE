@@ -35,7 +35,7 @@ namespace CarServ.API.Controllers
 
         [HttpGet("{id}")]
         [Authorize(Roles = "1,3")]
-        public async Task<ActionResult<Part>> GetPartItemById(int id)
+        public async Task<ActionResult<PartDto>> GetPartItemById(int id)
         {
             var PartItem = await _PartServices.GetPartByIdAsync(id);
             if (PartItem == null)

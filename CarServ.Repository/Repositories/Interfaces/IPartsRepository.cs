@@ -15,13 +15,15 @@ namespace CarServ.Repository.Repositories.Interfaces
         Task<List<PartDto>> GetAllPartsAsync();
         Task<PaginationResult<List<PartDto>>> GetAllPartsWithPaging(int currentPage, int pageSize);
         Task<PaginationResult<List<Supplier>>> GetAllSuppliersAsync(int currentPage, int pageSize);
-        Task<List<Part>> GetLowPartsAsync();
+        Task<List<PartDto>> GetLowPartsAsync();
         Task<List<Part>> GetZeroPartsAsync();
-        Task<Part> GetPartByIdAsync(int partId);
+        Task<PartDto> GetPartByIdAsync(int partId);
         Task<List<Part>> GetPartsByPartName(string partName);
         Task<List<Part>> GetPartsByUnitPriceRange(decimal minPrice, decimal maxPrice);
         Task<List<Part>> GetPartsByExpiryDateRange(DateOnly startDate, DateOnly endDate);
         Task<List<Part>> GetPartsByWarrantyMonthsRange(int minMonths, int maxMonths);
+        Task<Part> CreatePartAsync(CreatePartDto dto);
+        Task<Part> UpdatePartAsync(int partId, UpdatePartDto dto);
         Task<Part> AddPartAsync(
             string partName,
             int quantity,

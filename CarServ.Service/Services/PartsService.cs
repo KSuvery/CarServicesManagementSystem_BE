@@ -25,7 +25,7 @@ namespace CarServ.Service.Services
             return await _partsRepository.GetAllPartsAsync();
         }
 
-        public async Task<Part> GetPartByIdAsync(int partId)
+        public async Task<PartDto> GetPartByIdAsync(int partId)
         {
             return await _partsRepository.GetPartByIdAsync(partId);
         }
@@ -98,7 +98,7 @@ namespace CarServ.Service.Services
             await _partsRepository.UpdateServiceProgress(dto);
         }
 
-        public async Task<List<Part>> GetLowPartsAsync()
+        public async Task<List<PartDto>> GetLowPartsAsync()
         {
             return await _partsRepository.GetLowPartsAsync();
         }
@@ -116,6 +116,21 @@ namespace CarServ.Service.Services
         public async Task<PaginationResult<List<Supplier>>> GetAllSuppliersAsync(int currentPage, int pageSize)
         {
             return await _partsRepository.GetAllSuppliersAsync(currentPage, pageSize);
+        }
+
+        public async Task<Part> CreatePartAsync(CreatePartDto dto)
+        {
+            return await _partsRepository.CreatePartAsync(dto);
+        }
+
+        public async Task<Part> UpdatePartAsync(int partId, UpdatePartDto dto)
+        {
+            return await _partsRepository.UpdatePartAsync(partId, dto);
+        }
+
+        public async Task DeletePartAsync(int partId)
+        {
+            return await _partsRepository.DeletePartAsync(partId);  
         }
     }
 }
