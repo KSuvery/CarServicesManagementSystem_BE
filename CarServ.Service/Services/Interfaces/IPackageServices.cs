@@ -19,8 +19,8 @@ namespace CarServ.service.Services.Interfaces
         Task<ServicePackageListDto> GetAllServicePackages();
         Task<ServiceListDto> GetAllServices();
         Task<List<VehicleDto>> GetVehiclesByCustomerId(int customerId);
-        Task<List<PartDto>> GetPartsByServiceId(int serviceId);
-        Task<List<PartDto>> GetPartsByPackageId(int packageId);
+        Task<List<PartDTO_Copy>> GetPartsByServiceId(int serviceId);
+        Task<List<PartDTO_Copy>> GetPartsByPackageId(int packageId);
         Task<ServicePackage> UpdateServicePackageAsync(int packageId, UpdateServicePackageDto dto);
         Task<Domain.Entities.Service> UpdateServiceAsync(int serviceId, UpdateServiceDto dto);
         Task DeleteServiceAsync(int serviceId);
