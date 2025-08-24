@@ -112,7 +112,8 @@ namespace CarServ.Repository.Repositories
                     AppointmentId = dto.AppointmentId,
                     Amount = dto.Amount,
                     PaymentMethod = dto.PaymentMethod,
-                    PaidAt = DateTime.Now,
+                    PaidAt = null,
+                    Status = dto.Status = "Pending",
                     OrderId = dto.OrderId
                 };
 

@@ -13,5 +13,6 @@ namespace CarServ.Repository.Repositories.DTO.Payment
         public string PaymentMethod { get; set; }
         public DateTime PaidAt { get; set; }
         public int OrderId { get; set; }
+        public string Status { get; set; }
     }
 }
