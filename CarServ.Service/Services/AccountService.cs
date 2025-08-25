@@ -53,19 +53,19 @@ namespace CarServ.service.Services
         {
             return await _accRepository.Login(username, password);
         }
-        public async Task<CustomerDTO> SignupNewCustomer(string fullName, string email, string phoneNumber, string password, string address)
+        public async Task<User> SignupNewCustomer(string fullName, string email, string phoneNumber, string password, string address)
         {
-           var customerDTO = await _accRepository.SignupNewCustomer(fullName, email, phoneNumber, password, address);
+           var user = await _accRepository.SignupNewCustomer(fullName, email, phoneNumber, password, address);
             await _emailService.SendEmailAsync(
             email,
             "Signing up new account confirmation",
             "<h1>Thank you!</h1><p>you have successfuly registered a new account with the following detail: </p>"
         );
-            return customerDTO;
+            return user;
         }
-        public async Task<StaffDTO> AddingNewStaff(string fullName, string email, string phoneNumber, string password, int roleID)
+        public async Task<StaffDTO> AddingNewStaff(string fullName, string email, string phoneNumber, string password, string address, int roleID)
         {
-            return await _accRepository.AddingNewStaff(fullName, email, phoneNumber, password, roleID);
+            return await _accRepository.AddingNewStaff(fullName, email, phoneNumber, password, address, roleID);
         }
 
         public async Task<User> UpdateProfileAsync(int userId, UpdateProfileDto dto)
