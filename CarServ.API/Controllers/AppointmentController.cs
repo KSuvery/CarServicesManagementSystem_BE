@@ -57,6 +57,18 @@ namespace CarServ.API.Controllers
             return Appointment;
         }
 
+        [HttpGet("GetBookedByCustomerId/{customerId}")]
+        [Authorize(Roles = "1,2")]
+        public async Task<ActionResult<IEnumerable<Appointment>>> GetBookedAppointmentByCustomerId(int customerId)
+        {
+            var Appointment = await _Appointmentervices.GetBookedAppointmentsByCustomerId(customerId);
+            if (Appointment == null || !Appointment.Any())
+            {
+                return NotFound();
+            }
+            return Appointment;
+        }
+
         [HttpGet("GetByVehicleId/{vehicleId}")]
         [Authorize(Roles = "1")]
         public async Task<ActionResult<IEnumerable<Appointment>>> GetAppointmentByVehicleId(int vehicleId)

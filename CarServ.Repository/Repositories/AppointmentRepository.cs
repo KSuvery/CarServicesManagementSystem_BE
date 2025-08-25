@@ -80,6 +80,13 @@ namespace CarServ.Repository.Repositories
                 .ToListAsync();
         }
 
+        public async Task<List<Appointment>> GetBookedAppointmentsByCustomerId(int customerid)
+        {
+            return await _context.Appointments
+                .Where(a => a.CustomerId == customerid && a.Status == "Booked")
+                .ToListAsync();
+        }
+
         public async Task<List<Appointment>> GetAppointmentsByVehicleIdAsync(int vehicleId)
         {
             return await _context.Appointments

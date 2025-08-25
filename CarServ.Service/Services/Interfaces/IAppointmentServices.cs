@@ -15,6 +15,7 @@ namespace CarServ.service.Services.Interfaces
         Task<PaginationResult<List<AppointmentDto>>> GetAllApppointmentsWithPaging(int currentPage, int pageSize);
         Task<Appointment> GetAppointmentByIdAsync(int appointmentId);
         Task<List<Appointment>> GetAppointmentByCustomerIdAsync(int customerId);
+        Task<List<Appointment>> GetBookedAppointmentsByCustomerId(int customerid);
         Task<List<Appointment>> GetAppointmentByVehicleIdAsync(int vehicleId);
         Task<Appointment> ScheduleAppointment(int customerId, ScheduleAppointmentDto dto);
         Task<Appointment> ScheduleAppointmentAsync(int customerId, int vehicleId, int packageId, DateTime appointmentDate, string status = "Pending", int? promotionId = null);
