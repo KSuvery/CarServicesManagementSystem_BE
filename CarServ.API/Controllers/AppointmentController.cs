@@ -46,7 +46,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("GetByCustomerId/{customerId}")]
-        [Authorize(Roles = "1")]
+        [Authorize(Roles = "1,2")]
         public async Task<ActionResult<IEnumerable<Appointment>>> GetAppointmentByCustomerId(int customerId)
         {
             var Appointment = await _Appointmentervices.GetAppointmentByCustomerIdAsync(customerId);

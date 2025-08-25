@@ -15,6 +15,8 @@ namespace CarServ.Repository.Repositories.DTO.Booking_A_Service
         public string VehicleLicensePlate { get; set; }
         public string VehicleMake { get; set; }
         public string VehicleModel { get; set; }
+        public List<string> services { get; set; }
+        public int Duration { get; set; }
         public DateTime? AppointmentDate { get; set; }
         public string Status { get; set; }
     }

@@ -1,6 +1,7 @@
 ﻿using CarServ.Domain.Entities;
 using CarServ.Repository.Repositories.DTO;
 using CarServ.Repository.Repositories.DTO.Logging_part_usage;
+using CarServ.Service.Services;
 using CarServ.Service.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -35,7 +36,7 @@ namespace CarServ.API.Controllers
 
         [HttpGet("get-low-parts")]
         [Authorize(Roles = "1,4")]
-        public async Task<ActionResult<IEnumerable<Part>>> GetAllLowParts()
+        public async Task<ActionResult<IEnumerable<PartDto>>> GetAllLowParts()
         {
             var parts = await _partsService.GetLowPartsAsync();
             return Ok(parts);
@@ -48,11 +49,11 @@ namespace CarServ.API.Controllers
             return Ok(parts);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{partId}")]
         [Authorize(Roles = "1,4")]
-        public async Task<ActionResult<Part>> GetPartById(int id)
+        public async Task<IActionResult> GetPartById(int partId)
         {
-            var part = await _partsService.GetPartByIdAsync(id);
+            var part = await _partsService.GetPartByIdAsync(partId);
             if (part == null)
             {
                 return NotFound();
@@ -109,44 +110,80 @@ namespace CarServ.API.Controllers
         }
 
         [HttpPost("create")]
-        [Authorize(Roles = "1,4")]
-        public async Task<ActionResult<Part>> CreatePart(
-            string partName,
-            int quantity,
-            decimal unitPrice,
-            DateOnly expiryDate,
-            int warrantyMonths)
+        [Authorize(Roles = "1, 4")] 
+        public async Task<IActionResult> CreatePart([FromBody] CreatePartDto dto)
         {
-            var createdPart = await _partsService.AddPartAsync(partName, quantity, unitPrice, expiryDate, warrantyMonths);
-
-            if (createdPart == null)
+            try
             {
-                return BadRequest("Part cannot be null");
+                var part = await _partsService.CreatePartAsync(dto);
+                return CreatedAtAction(nameof(GetPartById), new { partId = part.PartId }, part);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
 
-            return CreatedAtAction(nameof(GetPartById), new { id = createdPart.PartId }, createdPart);
+
         }
 
-        [HttpPut("update")]
-        [Authorize(Roles = "1,4")]
-        public async Task<ActionResult<Part>> UpdatePart(
-            int partId,
-            string partName,
-            int quantity,
-            decimal unitPrice,
-            DateOnly expiryDate,
-            int warrantyMonths)
+        [HttpPut("update/{partId}")]
+        [Authorize(Roles = "1, 4")]
+        public async Task<IActionResult> UpdatePart(int partId, [FromBody] UpdatePartDto dto)
         {
-            if (!await PartExists(partId))
+            try
             {
-                return NotFound();
+                var updatedPart = await _partsService.UpdatePartAsync(partId, dto);
+                return Ok(updatedPart);
             }
-            var updatedPart = await _partsService.UpdatePartAsync(partId, partName, quantity, unitPrice, expiryDate, warrantyMonths);
-            if (updatedPart == null)
+            catch (Exception ex)
             {
-                return BadRequest("Part cannot be null");
+                return BadRequest(ex.Message);
             }
-            return Ok(updatedPart);
+
+        }
+
+        [HttpDelete("delete-part/{partId}")]
+        [Authorize(Roles = "1,4")]
+        public async Task<IActionResult> DeleteService(int partId)
+        {
+            try
+            {
+                await _partsService.DeletePartAsync(partId);
+                return Ok(new { message = "Part deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("revenue")]
+        /*[Authorize(Roles = "1")]*/
+        public async Task<IActionResult> GetRevenueReport(int month, int year)
+        {
+            try
+            {
+                var report = await _partsService.GenerateRevenueReport(month, year);
+                return Ok(report);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpGet("dashboard-summary")]
+        /*[Authorize(Roles = "1")]*/
+        public async Task<IActionResult> GetDashboardSummary(int month, int year)
+        {
+            try
+            {
+                var summary = await _partsService.GenerateDashboardSummary(month, year);
+                return Ok(summary);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         private async Task<bool> PartExists(int id)

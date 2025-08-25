@@ -1,5 +1,6 @@
 ﻿using CarServ.Domain.Entities;
 using CarServ.Repository.Repositories.DTO;
+using CarServ.Repository.Repositories.DTO.Booking_A_Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,11 +11,11 @@ namespace CarServ.Service.Services.Interfaces
 {
     public interface IVehicleService
     {
-        Task<List<Vehicle>> GetAllVehiclesAsync();
-        Task<Vehicle> GetVehicleByIdAsync(int id);
-        Task<List<Vehicle>> GetVehiclesByCustomerIdAsync(int customerId);
-        Task<List<Vehicle>> GetVehiclesByMakeAsync(string make);
-        Task<Vehicle> GetVehicleByLicensePlateAsync(string licensePlate);
+        Task<List<VehicleDto>> GetAllVehiclesAsync();
+        Task<VehicleDto> GetVehicleByIdAsync(int id);
+        Task<List<VehicleDto>> GetVehiclesByCustomerIdAsync(int customerId);
+        Task<List<VehicleDto>> GetVehiclesByMakeAsync(string make);
+        Task<VehicleDto> GetVehicleByLicensePlateAsync(string licensePlate);
         Task<List<Vehicle>> GetVehiclesByModelAsync(string model);
         Task<List<Vehicle>> GetVehiclesByYearRangeAsync(int minYear, int maxYear);
         Task<List<Vehicle>> GetVehiclesByCarTypeIdAsync(int carTypeId);
