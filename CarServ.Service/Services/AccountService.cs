@@ -85,5 +85,20 @@ namespace CarServ.service.Services
         {
             return await _accRepository.UpdateAccountStatusAsync(userId, status);
         }
+
+        public async Task<List<InventoryManager>> GetAllInventoryManagers()
+        {
+            return await _accRepository.GetAllInventoryManagers();
+        }
+
+        public async Task<InventoryManager> GetInventoryManagerById(int id)
+        {
+            return await _accRepository.GetInventoryManagerById(id);
+        }
+
+        public async Task<List<Customer>> GetAllCustomers()
+        {
+            return await _accRepository.GetAllCustomers();
+        }
     }
 }

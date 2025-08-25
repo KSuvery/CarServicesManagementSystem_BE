@@ -186,6 +186,20 @@ namespace CarServ.API.Controllers
             }
         }
 
+        [HttpGet("in-service-vehicles")]
+        public async Task<IActionResult> GetInServiceVehicles()
+        {
+            try
+            {
+                var vehicles = await _vehicleService.GetInServiceVehiclesAsync();
+                return Ok(vehicles);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
+            }
+        }
+
         [HttpPost("add")]
         public async Task<IActionResult> AddVehicle(int customerId, [FromBody] AddVehicleDto dto)
         {

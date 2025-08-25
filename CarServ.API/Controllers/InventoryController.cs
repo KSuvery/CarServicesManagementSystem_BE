@@ -35,7 +35,7 @@ namespace CarServ.API.Controllers
 
         [HttpGet("{id}")]
         [Authorize(Roles = "1,3")]
-        public async Task<ActionResult<Part>> GetPartItemById(int id)
+        public async Task<ActionResult<PartDto>> GetPartItemById(int id)
         {
             var PartItem = await _PartServices.GetPartByIdAsync(id);
             if (PartItem == null)
@@ -103,27 +103,8 @@ namespace CarServ.API.Controllers
         {
             return await _PartServices.GetPartByIdAsync(id) != null;
         }
+
         
-        [HttpGet("revenueReport")]
-        [Authorize(Roles = "1")]
-        public async Task<IActionResult> GetRevenueReport(
-        [FromQuery] DateTime startDate,
-        [FromQuery] DateTime endDate)
-        {
-            try
-            {
-                var report = await _PartServices.GenerateRevenueReport(startDate, endDate);
-                return Ok(report);
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Something is wrong while generating the report");
-            }
-        }
 
         [HttpPost("track-parts-used")]
         [Authorize(Roles = "1,2,3")]

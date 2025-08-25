@@ -15,11 +15,11 @@ public partial class Part
 
     public decimal? UnitPrice { get; set; }
 
+    public string Unit { get; set; }
+
     public DateOnly? ExpiryDate { get; set; }
 
     public int? WarrantyMonths { get; set; }
-
-    public string Unit { get; set; }
 
     public virtual ICollection<PartPrice> PartPrices { get; set; } = new List<PartPrice>();
 

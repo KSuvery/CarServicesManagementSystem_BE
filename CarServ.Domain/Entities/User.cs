@@ -25,9 +25,9 @@ public partial class User
 
     public bool? IsActive { get; set; }
 
-    public virtual Customer Customer { get; set; }
+    public virtual ICollection<Customer> Customers { get; set; } = new List<Customer>();
 
-    public virtual InventoryManager InventoryManager { get; set; }
+    public virtual ICollection<InventoryManager> InventoryManagers { get; set; } = new List<InventoryManager>();
 
     public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
 

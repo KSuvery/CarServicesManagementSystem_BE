@@ -1,6 +1,7 @@
 ﻿using CarServ.Domain.Entities;
 using CarServ.Repository.Repositories.DTO;
 using CarServ.Repository.Repositories.DTO.Booking_A_Service;
+using CarServ.Repository.Repositories.DTO.RevenueReport;
 using CarServ.Repository.Repositories.DTO.Service_._ServicePackage;
 using CarServ.Repository.Repositories.DTO.Service_managing;
 using System;
@@ -29,5 +30,6 @@ namespace CarServ.service.Services.Interfaces
         Task<ServicePackageDto> GetServicePackage(int id);
         Task<PaginationResult<List<ServiceDto>>> GetAllServicesWithPaging(int currentPage, int pageSize);
         Task<PaginationResult<List<ServicePackageDto>>> GetAllServicePackageWithPaging(int currentPage, int pageSize);
+        Task<List<DailyServicesRevenueReportDto>> GenerateDailyServicesRevenueReport(DateTime date);
     }
 }

@@ -15,6 +15,7 @@ namespace CarServ.service.Services
         private readonly VnPaySetting _vnPaySetting;
         private readonly IOrderRepository _orderRepository;
         private readonly IPaymentRepository _paymentRepository;
+        private readonly IAppointmentRepository _appointmentRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<VnPayService> _logger;
 
@@ -23,6 +24,7 @@ namespace CarServ.service.Services
             _vnPaySetting = VnPaySetting.Instance;
             _orderRepository = serviceProvider.GetRequiredService<IOrderRepository>();
             _paymentRepository = serviceProvider.GetRequiredService<IPaymentRepository>();
+            _appointmentRepository = serviceProvider.GetRequiredService<IAppointmentRepository>();
             _unitOfWork = serviceProvider.GetRequiredService<IUnitOfWork>();
         }
 
@@ -124,6 +126,7 @@ namespace CarServ.service.Services
 
             var order = await _orderRepository.GetOrderByIdAsync(vnpOrderId);
             var payment = await _paymentRepository.GetPaymentByOrderIdAsync(vnpOrderId);
+            var appointment = await _appointmentRepository.GetAppointmentByOrderIdAsync(vnpOrderId);
             if (order == null)
             {
                 await _unitOfWork.RollbackTransactionAsync();
@@ -167,7 +170,6 @@ namespace CarServ.service.Services
             if (vnpResponseCode != "00") // Failed
             {
                 await _paymentRepository.RemoveAsync(payment);
-                await _unitOfWork.SaveChangesAsync();
                 return new VnPaymentResponse()
                 {
                     Success = false,
@@ -176,15 +178,18 @@ namespace CarServ.service.Services
             }
             else
             {
-                // Update payment status to "Paid"
+                // Update relevant entities on successful payment
                 if (payment != null)
                 {
                     payment.Status = "Paid";
                     payment.PaidAt = DateTime.Now;
+                    appointment.Status = "Completed";
                     await _paymentRepository.UpdateAsync(payment);
+                    await _appointmentRepository.UpdateAsync(appointment);
                 }
             }
 
+            await _unitOfWork.SaveChangesAsync();
             await _unitOfWork.CommitTransactionAsync();
             return new VnPaymentResponse()
             {

@@ -18,7 +18,7 @@ namespace CarServ.Repository.Repositories
         {
             
             var user = await _context.Users
-                .Include(u => u.Customer) 
+                .Include(u => u.UserId) 
                 .FirstOrDefaultAsync(u => u.UserId == userId);
 
             if (user == null)
@@ -260,6 +260,25 @@ namespace CarServ.Repository.Repositories
                 .FirstOrDefaultAsync(s => s.StaffId == id);
         }
 
+        public async Task<List<InventoryManager>> GetAllInventoryManagers()
+        {
+            return await _context.InventoryManagers
+                .Include(s => s.User) 
+                .ToListAsync();
+        }
+
+        public async Task<InventoryManager> GetInventoryManagerById(int id)
+        {
+            return await _context.InventoryManagers
+                .FirstOrDefaultAsync(s => s.ManagerId == id);
+        }
+
+        public async Task<List<Customer>> GetAllCustomers()
+        {
+            return await _context.Customers
+                .Include(c => c.User) 
+                .ToListAsync();
+        }
 
         private string HashPassword(string password)
         {

@@ -1,5 +1,6 @@
 ﻿using CarServ.Domain.Entities;
 using CarServ.Repository.Repositories.DTO;
+using CarServ.Repository.Repositories.DTO.Booking_A_Service;
 using CarServ.Repository.Repositories.Interfaces;
 using CarServ.Service.Services.Interfaces;
 
@@ -13,27 +14,27 @@ namespace CarServ.Service.Services
             _vehicleRepository = vehicleRepository;
         }
 
-        public async Task<List<Vehicle>> GetAllVehiclesAsync()
+        public async Task<List<VehicleDto>> GetAllVehiclesAsync()
         {
             return await _vehicleRepository.GetAllVehiclesAsync();
         }
 
-        public async Task<Vehicle> GetVehicleByIdAsync(int id)
+        public async Task<VehicleDto> GetVehicleByIdAsync(int id)
         {
             return await _vehicleRepository.GetVehicleByIdAsync(id);
         }
 
-        public async Task<List<Vehicle>> GetVehiclesByCustomerIdAsync(int customerId)
+        public async Task<List<VehicleDto>> GetVehiclesByCustomerIdAsync(int customerId)
         {
             return await _vehicleRepository.GetVehiclesByCustomerIdAsync(customerId);
         }
 
-        public async Task<List<Vehicle>> GetVehiclesByMakeAsync(string make)
+        public async Task<List<VehicleDto>> GetVehiclesByMakeAsync(string make)
         {
             return await _vehicleRepository.GetVehiclesByMakeAsync(make);
         }
 
-        public async Task<Vehicle> GetVehicleByLicensePlateAsync(string licensePlate)
+        public async Task<VehicleDto> GetVehicleByLicensePlateAsync(string licensePlate)
         {
             return await _vehicleRepository.GetVehicleByLicensePlateAsync(licensePlate);
         }
@@ -61,6 +62,11 @@ namespace CarServ.Service.Services
         public async Task<List<Vehicle>> GetAvailableVehiclesAsync(string status = "Available")
         {
             return await _vehicleRepository.GetAvailableVehiclesAsync(status);
+        }
+
+        public async Task<List<Vehicle>> GetInServiceVehiclesAsync(string status = "In Service")
+        {
+            return await _vehicleRepository.GetInServiceVehiclesAsync(status);
         }
 
         public async Task<Vehicle> AddVehicleAsync(int customerId, AddVehicleDto dto)

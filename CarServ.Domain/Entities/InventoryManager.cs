@@ -9,5 +9,7 @@ public partial class InventoryManager
 {
     public int ManagerId { get; set; }
 
-    public virtual User Manager { get; set; }
+    public int UserId { get; set; }
+
+    public virtual User User { get; set; }
 }

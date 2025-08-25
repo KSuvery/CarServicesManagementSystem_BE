@@ -10,6 +10,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using static CarServ.Repository.Repositories.PartsRepository;
 
 namespace CarServ.Repository.Repositories
 {
@@ -33,6 +34,7 @@ namespace CarServ.Repository.Repositories
                 PartId = p.PartId,
                 PartName = p.PartName,
                 Quantity = p.Quantity,
+                Unit = p.Unit,
                 CurrentUnitPrice = p.UnitPrice,
                 ExpiryDate = p.ExpiryDate,
                 WarrantyMonths = p.WarrantyMonths,
@@ -83,13 +85,31 @@ namespace CarServ.Repository.Repositories
             };
         }
 
-        public async Task<List<Part>> GetLowPartsAsync()
+        public async Task<List<PartDto>> GetLowPartsAsync()
         {
             var parts = await _context.Parts
                 .Where(p => p.Quantity < 5)
+                .Include(p => p.PartPrices)
+                .Include(p => p.WarrantyClaims)
+                    .ThenInclude(w => w.Supplier)
                 .ToListAsync();
-
-            return parts;
+            var partDtos = parts.Select(p => new PartDto
+            {
+                PartId = p.PartId,
+                PartName = p.PartName,
+                Quantity = p.Quantity,
+                Unit = p.Unit,
+                CurrentUnitPrice = p.UnitPrice,
+                ExpiryDate = p.ExpiryDate,
+                WarrantyMonths = p.WarrantyMonths,
+                SupplierName = p.WarrantyClaims.FirstOrDefault()?.Supplier?.Name ?? "Someone",
+                PartPrices = p.PartPrices.Select(pp => new PartPriceDto
+                {
+                    Price = pp.Price,
+                    EffectiveFrom = pp.EffectiveFrom
+                }).ToList()
+            }).ToList();
+            return partDtos;            
         }
         public async Task<List<Part>> GetZeroPartsAsync()
         {
@@ -100,9 +120,30 @@ namespace CarServ.Repository.Repositories
             return parts;
         }
 
-        public async Task<Part> GetPartByIdAsync(int partId)
+        public async Task<PartDto> GetPartByIdAsync(int partId)
         {
-            return await _context.Parts.FindAsync(partId);
+            var p = await _context.Parts
+                 .Where(p => p.PartId == partId)
+                .Include(p => p.PartPrices)
+                .Include(p => p.WarrantyClaims)
+                    .ThenInclude(w => w.Supplier).FirstOrDefaultAsync();
+            var partDtos = new PartDto
+            {
+                PartId = p.PartId,
+                PartName = p.PartName,
+                Quantity = p.Quantity,
+                Unit = p.Unit,
+                CurrentUnitPrice = p.UnitPrice,
+                ExpiryDate = p.ExpiryDate,
+                WarrantyMonths = p.WarrantyMonths,
+                SupplierName = p.WarrantyClaims.FirstOrDefault()?.Supplier?.Name ?? "Someone",
+                PartPrices = p.PartPrices.Select(pp => new PartPriceDto
+                {
+                    Price = pp.Price,
+                    EffectiveFrom = pp.EffectiveFrom
+                }).ToList()
+            };
+            return partDtos;            
         }
 
         public async Task<List<Part>> GetPartsByPartName(string partName)
@@ -135,9 +176,102 @@ namespace CarServ.Repository.Repositories
                 .ToListAsync();
         }
 
+
+        
+
+            public async Task<Part> CreatePartAsync(CreatePartDto dto)
+            {
+                var part = new Part
+                {
+                    PartName = dto.PartName,
+                    Quantity = dto.Quantity,
+                    UnitPrice = dto.UnitPrice,
+                    ExpiryDate = dto.ExpiryDate,
+                    WarrantyMonths = dto.WarrantyMonths,
+                    Unit = dto.Unit
+                };
+
+                foreach (var priceDto in dto.PartPrices)
+                {
+                    var partPrice = new PartPrice
+                    {
+                        Price = priceDto.Price,
+                        EffectiveFrom = priceDto.EffectiveFrom
+                    };
+                    part.PartPrices.Add(partPrice);
+                }
+
+                foreach (var claimDto in dto.WarrantyClaims)
+                {
+                    var warrantyClaim = new WarrantyClaim
+                    {
+                        SupplierId = claimDto.SupplierId,
+                        ClaimDate = claimDto.ClaimDate,
+                        Notes = claimDto.Notes
+                    };
+                    part.WarrantyClaims.Add(warrantyClaim);
+                }
+
+                _context.Parts.Add(part);
+                await _context.SaveChangesAsync();
+
+                return part;
+            }
+
+            public async Task<Part> UpdatePartAsync(int partId, UpdatePartDto dto)
+            {
+                var part = await _context.Parts
+                    .Include(p => p.PartPrices)
+                    .Include(p => p.WarrantyClaims)
+                    .FirstOrDefaultAsync(p => p.PartId == partId);
+
+                if (part == null)
+                {
+                    throw new Exception("Part not found.");
+                }
+
+                part.PartName = dto.PartName;
+                part.Quantity = dto.Quantity;
+                part.UnitPrice = dto.UnitPrice;
+                part.ExpiryDate = dto.ExpiryDate;
+                part.WarrantyMonths = dto.WarrantyMonths;
+                part.Unit = dto.Unit;
+
+
+                part.PartPrices.Clear(); 
+                foreach (var priceDto in dto.PartPrices)
+                {
+                    var partPrice = new PartPrice
+                    {
+                        Price = priceDto.Price,
+                        EffectiveFrom = priceDto.EffectiveFrom
+                    };
+                    part.PartPrices.Add(partPrice);
+                }
+
+
+                part.WarrantyClaims.Clear(); 
+                foreach (var claimDto in dto.WarrantyClaims)
+                {
+                    var warrantyClaim = new WarrantyClaim
+                    {
+                        SupplierId = claimDto.SupplierId,
+                        ClaimDate = claimDto.ClaimDate,
+                        Notes = claimDto.Notes
+                    };
+                    part.WarrantyClaims.Add(warrantyClaim);
+                }
+
+                await _context.SaveChangesAsync();
+                return part;
+            }
+        
+
+
+
         public async Task<Part> AddPartAsync(
             string partName,
-            int quantity,
+            int quantity,            
             decimal unitPrice,
             DateOnly expiryDate,
             int warrantyMonths)
@@ -163,46 +297,132 @@ namespace CarServ.Repository.Repositories
             DateOnly expiryDate,
             int warrantyMonths)
         {
-             var part = await GetPartByIdAsync(partId);
-            if (part == null)
-            {
-                return null; // or throw an exception
-            }
-            part.PartName = partName;
-            part.Quantity = quantity;
-            part.UnitPrice = unitPrice;
-            part.ExpiryDate = expiryDate;
-            part.WarrantyMonths = warrantyMonths;
-            _context.Parts.Update(part);
-            await _context.SaveChangesAsync();
-            return part;
+            /*var part = await GetPartByIdAsync(partId);
+           if (part == null)
+           {
+               return null; // or throw an exception
+           }
+           part.PartName = partName;
+           part.Quantity = quantity;
+           part.CurrentUnitPrice = unitPrice;
+           part.ExpiryDate = expiryDate;
+           part.WarrantyMonths = warrantyMonths;
+           _context.Parts.Update(part);
+           await _context.SaveChangesAsync();
+           return part;*/
+            return null;
         }
 
-        public async Task<RevenueReportDto> GenerateRevenueReport(DateTime startDate, DateTime endDate)
+        public async Task<RevenueReportDto> GenerateRevenueReport(int month, int year)
         {
-            // Validate the input dates
-            if (startDate > endDate)
-            {
-                throw new ArgumentException("Start date must be earlier than end date.");
-            }
-
+            var startDate = new DateTime(year, month, 1);
+            var endDate = startDate.AddMonths(1).AddDays(-1);
 
             var orders = await _context.Orders
                 .Include(o => o.Payments)
-                .Include(o => o.Appointment)
-                .ThenInclude(op => op.AppointmentServices)
+                .Include(o => o.OrderDetails)
+                .Include(o => o.OrderDetails)
                 .Where(o => o.CreatedAt >= startDate && o.CreatedAt <= endDate)
                 .ToListAsync();
 
             var totalRevenue = orders.Sum(o => o.Payments.Sum(p => p.Amount) ?? 0);
             var totalOrders = orders.Count;
 
+            var orderDetails = orders.Select(o => new OrderDetailDto
+            {
+                OrderId = o.OrderId,
+                CreatedAt = o.CreatedAt,
+                TotalAmount = o.Payments.Sum(p => p.Amount) ?? 0,
+                LineItems = o.OrderDetails.Select(od => new OrderLineItemDto
+                {
+                    Item = (int)(od.ServiceId != null ? od.ServiceId : od.PackageId),
+                    Quantity = od.Quantity ?? 1,
+                    UnitPrice = od.UnitPrice ?? 0,
+                    LineTotal = od.LineTotal ?? 0
+                }).ToList()
+            }).ToList();
+
             return new RevenueReportDto
             {
                 TotalOrders = totalOrders,
-                TotalRevenue = totalRevenue
+                TotalRevenue = totalRevenue,
+                OrderDetails = orderDetails
             };
         }
+
+
+        public async Task<DashboardSummaryDto> GenerateDashboardSummary(int month, int year)
+        {
+            var startDate = new DateTime(year, month, 1);
+            var endDate = startDate.AddMonths(1).AddDays(-1);
+
+            var appointments = await _context.Appointments
+                .Include(a => a.AppointmentServices)
+                    .ThenInclude(s => s.Service)
+                .Include(a => a.Package)
+                .Where(a => a.AppointmentDate >= startDate && a.AppointmentDate <= endDate)
+                .ToListAsync();
+
+            var partsUsage = new Dictionary<string, int>();
+            var servicesCount = new Dictionary<string, int>(); 
+            var packagesCount = new Dictionary<string, int>();
+
+            foreach (var appointment in appointments)
+            {
+                // Count packages
+                if (appointment.PackageId.HasValue)
+                {
+                    var packageName = appointment.Package?.Name ?? "Unknown Package";
+                    if (packagesCount.ContainsKey(packageName))
+                    {
+                        packagesCount[packageName]++;
+                    }
+                    else
+                    {
+                        packagesCount[packageName] = 1;
+                    }
+                }
+
+                foreach (var appointmentService in appointment.AppointmentServices)
+                {
+                    var serviceName = appointmentService.Service?.Name ?? "Unknown Service";
+                    if (servicesCount.ContainsKey(serviceName))
+                    {
+                        servicesCount[serviceName]++;
+                    }
+                    else
+                    {
+                        servicesCount[serviceName] = 1;
+                    }
+                    var serviceParts = await _context.ServiceParts
+                        .Include(sp => sp.Part)
+                        .Where(sp => sp.ServiceId == appointmentService.ServiceId)
+                        .ToListAsync();
+
+                    foreach (var servicePart in serviceParts)
+                    {
+                        var partName = servicePart.Part?.PartName ?? "Unknown Part";
+                        if (partsUsage.ContainsKey(partName))
+                        {
+                            partsUsage[partName] += servicePart.QuantityRequired;
+                        }
+                        else
+                        {
+                            partsUsage[partName] = servicePart.QuantityRequired;
+                        }
+                    }
+                }
+            }
+
+            return new DashboardSummaryDto
+            {
+                PartsUsage = partsUsage,
+                ServicesCount = servicesCount,
+                PackagesCount = packagesCount
+            };
+        }
+
+
 
         public async Task UpdateServiceProgress(UpdateServiceProgressDto dto)
         {
@@ -304,6 +524,41 @@ namespace CarServ.Repository.Repositories
                     }
                 }
             }
+        }
+
+        public async Task DeletePartAsync(int partId)
+        {
+            var part = await _context.Parts
+            .Include(p => p.ServiceParts)
+                .ThenInclude(a => a.Service)
+            .FirstOrDefaultAsync(p => p.PartId == partId);
+
+            if (part == null)
+            {
+                throw new Exception("Part not found.");
+            }
+            foreach (var servicePart in part.ServiceParts)
+            {
+                var service = await _context.Services
+                     .Include(s => s.AppointmentServices)
+                         .ThenInclude(a => a.Appointment)
+                         .ThenInclude(a => a.ServiceProgresses)
+                     .FirstOrDefaultAsync(s => s.ServiceId == servicePart.ServiceId);
+                if (service == null)
+                {
+                    throw new Exception("Service not found.");
+                }
+
+                var hasInProgressAppointments = service.AppointmentServices
+                    .Any(a => a.Appointment.ServiceProgresses
+                        .Any(sp => sp.Status != "Completed"));
+                if (hasInProgressAppointments)
+                {
+                    throw new Exception("Cannot delete this part! It is being used in another service. To delete this part, any appointment with this service has to be completed!");
+                }
+            }                        
+            _context.Parts.Remove(part);
+            await _context.SaveChangesAsync();
         }
 
         public async Task TrackPartsUsed(PartUsageDto partsUsedDTO)
