@@ -73,8 +73,8 @@ namespace CarServ.Repository.Repositories
             if(customer != null)
             {
                 var listVehicles = await _context.Vehicles
-                .Where(v => v.CustomerId == customer.UserId)
-                .ToListAsync();
+                    .Where(v => v.Customer.UserId == customer.UserId)
+                    .ToListAsync();
                 var userDTO = new CustomerWithVehiclesDTO
                 {
                     UserID = customer.UserId,
@@ -157,7 +157,7 @@ namespace CarServ.Repository.Repositories
             return null;
         }
 
-        public async Task<CustomerDTO> SignupNewCustomer(string fullName, string email, string phoneNumber, string password, string address)
+        public async Task<User> SignupNewCustomer(string fullName, string email, string phoneNumber, string password, string address)
         {
             if (await _context.Users.AnyAsync(x => x.Email == email))
             {
@@ -183,16 +183,18 @@ namespace CarServ.Repository.Repositories
             _context.Customers.Add(customer);
             await _context.SaveChangesAsync();
 
-            var newlyCreatedCustomer = await this.GetAccountById(customer.CustomerId);
-            var userDTO = new CustomerDTO
-            {
-                UserID = newlyCreatedCustomer.UserId,
-            };
-            return userDTO;
+            return newUser;
+
+            //var newlyCreatedCustomer = await this.GetAccountById(customer.CustomerId);
+            //var userDTO = new CustomerDTO
+            //{
+            //    UserID = newlyCreatedCustomer.UserId,
+            //};
+            //return userDTO;
         }
 
 
-        public async Task<StaffDTO> AddingNewStaff(string fullName, string email, string phoneNumber, string password, int roleID)
+        public async Task<StaffDTO> AddingNewStaff(string fullName, string email, string phoneNumber, string password, string address, int roleID)
         {
             if (await _context.Users.AnyAsync(x => x.Email == email))
             {
@@ -205,6 +207,7 @@ namespace CarServ.Repository.Repositories
                 Email = email,
                 PhoneNumber = phoneNumber,
                 PasswordHash = passwordHash,
+                Address = address,
                 RoleId = roleID
             };
             _context.Users.Add(newUser);
@@ -213,33 +216,33 @@ namespace CarServ.Repository.Repositories
             {
                 var staff = new ServiceStaff
                 {
-                    StaffId = newUser.UserId
-
+                    UserId = newUser.UserId
                 };
 
                 _context.ServiceStaffs.Add(staff);
                 await _context.SaveChangesAsync();
-            }else if(roleID == 4)
+            }
+            else if(roleID == 4)
             {
                 var inventoryManager = new InventoryManager
                 {
-                    ManagerId = newUser.UserId
-
+                    UserId = newUser.UserId
                 };
 
                 _context.InventoryManagers.Add(inventoryManager);
                 await _context.SaveChangesAsync();
             }
-           
 
             var newlyCreatedStaff = await this.GetAccountById(newUser.UserId);
             var staffDTO = new StaffDTO
-            {                
+            {
                 FullName = newlyCreatedStaff.FullName,
                 Email = newlyCreatedStaff.Email,
                 PhoneNumber = newlyCreatedStaff.PhoneNumber,
+                Address = newlyCreatedStaff.Address,
                 RoleName = newlyCreatedStaff.Role.RoleName
             };
+            
             return staffDTO;
         }
 
