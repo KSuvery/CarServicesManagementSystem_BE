@@ -83,9 +83,9 @@ namespace CarServ.Service.Services
         }
 
         //Nhat's Methods
-        public async Task<RevenueReportDto> GenerateRevenueReport(DateTime startDate, DateTime endDate)
+        public async Task<RevenueReportDto> GenerateRevenueReport(int month, int year)
         {
-            return await _partsRepository.GenerateRevenueReport(startDate, endDate);
+            return await _partsRepository.GenerateRevenueReport(month, year);
         }
 
         public async Task TrackPartsUsed(PartUsageDto partUsage)
@@ -131,6 +131,11 @@ namespace CarServ.Service.Services
         public async Task DeletePartAsync(int partId)
         {
             await _partsRepository.DeletePartAsync(partId);  
+        }
+
+        public async Task<DashboardSummaryDto> GenerateDashboardSummary(int month, int year)
+        {
+            return await _partsRepository.GenerateDashboardSummary(month, year);
         }
     }
 }

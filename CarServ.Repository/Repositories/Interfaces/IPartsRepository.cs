@@ -37,7 +37,8 @@ namespace CarServ.Repository.Repositories.Interfaces
             decimal unitPrice,
             DateOnly expiryDate,
             int warrantyMonths);
-        Task<RevenueReportDto> GenerateRevenueReport(DateTime startDate, DateTime endDate);
+        Task<RevenueReportDto> GenerateRevenueReport(int month, int year);
+        Task<DashboardSummaryDto> GenerateDashboardSummary(int month, int year);
 
         Task TrackPartsUsed(PartUsageDto partsUsedDTO);
         Task UpdateServiceProgress(UpdateServiceProgressDto dto);

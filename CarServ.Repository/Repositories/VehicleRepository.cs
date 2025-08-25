@@ -1,7 +1,10 @@
 ﻿using CarServ.Domain.Entities;
 using CarServ.Repository.Repositories.DTO;
+using CarServ.Repository.Repositories.DTO.Booking_A_Service;
+using CarServ.Repository.Repositories.DTO.Logging_part_usage;
 using CarServ.Repository.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
 
 namespace CarServ.Repository.Repositories
 {
@@ -13,35 +16,93 @@ namespace CarServ.Repository.Repositories
             _context = context;
         }
 
-        public async Task<List<Vehicle>> GetAllVehiclesAsync()
+        public async Task<List<VehicleDto>> GetAllVehiclesAsync()
         {
-            return await _context.Vehicles.ToListAsync();
-        }
-
-        public async Task<Vehicle> GetVehicleByIdAsync(int id)
-        {
-            return await _context.Vehicles
-                .FirstOrDefaultAsync(v => v.VehicleId == id);
-        }
-
-        public async Task<List<Vehicle>> GetVehiclesByCustomerIdAsync(int customerId)
-        {
-            return await _context.Vehicles
-                .Where(v => v.CustomerId == customerId)
+            var vehicles = await _context.Vehicles
+            .Include(v => v.Customer)
+            .ThenInclude(c => c.CustomerNavigation)
                 .ToListAsync();
+            var vehicleDtos = vehicles.Select(p => new VehicleDto
+            {
+               CustomerName = p.Customer.CustomerNavigation.FullName,
+               LicensePlate = p.LicensePlate,
+               Make = p.Make,
+               Model = p.Model,
+               Year = p.Year
+            }).ToList();
+            return vehicleDtos;
         }
 
-        public async Task<List<Vehicle>> GetVehiclesByMakeAsync(string make)
+        public async Task<VehicleDto> GetVehicleByIdAsync(int id)
         {
-            return await _context.Vehicles
-                .Where(v => v.Make.ToLower().Contains(make.ToLower()))
-                .ToListAsync();
+            var vehicle = await _context.Vehicles
+            .Include(v => v.Customer)
+            .ThenInclude(c => c.CustomerNavigation)
+            .Where(v => v.VehicleId == id)
+                .FirstOrDefaultAsync();
+            var vehicleDtos =  new VehicleDto
+            {
+                CustomerName = vehicle.Customer.CustomerNavigation.FullName,
+                LicensePlate = vehicle.LicensePlate,
+                Make = vehicle.Make,
+                Model = vehicle.Model,
+                Year = vehicle.Year
+            };
+            return vehicleDtos;
         }
 
-        public async Task<Vehicle> GetVehicleByLicensePlateAsync(string licensePlate)
+        public async Task<List<VehicleDto>> GetVehiclesByCustomerIdAsync(int customerId)
         {
-            return await _context.Vehicles
-                .FirstOrDefaultAsync(v => v.LicensePlate.ToLower() == licensePlate.ToLower());
+            var vehicles = await _context.Vehicles
+           .Include(v => v.Customer)
+           .ThenInclude(c => c.CustomerNavigation)
+           .Where(v => v.CustomerId == customerId)
+               .ToListAsync();
+            var vehicleDtos = vehicles.Select(p => new VehicleDto
+            {
+                CustomerName = p.Customer.CustomerNavigation.FullName,
+                LicensePlate = p.LicensePlate,
+                Make = p.Make,
+                Model = p.Model,
+                Year = p.Year
+            }).ToList();
+            return vehicleDtos;
+        }
+
+        public async Task<List<VehicleDto>> GetVehiclesByMakeAsync(string make)
+        {
+            var vehicles = await _context.Vehicles
+           .Include(v => v.Customer)
+           .ThenInclude(c => c.CustomerNavigation)
+           .Where(v => v.Make == make)
+               .ToListAsync();
+            var vehicleDtos = vehicles.Select(p => new VehicleDto
+            {
+                CustomerName = p.Customer.CustomerNavigation.FullName,
+                LicensePlate = p.LicensePlate,
+                Make = p.Make,
+                Model = p.Model,
+                Year = p.Year
+            }).ToList();
+            return vehicleDtos;
+        }
+
+        public async Task<VehicleDto> GetVehicleByLicensePlateAsync(string licensePlate)
+        {
+            var vehicle = await _context.Vehicles
+            .Include(v => v.Customer)
+            .ThenInclude(c => c.CustomerNavigation)
+            .Where(v => v.LicensePlate == licensePlate)
+                .FirstOrDefaultAsync();
+            var vehicleDtos = new VehicleDto
+            {
+                CustomerName = vehicle.Customer.CustomerNavigation.FullName,
+                LicensePlate = vehicle.LicensePlate,
+                Make = vehicle.Make,
+                Model = vehicle.Model,
+                Year = vehicle.Year
+            };
+            return vehicleDtos;
         }
 
         public async Task<List<Vehicle>> GetVehiclesByModelAsync(string model)

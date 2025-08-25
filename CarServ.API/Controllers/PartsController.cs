@@ -157,6 +157,35 @@ namespace CarServ.API.Controllers
             }
         }
 
+        [HttpGet("revenue")]
+        /*[Authorize(Roles = "1")]*/
+        public async Task<IActionResult> GetRevenueReport(int month, int year)
+        {
+            try
+            {
+                var report = await _partsService.GenerateRevenueReport(month, year);
+                return Ok(report);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpGet("dashboard-summary")]
+        /*[Authorize(Roles = "1")]*/
+        public async Task<IActionResult> GetDashboardSummary(int month, int year)
+        {
+            try
+            {
+                var summary = await _partsService.GenerateDashboardSummary(month, year);
+                return Ok(summary);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         private async Task<bool> PartExists(int id)
         {
             var part = await _partsService.GetPartByIdAsync(id);

@@ -313,31 +313,116 @@ namespace CarServ.Repository.Repositories
             return null;
         }
 
-        public async Task<RevenueReportDto> GenerateRevenueReport(DateTime startDate, DateTime endDate)
+        public async Task<RevenueReportDto> GenerateRevenueReport(int month, int year)
         {
-            // Validate the input dates
-            if (startDate > endDate)
-            {
-                throw new ArgumentException("Start date must be earlier than end date.");
-            }
-
+            var startDate = new DateTime(year, month, 1);
+            var endDate = startDate.AddMonths(1).AddDays(-1);
 
             var orders = await _context.Orders
                 .Include(o => o.Payments)
-                .Include(o => o.Appointment)
-                .ThenInclude(op => op.AppointmentServices)
+                .Include(o => o.OrderDetails)
+                .Include(o => o.OrderDetails)
                 .Where(o => o.CreatedAt >= startDate && o.CreatedAt <= endDate)
                 .ToListAsync();
 
             var totalRevenue = orders.Sum(o => o.Payments.Sum(p => p.Amount) ?? 0);
             var totalOrders = orders.Count;
 
+            var orderDetails = orders.Select(o => new OrderDetailDto
+            {
+                OrderId = o.OrderId,
+                CreatedAt = o.CreatedAt,
+                TotalAmount = o.Payments.Sum(p => p.Amount) ?? 0,
+                LineItems = o.OrderDetails.Select(od => new OrderLineItemDto
+                {
+                    Item = (int)(od.ServiceId != null ? od.ServiceId : od.PackageId),
+                    Quantity = od.Quantity ?? 1,
+                    UnitPrice = od.UnitPrice ?? 0,
+                    LineTotal = od.LineTotal ?? 0
+                }).ToList()
+            }).ToList();
+
             return new RevenueReportDto
             {
                 TotalOrders = totalOrders,
-                TotalRevenue = totalRevenue
+                TotalRevenue = totalRevenue,
+                OrderDetails = orderDetails
             };
         }
+
+
+        public async Task<DashboardSummaryDto> GenerateDashboardSummary(int month, int year)
+        {
+            var startDate = new DateTime(year, month, 1);
+            var endDate = startDate.AddMonths(1).AddDays(-1);
+
+            var appointments = await _context.Appointments
+                .Include(a => a.AppointmentServices)
+                    .ThenInclude(s => s.Service)
+                .Include(a => a.Package)
+                .Where(a => a.AppointmentDate >= startDate && a.AppointmentDate <= endDate)
+                .ToListAsync();
+
+            var partsUsage = new Dictionary<string, int>();
+            var servicesCount = new Dictionary<string, int>(); 
+            var packagesCount = new Dictionary<string, int>();
+
+            foreach (var appointment in appointments)
+            {
+                // Count packages
+                if (appointment.PackageId.HasValue)
+                {
+                    var packageName = appointment.Package?.Name ?? "Unknown Package";
+                    if (packagesCount.ContainsKey(packageName))
+                    {
+                        packagesCount[packageName]++;
+                    }
+                    else
+                    {
+                        packagesCount[packageName] = 1;
+                    }
+                }
+
+                foreach (var appointmentService in appointment.AppointmentServices)
+                {
+                    var serviceName = appointmentService.Service?.Name ?? "Unknown Service";
+                    if (servicesCount.ContainsKey(serviceName))
+                    {
+                        servicesCount[serviceName]++;
+                    }
+                    else
+                    {
+                        servicesCount[serviceName] = 1;
+                    }
+                    var serviceParts = await _context.ServiceParts
+                        .Include(sp => sp.Part)
+                        .Where(sp => sp.ServiceId == appointmentService.ServiceId)
+                        .ToListAsync();
+
+                    foreach (var servicePart in serviceParts)
+                    {
+                        var partName = servicePart.Part?.PartName ?? "Unknown Part";
+                        if (partsUsage.ContainsKey(partName))
+                        {
+                            partsUsage[partName] += servicePart.QuantityRequired;
+                        }
+                        else
+                        {
+                            partsUsage[partName] = servicePart.QuantityRequired;
+                        }
+                    }
+                }
+            }
+
+            return new DashboardSummaryDto
+            {
+                PartsUsage = partsUsage,
+                ServicesCount = servicesCount,
+                PackagesCount = packagesCount
+            };
+        }
+
+
 
         public async Task UpdateServiceProgress(UpdateServiceProgressDto dto)
         {
