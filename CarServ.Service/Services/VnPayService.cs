@@ -167,7 +167,6 @@ namespace CarServ.service.Services
             if (vnpResponseCode != "00") // Failed
             {
                 await _paymentRepository.RemoveAsync(payment);
-                await _unitOfWork.SaveChangesAsync();
                 return new VnPaymentResponse()
                 {
                     Success = false,
@@ -185,6 +184,7 @@ namespace CarServ.service.Services
                 }
             }
 
+            await _unitOfWork.SaveChangesAsync();
             await _unitOfWork.CommitTransactionAsync();
             return new VnPaymentResponse()
             {
