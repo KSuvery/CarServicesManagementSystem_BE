@@ -23,16 +23,23 @@ namespace CarServ.Repository.Repositories
         public async Task<List<AppointmentDto>> GetAllAppointmentsAsync()
         {
             var appointments = await _context.Appointments
-                .Include(a => a.Customer) 
+                .Include(a => a.AppointmentServices)
+                    .ThenInclude(s => s.Service)
+                .Include(a => a.Customer)
+                .Include(a => a.Package)
+                    .ThenInclude(p => p.Services)
                 .Select(a => new AppointmentDto
                 {
                     AppointmentId = a.AppointmentId,
-                    CustomerName = a.Customer.CustomerNavigation.FullName, 
+                    CustomerName = a.Customer.CustomerNavigation.FullName,
                     CustomerPhone = a.Customer.CustomerNavigation.PhoneNumber,
                     CustomerAddress = a.Customer.CustomerNavigation.Address,
                     VehicleLicensePlate = a.Vehicle.LicensePlate,
                     VehicleMake = a.Vehicle.Make,
                     VehicleModel = a.Vehicle.Model,
+                    services = a.AppointmentServices.Select(s => s.Service.Name).ToList(),
+                    Duration = (int)(a.AppointmentServices.Sum(s => s.Service.EstimatedLaborHours ?? 0) +
+                               (a.Package != null ? a.Package.Services.Sum(s => s.EstimatedLaborHours ?? 0) : 0)),
                     AppointmentDate = a.AppointmentDate,
                     Status = a.Status
                 })
@@ -40,6 +47,7 @@ namespace CarServ.Repository.Repositories
 
             return appointments;
         }
+
         public async Task<PaginationResult<List<AppointmentDto>>> GetAllApppointmentsWithPaging(int currentPage, int pageSize)
         {
             var userListTmp = await this.GetAllAppointmentsAsync();
