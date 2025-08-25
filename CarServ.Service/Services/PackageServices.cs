@@ -1,6 +1,7 @@
 ﻿using CarServ.Domain.Entities;
 using CarServ.Repository.Repositories.DTO;
 using CarServ.Repository.Repositories.DTO.Booking_A_Service;
+using CarServ.Repository.Repositories.DTO.RevenueReport;
 using CarServ.Repository.Repositories.DTO.Service_._ServicePackage;
 using CarServ.Repository.Repositories.DTO.Service_managing;
 using CarServ.Repository.Repositories.Interfaces;
@@ -100,6 +101,11 @@ namespace CarServ.service.Services
         public async Task<ServicePackage> UpdateServicePackageAsync(int packageId, UpdateServicePackageDto dto)
         {
             return await _repository.UpdateServicePackageAsync(packageId, dto);
+        }
+
+        public async Task<List<DailyServicesRevenueReportDto>> GenerateDailyServicesRevenueReport(DateTime date)
+        {
+            return await _repository.GenerateDailyServicesRevenueReport(date);
         }
     }
 }

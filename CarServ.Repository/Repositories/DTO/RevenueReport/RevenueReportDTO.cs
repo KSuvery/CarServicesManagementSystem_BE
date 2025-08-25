@@ -13,6 +13,12 @@ namespace CarServ.Repository.Repositories.DTO.RevenueReport
         public List<OrderDetailDto> OrderDetails { get; set; } = new List<OrderDetailDto>();
     }
 
+    public class DailyServicesRevenueReportDto
+    {
+        public DateTime Date { get; set; }
+        public decimal TotalRevenue { get; set; }
+    }
+
     public class OrderDetailDto
     {
         public int OrderId { get; set; }

@@ -1,6 +1,7 @@
 ﻿using CarServ.Domain.Entities;
 using CarServ.Repository.Repositories.DTO;
 using CarServ.Repository.Repositories.DTO.Booking_A_Service;
+using CarServ.Repository.Repositories.DTO.RevenueReport;
 using CarServ.Repository.Repositories.DTO.Service_._ServicePackage;
 using CarServ.Repository.Repositories.DTO.Service_managing;
 using CarServ.Repository.Repositories.Interfaces;
@@ -422,6 +423,41 @@ namespace CarServ.Repository.Repositories
 
             _context.ServicePackages.Remove(package);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<DailyServicesRevenueReportDto>> GenerateDailyServicesRevenueReport(DateTime date)
+        {
+            var startDate = date.Date;
+            var endDate = startDate.AddDays(1);
+
+            var report = await _context.Appointments
+                .Where(a => a.AppointmentDate >= startDate && a.AppointmentDate < endDate)
+                .Join(_context.AppointmentServices,
+                      appointment => appointment.AppointmentId,
+                      appointmentService => appointmentService.AppointmentId,
+                      (appointment, appointmentService) => new
+                      {
+                          appointment.AppointmentDate,
+                          appointmentService.Quantity,
+                          appointmentService.ServiceId
+                      })
+                .Join(_context.Services,
+                      appointmentService => appointmentService.ServiceId,
+                      service => service.ServiceId,
+                      (appointmentService, service) => new
+                      {
+                          appointmentService.AppointmentDate,
+                          Revenue = appointmentService.Quantity * service.Price
+                      })
+                .GroupBy(x => x.AppointmentDate.Value.Date)
+                .Select(g => new DailyServicesRevenueReportDto
+                {
+                    Date = g.Key,
+                    TotalRevenue = g.Sum(x => x.Revenue ?? 0)
+                })
+                .ToListAsync();
+
+            return report;
         }
 
     }
