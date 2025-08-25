@@ -24,5 +24,7 @@ namespace CarServ.Repository.Repositories.Interfaces
         Task<StaffDTO> AddingNewStaff(string fullName, string email, string phoneNumber, string password, int roleID);
         Task<List<ServiceStaff>> GetAllServiceStaff();
         Task<ServiceStaff> GetServiceStaffById(int id);
+        Task<List<InventoryManager>> GetAllInventoryManagers();
+        Task<InventoryManager> GetInventoryManagerById(int id);
     }
 }

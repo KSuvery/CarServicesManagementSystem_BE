@@ -260,6 +260,19 @@ namespace CarServ.Repository.Repositories
                 .FirstOrDefaultAsync(s => s.StaffId == id);
         }
 
+        public async Task<List<InventoryManager>> GetAllInventoryManagers()
+        {
+            return await _context.InventoryManagers
+                .Include(s => s.Manager) 
+                .ToListAsync();
+        }
+
+        public async Task<InventoryManager> GetInventoryManagerById(int id)
+        {
+            return await _context.InventoryManagers
+                .FirstOrDefaultAsync(s => s.ManagerId == id);
+        }
+
 
         private string HashPassword(string password)
         {

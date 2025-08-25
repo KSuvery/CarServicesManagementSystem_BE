@@ -101,13 +101,15 @@ namespace CarServ.API.Controllers
             return await _accService.GetAccountByRole(roleID);
         }
 
-        [HttpGet("service-staff")]
+        [HttpGet("service-staffs")]
+        [Authorize(Roles = "1,2,3,4")]
         public async Task<List<ServiceStaff>> GetAllServiceStaff()
         {
             return await _accService.GetAllServiceStaff();
         }
 
         [HttpGet("service-staff/{id}")]
+        [Authorize(Roles = "1,2,3,4")]
         public async Task<ActionResult<ServiceStaff>> GetServiceStaffById(int id)
         {
             var staff = await _accService.GetServiceStaffById(id);
@@ -117,6 +119,26 @@ namespace CarServ.API.Controllers
             }
             return staff;
         }
+
+        [HttpGet("inventory-managers")]
+        [Authorize(Roles = "1,2,3,4")]
+        public async Task<List<InventoryManager>> GetAllInventoryManagers()
+        {
+            return await _accService.GetAllInventoryManagers();
+        }
+
+        [HttpGet("inventory-manager/{id}")]
+        [Authorize(Roles = "1,2,3,4")]
+        public async Task<ActionResult<InventoryManager>> GetInventoryManagerById(int id)
+        {
+            var manager = await _accService.GetInventoryManagerById(id);
+            if (manager == null)
+            {
+                return NotFound();
+            }
+            return manager;
+        }
+
         [HttpPost("create-new-account")]
         [Authorize(Roles = "1")]
         public async Task<IActionResult> CreateStaffAccount([FromBody] StaffDTO dto)

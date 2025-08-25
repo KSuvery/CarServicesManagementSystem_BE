@@ -178,7 +178,7 @@ namespace CarServ.service.Services
             }
             else
             {
-                // Update payment status to "Paid"
+                // Update relevant entities on successful payment
                 if (payment != null)
                 {
                     payment.Status = "Paid";
