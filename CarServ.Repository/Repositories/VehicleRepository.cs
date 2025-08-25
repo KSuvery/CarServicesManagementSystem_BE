@@ -24,7 +24,8 @@ namespace CarServ.Repository.Repositories
                 .ToListAsync();
             var vehicleDtos = vehicles.Select(p => new VehicleDto
             {
-               CustomerName = p.Customer.User.FullName,
+                VehicleId = p.VehicleId,
+                CustomerName = p.Customer.User.FullName,
                LicensePlate = p.LicensePlate,
                Make = p.Make,
                Model = p.Model,
@@ -42,6 +43,7 @@ namespace CarServ.Repository.Repositories
                 .FirstOrDefaultAsync();
             var vehicleDtos =  new VehicleDto
             {
+                VehicleId = vehicle.VehicleId,
                 CustomerName = vehicle.Customer.User.FullName,
                 LicensePlate = vehicle.LicensePlate,
                 Make = vehicle.Make,
@@ -60,6 +62,7 @@ namespace CarServ.Repository.Repositories
                .ToListAsync();
             var vehicleDtos = vehicles.Select(p => new VehicleDto
             {
+                VehicleId = p.VehicleId,
                 CustomerName = p.Customer.User.FullName,
                 LicensePlate = p.LicensePlate,
                 Make = p.Make,
@@ -77,7 +80,7 @@ namespace CarServ.Repository.Repositories
            .Where(v => v.Make == make)
                .ToListAsync();
             var vehicleDtos = vehicles.Select(p => new VehicleDto
-            {
+            {VehicleId = p.VehicleId,
                 CustomerName = p.Customer.User.FullName,
                 LicensePlate = p.LicensePlate,
                 Make = p.Make,
@@ -95,7 +98,7 @@ namespace CarServ.Repository.Repositories
             .Where(v => v.LicensePlate == licensePlate)
                 .FirstOrDefaultAsync();
             var vehicleDtos = new VehicleDto
-            {
+            {VehicleId = vehicle.VehicleId,
                 CustomerName = vehicle.Customer.User.FullName,
                 LicensePlate = vehicle.LicensePlate,
                 Make = vehicle.Make,
