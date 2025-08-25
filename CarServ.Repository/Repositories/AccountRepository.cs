@@ -170,13 +170,14 @@ namespace CarServ.Repository.Repositories
                 Email = email,
                 PhoneNumber = phoneNumber,
                 PasswordHash = passwordHash,
+                Address = address,
                 RoleId = 2
             };
             _context.Users.Add(newUser);
             await _context.SaveChangesAsync();
             var customer = new Customer
             {
-                CustomerId = newUser.UserId,
+                UserId = newUser.UserId,
             };
 
             _context.Customers.Add(customer);
@@ -186,11 +187,6 @@ namespace CarServ.Repository.Repositories
             var userDTO = new CustomerDTO
             {
                 UserID = newlyCreatedCustomer.UserId,
-                FullName = newlyCreatedCustomer.FullName,
-                Email = newlyCreatedCustomer.Email,
-                PhoneNumber = newlyCreatedCustomer.PhoneNumber,
-                RoleName = newlyCreatedCustomer.Role.RoleName,
-                Address = newlyCreatedCustomer.Address
             };
             return userDTO;
         }
