@@ -96,7 +96,7 @@ namespace CarServ.service.Services
             return await _accRepository.GetInventoryManagerById(id);
         }
 
-        public async Task<List<User>> GetAllCustomers()
+        public async Task<List<Customer>> GetAllCustomers()
         {
             return await _accRepository.GetAllCustomers();
         }

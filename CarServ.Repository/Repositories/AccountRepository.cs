@@ -18,7 +18,7 @@ namespace CarServ.Repository.Repositories
         {
             
             var user = await _context.Users
-                .Include(u => u.Customer) 
+                .Include(u => u.UserId) 
                 .FirstOrDefaultAsync(u => u.UserId == userId);
 
             if (user == null)
@@ -263,7 +263,7 @@ namespace CarServ.Repository.Repositories
         public async Task<List<InventoryManager>> GetAllInventoryManagers()
         {
             return await _context.InventoryManagers
-                .Include(s => s.Manager) 
+                .Include(s => s.User) 
                 .ToListAsync();
         }
 
@@ -273,13 +273,11 @@ namespace CarServ.Repository.Repositories
                 .FirstOrDefaultAsync(s => s.ManagerId == id);
         }
 
-        public async Task<List<User>> GetAllCustomers()
+        public async Task<List<Customer>> GetAllCustomers()
         {
-            var customers = await _context.Users
-                .Include(u => u.Role)
-                .Where(u => u.RoleId == 2)
+            return await _context.Customers
+                .Include(c => c.User) 
                 .ToListAsync();
-            return customers;
         }
 
         private string HashPassword(string password)

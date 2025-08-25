@@ -20,11 +20,11 @@ namespace CarServ.Repository.Repositories
         {
             var vehicles = await _context.Vehicles
             .Include(v => v.Customer)
-            .ThenInclude(c => c.CustomerNavigation)
+            .ThenInclude(c => c.User)
                 .ToListAsync();
             var vehicleDtos = vehicles.Select(p => new VehicleDto
             {
-               CustomerName = p.Customer.CustomerNavigation.FullName,
+               CustomerName = p.Customer.User.FullName,
                LicensePlate = p.LicensePlate,
                Make = p.Make,
                Model = p.Model,
@@ -37,12 +37,12 @@ namespace CarServ.Repository.Repositories
         {
             var vehicle = await _context.Vehicles
             .Include(v => v.Customer)
-            .ThenInclude(c => c.CustomerNavigation)
+            .ThenInclude(c => c.User)
             .Where(v => v.VehicleId == id)
                 .FirstOrDefaultAsync();
             var vehicleDtos =  new VehicleDto
             {
-                CustomerName = vehicle.Customer.CustomerNavigation.FullName,
+                CustomerName = vehicle.Customer.User.FullName,
                 LicensePlate = vehicle.LicensePlate,
                 Make = vehicle.Make,
                 Model = vehicle.Model,
@@ -55,12 +55,12 @@ namespace CarServ.Repository.Repositories
         {
             var vehicles = await _context.Vehicles
            .Include(v => v.Customer)
-           .ThenInclude(c => c.CustomerNavigation)
+           .ThenInclude(c => c.User)
            .Where(v => v.CustomerId == customerId)
                .ToListAsync();
             var vehicleDtos = vehicles.Select(p => new VehicleDto
             {
-                CustomerName = p.Customer.CustomerNavigation.FullName,
+                CustomerName = p.Customer.User.FullName,
                 LicensePlate = p.LicensePlate,
                 Make = p.Make,
                 Model = p.Model,
@@ -73,12 +73,12 @@ namespace CarServ.Repository.Repositories
         {
             var vehicles = await _context.Vehicles
            .Include(v => v.Customer)
-           .ThenInclude(c => c.CustomerNavigation)
+           .ThenInclude(c => c.User)
            .Where(v => v.Make == make)
                .ToListAsync();
             var vehicleDtos = vehicles.Select(p => new VehicleDto
             {
-                CustomerName = p.Customer.CustomerNavigation.FullName,
+                CustomerName = p.Customer.User.FullName,
                 LicensePlate = p.LicensePlate,
                 Make = p.Make,
                 Model = p.Model,
@@ -91,12 +91,12 @@ namespace CarServ.Repository.Repositories
         {
             var vehicle = await _context.Vehicles
             .Include(v => v.Customer)
-            .ThenInclude(c => c.CustomerNavigation)
+            .ThenInclude(c => c.User)
             .Where(v => v.LicensePlate == licensePlate)
                 .FirstOrDefaultAsync();
             var vehicleDtos = new VehicleDto
             {
-                CustomerName = vehicle.Customer.CustomerNavigation.FullName,
+                CustomerName = vehicle.Customer.User.FullName,
                 LicensePlate = vehicle.LicensePlate,
                 Make = vehicle.Make,
                 Model = vehicle.Model,

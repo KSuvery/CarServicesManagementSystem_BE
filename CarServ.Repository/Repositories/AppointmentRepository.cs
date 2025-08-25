@@ -31,9 +31,9 @@ namespace CarServ.Repository.Repositories
                 .Select(a => new AppointmentDto
                 {
                     AppointmentId = a.AppointmentId,
-                    CustomerName = a.Customer.CustomerNavigation.FullName,
-                    CustomerPhone = a.Customer.CustomerNavigation.PhoneNumber,
-                    CustomerAddress = a.Customer.CustomerNavigation.Address,
+                    CustomerName = a.Customer.User.FullName, // Updated to use 'User' navigation property
+                    CustomerPhone = a.Customer.User.PhoneNumber, // Updated to use 'User' navigation property
+                    CustomerAddress = a.Customer.User.Address, // Updated to use 'User' navigation property
                     VehicleLicensePlate = a.Vehicle.LicensePlate,
                     VehicleMake = a.Vehicle.Make,
                     VehicleModel = a.Vehicle.Model,
