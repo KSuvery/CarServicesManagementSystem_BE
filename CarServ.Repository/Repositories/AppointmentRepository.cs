@@ -73,6 +73,14 @@ namespace CarServ.Repository.Repositories
                 .FirstOrDefaultAsync(a => a.AppointmentId == appointmentId);
         }
 
+        public async Task<Appointment> GetAppointmentByOrderIdAsync(int orderId)
+        {
+            var order = await _context.Orders
+                .Include(o => o.Appointment)
+                .FirstOrDefaultAsync(o => o.OrderId == orderId);
+            return order?.Appointment;
+        }
+
         public async Task<List<Appointment>> GetAppointmentsByCustomerIdAsync(int customerId)
         {
             return await _context.Appointments

@@ -30,6 +30,11 @@ namespace CarServ.service.Services
             return await _appointmentRepository.GetAppointmentByIdAsync(appointmentId);
         }
 
+        public async Task<Appointment> GetAppointmentByOrderIdAsync(int orderId)
+        {
+            return await _appointmentRepository.GetAppointmentByOrderIdAsync(orderId);
+        }
+
         public async Task<List<Appointment>> GetAppointmentByCustomerIdAsync(int customerId)
         {
             return await _appointmentRepository.GetAppointmentsByCustomerIdAsync(customerId);
