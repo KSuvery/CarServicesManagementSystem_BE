@@ -25,5 +25,6 @@ namespace CarServ.service.Services.Interfaces
         Task<ServiceStaff> GetServiceStaffById(int id);
         Task<List<InventoryManager>> GetAllInventoryManagers();
         Task<InventoryManager> GetInventoryManagerById(int id);
+        Task<List<User>> GetAllCustomers();
     }
 }

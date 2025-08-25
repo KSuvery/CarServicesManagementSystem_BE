@@ -139,6 +139,27 @@ namespace CarServ.API.Controllers
             return manager;
         }
 
+        [HttpGet("customers")]
+        [Authorize(Roles = "1,2,3,4")]
+        public async Task<List<Customer>> GetAllCustomers()
+        {
+            var users = await _accService.GetAllCustomers();
+            var customers = users.OfType<Customer>().ToList(); // Filter and cast User objects to Customer
+            return customers;
+        }
+
+        [HttpGet("customer/{id}")]
+        [Authorize(Roles = "1,2,3,4")]
+        public async Task<ActionResult<User>> GetCustomerById(int id)
+        {
+            var customer = await _accService.GetCustomerById(id);
+            if (customer == null)
+            {
+                return NotFound();
+            }
+            return customer;
+        }
+
         [HttpPost("create-new-account")]
         [Authorize(Roles = "1")]
         public async Task<IActionResult> CreateStaffAccount([FromBody] StaffDTO dto)

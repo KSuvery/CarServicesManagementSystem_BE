@@ -273,6 +273,14 @@ namespace CarServ.Repository.Repositories
                 .FirstOrDefaultAsync(s => s.ManagerId == id);
         }
 
+        public async Task<List<User>> GetAllCustomers()
+        {
+            var customers = await _context.Users
+                .Include(u => u.Role)
+                .Where(u => u.RoleId == 2)
+                .ToListAsync();
+            return customers;
+        }
 
         private string HashPassword(string password)
         {
