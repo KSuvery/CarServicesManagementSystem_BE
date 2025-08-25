@@ -9,9 +9,11 @@ public partial class Customer
 {
     public int CustomerId { get; set; }
 
+    public int UserId { get; set; }
+
     public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
 
-    public virtual User CustomerNavigation { get; set; }
+    public virtual User User { get; set; }
 
     public virtual ICollection<Vehicle> Vehicles { get; set; } = new List<Vehicle>();
 }
