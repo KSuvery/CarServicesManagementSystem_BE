@@ -21,6 +21,7 @@ namespace CarServ.Repository.Repositories.Interfaces
         Task<List<Vehicle>> GetVehiclesByCarTypeIdAsync(int carTypeId);
         Task<List<Vehicle>> GetBookedVehiclesAsync(string status = "Booked");
         Task<List<Vehicle>> GetAvailableVehiclesAsync(string status = "Available");
+        Task<List<Vehicle>> GetInServiceVehiclesAsync(string status = "In Service");
         Task<Vehicle> AddVehicleAsync(int customerId, AddVehicleDto dto);
         Task<bool> RemoveVehicleAsync(int vehicleId);
     }

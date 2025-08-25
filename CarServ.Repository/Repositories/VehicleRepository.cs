@@ -140,6 +140,13 @@ namespace CarServ.Repository.Repositories
                 .ToListAsync();
         }
 
+        public async Task<List<Vehicle>> GetInServiceVehiclesAsync(string status = "In Service")
+        {
+            return await _context.Vehicles
+                .Where(v => v.Status.ToLower() == status.ToLower())
+                .ToListAsync();
+        }
+
         public async Task<Vehicle> AddVehicleAsync(int customerId, AddVehicleDto dto)
         {
             // Validate the input data

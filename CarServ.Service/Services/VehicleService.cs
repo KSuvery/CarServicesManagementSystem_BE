@@ -64,6 +64,11 @@ namespace CarServ.Service.Services
             return await _vehicleRepository.GetAvailableVehiclesAsync(status);
         }
 
+        public async Task<List<Vehicle>> GetInServiceVehiclesAsync(string status = "In Service")
+        {
+            return await _vehicleRepository.GetInServiceVehiclesAsync(status);
+        }
+
         public async Task<Vehicle> AddVehicleAsync(int customerId, AddVehicleDto dto)
         {
             return await _vehicleRepository.AddVehicleAsync(customerId, dto);
