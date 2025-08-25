@@ -20,7 +20,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpPost("create-promotion")]
-        [Authorize(Roles = "1")] 
+        [Authorize(Roles = "1,2")] 
         public async Task<IActionResult> CreatePromotion([FromBody] CreatePromotionDto dto)
         {
             try
@@ -35,7 +35,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpPut("update-promotion/{promotionId}")]
-        [Authorize(Roles = "1")] 
+        [Authorize(Roles = "1,2")] 
         public async Task<IActionResult> UpdatePromotion(int promotionId, [FromBody] UpdatePromotionDto dto)
         {
             try
@@ -50,7 +50,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("retrieve-all-promotion")]
-        [Authorize(Roles = "1")] 
+        [Authorize(Roles = "1,2")] 
         public async Task<PaginationResult<List<Promotion>>> GetAllPromotions(int currentPage = 1, int pageSize = 5)
         {
             
@@ -59,7 +59,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("retrieve-promotion/{promotionId}")]
-        [Authorize(Roles = "1")] 
+        [Authorize(Roles = "1,2")] 
         public async Task<IActionResult> GetPromotionById(int promotionId)
         {
             try

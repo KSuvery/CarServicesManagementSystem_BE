@@ -44,5 +44,8 @@ namespace CarServ.Repository.Repositories.DTO.RevenueReport
         public Dictionary<string, int> PackagesCount { get; set; } = new Dictionary<string, int>(); // PackageName -> Count
     }
 
-
+    public class DashboardSummaryInVehiclesDto
+    {
+        public Dictionary<string, int> VehicleServicesCount { get; set; } = new Dictionary<string, int>(); // VehicleModel -> Count
+    }
 }
