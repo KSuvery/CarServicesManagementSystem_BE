@@ -23,9 +23,9 @@ public partial class Vehicle
 
     public string Status { get; set; }
 
-    public string LastService { get; set; }
+    public DateTime? LastService { get; set; }
 
-    public string NextService { get; set; }
+    public DateTime? NextService { get; set; }
 
     public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
 
