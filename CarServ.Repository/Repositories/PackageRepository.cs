@@ -175,6 +175,7 @@ namespace CarServ.Repository.Repositories
                 Name = service.Name,
                 Description = service.Description,
                 Price = service.Price ?? 0,
+                EstimatedLaborHours = service.EstimatedLaborHours,
                 Parts = service.ServiceParts.Select(part => new PartDTO_Copy
                 {
                     PartId = part.PartId,
