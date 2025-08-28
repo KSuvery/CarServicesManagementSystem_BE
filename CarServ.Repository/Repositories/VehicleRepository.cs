@@ -48,7 +48,10 @@ namespace CarServ.Repository.Repositories
                 LicensePlate = vehicle.LicensePlate,
                 Make = vehicle.Make,
                 Model = vehicle.Model,
-                Year = vehicle.Year
+                Year = vehicle.Year,
+                Status = vehicle.Status,
+                LastService = vehicle.LastService ?? DateTime.MinValue,
+                NextServiceDue = vehicle.NextService ?? DateTime.MinValue
             };
             return vehicleDtos;
         }
@@ -176,7 +179,8 @@ namespace CarServ.Repository.Repositories
                 Make = dto.Make,
                 Model = dto.Model,
                 Year = dto.Year,
-                CarTypeId = dto.CarTypeId
+                CarTypeId = dto.CarTypeId,
+                Status = "Available" // Default status
             };
 
             // Add the vehicle to the context
