@@ -175,6 +175,7 @@ namespace CarServ.Repository.Repositories
                 Name = service.Name,
                 Description = service.Description,
                 Price = service.Price ?? 0,
+                EstimatedLaborHours = service.EstimatedLaborHours,
                 Parts = service.ServiceParts.Select(part => new PartDTO_Copy
                 {
                     PartId = part.PartId,
@@ -460,5 +461,50 @@ namespace CarServ.Repository.Repositories
             return report;
         }
 
+        public async Task<List<ServiceDto>> GetTopUsedServices(int topN)
+        {
+            var topServices = await _context.AppointmentServices
+                .GroupBy(appointmentService => appointmentService.ServiceId)
+                .Select(g => new
+                {
+                    ServiceId = g.Key,
+                    UsageCount = g.Count()
+                })
+                .OrderByDescending(x => x.UsageCount)
+                .Take(topN)
+                .Join(_context.Services,
+                      usage => usage.ServiceId,
+                      service => service.ServiceId,
+                      (usage, service) => new ServiceDto
+                      {
+                          ServiceId = service.ServiceId,
+                          Name = service.Name,
+                          Description = service.Description,
+                          Price = service.Price ?? 0,
+                          EstimatedLaborHours = service.EstimatedLaborHours,
+                          UseCount = usage.UsageCount
+                      })
+                .ToListAsync();
+            return topServices;
+        }
+
+        public async Task<List<RecentServiceDto>> GetMostRecentServices(int topN)
+        {
+            var recentServices = (from sp in _context.ServiceProgresses
+                                  join a in _context.Appointments on sp.AppointmentId equals a.AppointmentId
+                                  join o in _context.Orders on a.AppointmentId equals o.AppointmentId
+                                  join od in _context.OrderDetails on o.OrderId equals od.OrderId
+                                  join s in _context.Services on od.ServiceId equals s.ServiceId
+                                  orderby sp.UpdatedAt descending
+                                  select new RecentServiceDto
+                                  {
+                                      ServiceId = s.ServiceId,
+                                      VehicleLicensePlate = a.Vehicle.LicensePlate,
+                                      Name = s.Name,
+                                      Status = sp.Status,
+                                      TimeSinceServiced = DateTime.Now - a.Vehicle.LastService.Value,
+                                  }).Take(topN).ToList();
+            return recentServices;
+        }
     }
 }

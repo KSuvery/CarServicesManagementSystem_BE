@@ -21,9 +21,7 @@ namespace CarServ.Repository.Repositories.Interfaces
         Task<ServicePackageListDto> GetAllServicePackages();
         Task<ServiceListDto> GetAllServices();
         Task<List<VehicleDto>> GetVehiclesByCustomerId(int customerId);
-
         Task<List<PartDTO_Copy>> GetPartsByServiceId(int serviceId);
-
         Task<List<PartDTO_Copy>> GetPartsByPackageId(int packageId);
         Task<ServicePackage> UpdateServicePackageAsync(int packageId, UpdateServicePackageDto dto);
         Task<Service> UpdateServiceAsync(int serviceId, UpdateServiceDto dto);
@@ -34,6 +32,7 @@ namespace CarServ.Repository.Repositories.Interfaces
         Task<PaginationResult<List<ServiceDto>>> GetAllServicesWithPaging(int currentPage, int pageSize);
         Task<PaginationResult<List<ServicePackageDto>>> GetAllServicePackageWithPaging(int currentPage, int pageSize);
         Task<List<DailyServicesRevenueReportDto>> GenerateDailyServicesRevenueReport(DateTime date);
-
+        Task<List<ServiceDto>> GetTopUsedServices(int topN);
+        Task<List<RecentServiceDto>> GetMostRecentServices(int topN);
     }
 }

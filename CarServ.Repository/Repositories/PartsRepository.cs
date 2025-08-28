@@ -447,6 +447,7 @@ namespace CarServ.Repository.Repositories
             serviceProgress.UpdatedAt = DateTime.Now;
 
             var appointment = await _context.Appointments.FirstOrDefaultAsync(a => a.AppointmentId == dto.AppointmentId);
+            appointment.Status = dto.Status;
             
             if (dto.Status == "Completed")
             {
@@ -481,6 +482,8 @@ namespace CarServ.Repository.Repositories
                 {
                     var notification = new Notification
                     {
+                        Title = "Low stock alert",
+                        Type = "Alert",                        
                         UserId = userId,
                         Message = $"Low stock alert: The quantity of part '{part.PartName}' is low (Current Quantity: {part.Quantity}).",
                         SentAt = DateTime.Now,
