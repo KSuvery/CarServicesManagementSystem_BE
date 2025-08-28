@@ -107,5 +107,10 @@ namespace CarServ.service.Services
         {
             return await _repository.GenerateDailyServicesRevenueReport(date);
         }
+
+        public async Task<List<ServiceDto>> GetTopUsedServices(int topN)
+        {
+            return await _repository.GetTopUsedServices(topN);
+        }
     }
 }

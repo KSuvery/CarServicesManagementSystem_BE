@@ -461,5 +461,31 @@ namespace CarServ.Repository.Repositories
             return report;
         }
 
+        public async Task<List<ServiceDto>> GetTopUsedServices(int topN)
+        {
+            var topServices = await _context.AppointmentServices
+                .GroupBy(appointmentService => appointmentService.ServiceId)
+                .Select(g => new
+                {
+                    ServiceId = g.Key,
+                    UsageCount = g.Count()
+                })
+                .OrderByDescending(x => x.UsageCount)
+                .Take(topN)
+                .Join(_context.Services,
+                      usage => usage.ServiceId,
+                      service => service.ServiceId,
+                      (usage, service) => new ServiceDto
+                      {
+                          ServiceId = service.ServiceId,
+                          Name = service.Name,
+                          Description = service.Description,
+                          Price = service.Price ?? 0,
+                          EstimatedLaborHours = service.EstimatedLaborHours,
+                          UseCount = usage.UsageCount
+                      })
+                .ToListAsync();
+            return topServices;
+        }
     }
 }
