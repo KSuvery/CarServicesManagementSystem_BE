@@ -112,5 +112,10 @@ namespace CarServ.service.Services
         {
             return await _repository.GetTopUsedServices(topN);
         }
+
+        public async Task<List<RecentServiceDto>> GetMostRecentServices(int topN)
+        {
+            return await _repository.GetMostRecentServices(topN);
+        }
     }
 }

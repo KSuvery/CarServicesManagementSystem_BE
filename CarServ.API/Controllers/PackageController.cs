@@ -224,6 +224,21 @@ namespace CarServ.API.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        [HttpGet("get-most-recent-services")]
+        [Authorize(Roles = "1,2,3,4")]
+        public async Task<IActionResult> GetMostRecentServices(int topN = 5)
+        {
+            try
+            {
+                var services = await _service.GetMostRecentServices(topN);
+                return Ok(services);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 
 }

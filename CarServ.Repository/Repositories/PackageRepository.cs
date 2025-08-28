@@ -487,5 +487,24 @@ namespace CarServ.Repository.Repositories
                 .ToListAsync();
             return topServices;
         }
+
+        public async Task<List<RecentServiceDto>> GetMostRecentServices(int topN)
+        {
+            var recentServices = (from sp in _context.ServiceProgresses
+                                  join a in _context.Appointments on sp.AppointmentId equals a.AppointmentId
+                                  join o in _context.Orders on a.AppointmentId equals o.AppointmentId
+                                  join od in _context.OrderDetails on o.OrderId equals od.OrderId
+                                  join s in _context.Services on od.ServiceId equals s.ServiceId
+                                  orderby sp.UpdatedAt descending
+                                  select new RecentServiceDto
+                                  {
+                                      ServiceId = s.ServiceId,
+                                      VehicleLicensePlate = a.Vehicle.LicensePlate,
+                                      Name = s.Name,
+                                      Status = sp.Status,
+                                      TimeSinceServiced = DateTime.Now - a.Vehicle.LastService.Value,
+                                  }).Take(topN).ToList();
+            return recentServices;
+        }
     }
 }
