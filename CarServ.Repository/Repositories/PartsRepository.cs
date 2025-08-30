@@ -21,13 +21,13 @@ namespace CarServ.Repository.Repositories
         {
             _context = context;
         }
-                
+
         public async Task<List<PartDto>> GetAllPartsAsync()
         {
             var parts = await _context.Parts
-                .Include(p => p.PartPrices) 
-                .Include(p => p.WarrantyClaims) 
-                    .ThenInclude(w => w.Supplier) 
+                .Include(p => p.PartPrices)
+                .Include(p => p.WarrantyClaims)
+                    .ThenInclude(w => w.Supplier)
                 .ToListAsync();
             var partDtos = parts.Select(p => new PartDto
             {
@@ -38,7 +38,7 @@ namespace CarServ.Repository.Repositories
                 CurrentUnitPrice = p.UnitPrice,
                 ExpiryDate = p.ExpiryDate,
                 WarrantyMonths = p.WarrantyMonths,
-                SupplierName = p.WarrantyClaims.FirstOrDefault()?.Supplier?.Name ?? "Someone", 
+                SupplierName = p.WarrantyClaims.FirstOrDefault()?.Supplier?.Name ?? "Someone",
                 PartPrices = p.PartPrices.Select(pp => new PartPriceDto
                 {
                     Price = pp.Price,
@@ -68,7 +68,7 @@ namespace CarServ.Repository.Repositories
         }
         public async Task<PaginationResult<List<Supplier>>> GetAllSuppliersAsync(int currentPage, int pageSize)
         {
-            var userListTmp = await _context.Suppliers.ToListAsync();            
+            var userListTmp = await _context.Suppliers.ToListAsync();
 
             var totalItems = userListTmp.Count();
             var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
@@ -109,7 +109,7 @@ namespace CarServ.Repository.Repositories
                     EffectiveFrom = pp.EffectiveFrom
                 }).ToList()
             }).ToList();
-            return partDtos;            
+            return partDtos;
         }
         public async Task<List<Part>> GetZeroPartsAsync()
         {
@@ -143,7 +143,7 @@ namespace CarServ.Repository.Repositories
                     EffectiveFrom = pp.EffectiveFrom
                 }).ToList()
             };
-            return partDtos;            
+            return partDtos;
         }
 
         public async Task<List<Part>> GetPartsByPartName(string partName)
@@ -177,101 +177,101 @@ namespace CarServ.Repository.Repositories
         }
 
 
-        
 
-            public async Task<Part> CreatePartAsync(CreatePartDto dto)
+
+        public async Task<Part> CreatePartAsync(CreatePartDto dto)
+        {
+            var part = new Part
             {
-                var part = new Part
+                PartName = dto.PartName,
+                Quantity = dto.Quantity,
+                UnitPrice = dto.UnitPrice,
+                ExpiryDate = dto.ExpiryDate,
+                WarrantyMonths = dto.WarrantyMonths,
+                Unit = dto.Unit
+            };
+
+            foreach (var priceDto in dto.PartPrices)
+            {
+                var partPrice = new PartPrice
                 {
-                    PartName = dto.PartName,
-                    Quantity = dto.Quantity,
-                    UnitPrice = dto.UnitPrice,
-                    ExpiryDate = dto.ExpiryDate,
-                    WarrantyMonths = dto.WarrantyMonths,
-                    Unit = dto.Unit
+                    Price = priceDto.Price,
+                    EffectiveFrom = priceDto.EffectiveFrom
                 };
-
-                foreach (var priceDto in dto.PartPrices)
-                {
-                    var partPrice = new PartPrice
-                    {
-                        Price = priceDto.Price,
-                        EffectiveFrom = priceDto.EffectiveFrom
-                    };
-                    part.PartPrices.Add(partPrice);
-                }
-
-                foreach (var claimDto in dto.WarrantyClaims)
-                {
-                    var warrantyClaim = new WarrantyClaim
-                    {
-                        SupplierId = claimDto.SupplierId,
-                        ClaimDate = claimDto.ClaimDate,
-                        Notes = claimDto.Notes
-                    };
-                    part.WarrantyClaims.Add(warrantyClaim);
-                }
-
-                _context.Parts.Add(part);
-                await _context.SaveChangesAsync();
-
-                return part;
+                part.PartPrices.Add(partPrice);
             }
 
-            public async Task<Part> UpdatePartAsync(int partId, UpdatePartDto dto)
+            foreach (var claimDto in dto.WarrantyClaims)
             {
-                var part = await _context.Parts
-                    .Include(p => p.PartPrices)
-                    .Include(p => p.WarrantyClaims)
-                    .FirstOrDefaultAsync(p => p.PartId == partId);
-
-                if (part == null)
+                var warrantyClaim = new WarrantyClaim
                 {
-                    throw new Exception("Part not found.");
-                }
-
-                part.PartName = dto.PartName;
-                part.Quantity = dto.Quantity;
-                part.UnitPrice = dto.UnitPrice;
-                part.ExpiryDate = dto.ExpiryDate;
-                part.WarrantyMonths = dto.WarrantyMonths;
-                part.Unit = dto.Unit;
-
-
-                part.PartPrices.Clear(); 
-                foreach (var priceDto in dto.PartPrices)
-                {
-                    var partPrice = new PartPrice
-                    {
-                        Price = priceDto.Price,
-                        EffectiveFrom = priceDto.EffectiveFrom
-                    };
-                    part.PartPrices.Add(partPrice);
-                }
-
-
-                part.WarrantyClaims.Clear(); 
-                foreach (var claimDto in dto.WarrantyClaims)
-                {
-                    var warrantyClaim = new WarrantyClaim
-                    {
-                        SupplierId = claimDto.SupplierId,
-                        ClaimDate = claimDto.ClaimDate,
-                        Notes = claimDto.Notes
-                    };
-                    part.WarrantyClaims.Add(warrantyClaim);
-                }
-
-                await _context.SaveChangesAsync();
-                return part;
+                    SupplierId = claimDto.SupplierId,
+                    ClaimDate = claimDto.ClaimDate,
+                    Notes = claimDto.Notes
+                };
+                part.WarrantyClaims.Add(warrantyClaim);
             }
-        
+
+            _context.Parts.Add(part);
+            await _context.SaveChangesAsync();
+
+            return part;
+        }
+
+        public async Task<Part> UpdatePartAsync(int partId, UpdatePartDto dto)
+        {
+            var part = await _context.Parts
+                .Include(p => p.PartPrices)
+                .Include(p => p.WarrantyClaims)
+                .FirstOrDefaultAsync(p => p.PartId == partId);
+
+            if (part == null)
+            {
+                throw new Exception("Part not found.");
+            }
+
+            part.PartName = dto.PartName;
+            part.Quantity = dto.Quantity;
+            part.UnitPrice = dto.UnitPrice;
+            part.ExpiryDate = dto.ExpiryDate;
+            part.WarrantyMonths = dto.WarrantyMonths;
+            part.Unit = dto.Unit;
+
+
+            part.PartPrices.Clear();
+            foreach (var priceDto in dto.PartPrices)
+            {
+                var partPrice = new PartPrice
+                {
+                    Price = priceDto.Price,
+                    EffectiveFrom = priceDto.EffectiveFrom
+                };
+                part.PartPrices.Add(partPrice);
+            }
+
+
+            part.WarrantyClaims.Clear();
+            foreach (var claimDto in dto.WarrantyClaims)
+            {
+                var warrantyClaim = new WarrantyClaim
+                {
+                    SupplierId = claimDto.SupplierId,
+                    ClaimDate = claimDto.ClaimDate,
+                    Notes = claimDto.Notes
+                };
+                part.WarrantyClaims.Add(warrantyClaim);
+            }
+
+            await _context.SaveChangesAsync();
+            return part;
+        }
+
 
 
 
         public async Task<Part> AddPartAsync(
             string partName,
-            int quantity,            
+            int quantity,
             decimal unitPrice,
             DateOnly expiryDate,
             int warrantyMonths)
@@ -364,7 +364,7 @@ namespace CarServ.Repository.Repositories
                 .ToListAsync();
 
             var partsUsage = new Dictionary<string, int>();
-            var servicesCount = new Dictionary<string, int>(); 
+            var servicesCount = new Dictionary<string, int>();
             var packagesCount = new Dictionary<string, int>();
 
             foreach (var appointment in appointments)
@@ -426,13 +426,13 @@ namespace CarServ.Repository.Repositories
 
         public async Task UpdateServiceProgress(UpdateServiceProgressDto dto)
         {
-          
+
             if (string.IsNullOrEmpty(dto.Status) || !IsValidStatus(dto.Status))
             {
                 throw new ArgumentException("Invalid status provided.");
             }
 
-            
+
             var serviceProgress = await _context.ServiceProgresses
                 .FirstOrDefaultAsync(sp => sp.AppointmentId == dto.AppointmentId);
 
@@ -441,14 +441,14 @@ namespace CarServ.Repository.Repositories
                 throw new InvalidOperationException("Service progress not found for the given appointment.");
             }
 
-            
+
             serviceProgress.Status = dto.Status;
             serviceProgress.Note = dto.Note;
             serviceProgress.UpdatedAt = DateTime.Now;
 
             var appointment = await _context.Appointments.FirstOrDefaultAsync(a => a.AppointmentId == dto.AppointmentId);
             appointment.Status = dto.Status;
-            
+
             if (dto.Status == "Completed")
             {
                 if (appointment != null)
@@ -462,16 +462,16 @@ namespace CarServ.Repository.Repositories
                 await ReduceUsedParts(dto.AppointmentId);
                 await CheckLowStockAndNotify();
             }
-           
+
             await _context.SaveChangesAsync();
         }
         private async Task CheckLowStockAndNotify()
         {
-            
+
             var lowStockParts = await _context.Parts
                 .Where(p => p.Quantity < 2)
                 .ToListAsync();
-            
+
             var userIdsToNotify = await _context.Users
                 .Where(u => u.RoleId == 1 || u.RoleId == 4)
                 .Select(u => u.UserId)
@@ -483,7 +483,7 @@ namespace CarServ.Repository.Repositories
                     var notification = new Notification
                     {
                         Title = "Low stock alert",
-                        Type = "Alert",                        
+                        Type = "Alert",
                         UserId = userId,
                         Message = $"Low stock alert: The quantity of part '{part.PartName}' is low (Current Quantity: {part.Quantity}).",
                         SentAt = DateTime.Now,
@@ -493,7 +493,7 @@ namespace CarServ.Repository.Repositories
                 }
             }
         }
-            private bool IsValidStatus(string status)
+        private bool IsValidStatus(string status)
         {
             var validStatuses = new[] { "Booked", "Vehicle Received", "In Service", "Completed", "Cancelled" };
             return validStatuses.Contains(status);
@@ -559,7 +559,7 @@ namespace CarServ.Repository.Repositories
                 {
                     throw new Exception("Cannot delete this part! It is being used in another service. To delete this part, any appointment with this service has to be completed!");
                 }
-            }                        
+            }
             _context.Parts.Remove(part);
             await _context.SaveChangesAsync();
         }
@@ -582,10 +582,38 @@ namespace CarServ.Repository.Repositories
                 PartItem.Quantity -= partsUsedDTO.QuantityUsed;
                 _context.Part.Update(PartItem);
                 await _context.SaveChangesAsync();
-                
+
             }
 
             await CheckAndNotifyLowStock(PartItem);*/
+
+        }
+
+        public async Task<List<PartUsageDto>> GetUsedParts()
+        {
+            var usedParts = (from a in _context.Appointments
+                             join asrv in _context.AppointmentServices on a.AppointmentId equals asrv.AppointmentId
+                             join sp in _context.ServiceParts on asrv.ServiceId equals sp.ServiceId
+                             join p in _context.Parts on sp.PartId equals p.PartId
+                             where a.Status == "Completed"
+                             select new PartUsageDto
+                             {
+                                 PartID = p.PartId,
+                                 PartName = p.PartName,
+                                 QuantityUsed = sp.QuantityRequired,
+                                 ServiceID = asrv.ServiceId
+                             })
+                         .GroupBy(x => new { x.PartID, x.PartName, x.ServiceID })
+                         .Select(g => new PartUsageDto
+                         {
+                             PartID = g.Key.PartID,
+                             PartName = g.Key.PartName,
+                             QuantityUsed = g.Sum(x => x.QuantityUsed),
+                             ServiceID = g.Key.ServiceID
+                         })
+                         .ToList();
+
+            return usedParts;
         }
     }
 }

@@ -42,5 +42,6 @@ namespace CarServ.Service.Services.Interfaces
         Task TrackPartsUsed(PartUsageDto partUsage);
         Task UpdateServiceProgress(UpdateServiceProgressDto dto);
         Task DeletePartAsync(int partId);
+        Task<List<PartUsageDto>> GetUsedParts();
     }
 }

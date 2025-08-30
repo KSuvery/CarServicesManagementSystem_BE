@@ -10,6 +10,7 @@ namespace CarServ.Repository.Repositories.DTO.Logging_part_usage
     public class PartUsageDto
     {
         public int PartID { get; set; }
+        public string PartName { get; set; }
         public int ServiceID { get; set; }
         public int QuantityUsed { get; set; }
     }
