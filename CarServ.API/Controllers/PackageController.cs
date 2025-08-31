@@ -197,11 +197,26 @@ namespace CarServ.API.Controllers
 
         [HttpGet("generate-daily-services-revenue-report")]
         [Authorize(Roles = "1,3,4")]
-        public async Task<IActionResult> GenerateDailyServicesRevenueReport(DateTime date)
+        public async Task<IActionResult> GenerateDailyServicesRevenueReport()
         {
             try
             {
-                var report = await _service.GenerateDailyServicesRevenueReport(date);
+                var report = await _service.GenerateDailyServicesRevenueReport();
+                return Ok(report);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("generate-services-revenue-report-sum")]
+        [Authorize(Roles = "1,3,4")]
+        public async Task<IActionResult> GenerateServicesRevenueReportSum()
+        {
+            try
+            {
+                var report = await _service.GenerateServicesRevenueReportSum();
                 return Ok(report);
             }
             catch (Exception ex)

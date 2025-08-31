@@ -426,13 +426,13 @@ namespace CarServ.Repository.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<DailyServicesRevenueReportDto>> GenerateDailyServicesRevenueReport(DateTime date)
+        public async Task<List<DailyServicesRevenueReportDto>> GenerateDailyServicesRevenueReport()
         {
-            var startDate = date.Date;
+            var startDate = DateTime.Now;
             var endDate = startDate.AddDays(1);
 
             var report = await _context.Appointments
-                .Where(a => a.AppointmentDate >= startDate && a.AppointmentDate < endDate)
+                .Where(a => a.AppointmentDate >= startDate && a.AppointmentDate < endDate && a.Status == "Completed")
                 .Join(_context.AppointmentServices,
                       appointment => appointment.AppointmentId,
                       appointmentService => appointmentService.AppointmentId,
@@ -458,7 +458,50 @@ namespace CarServ.Repository.Repositories
                 })
                 .ToListAsync();
 
+            if(report.Count == 0)
+            {
+                report = new List<DailyServicesRevenueReportDto>
+                {
+                    new DailyServicesRevenueReportDto
+                    {
+                        Date = startDate.Date,
+                        TotalRevenue = 0
+                    }
+                };
+            }
+
             return report;
+        }
+
+        public async Task<List<DailyServicesRevenueReportDto>> GenerateServicesRevenueReportSum()
+        {
+            var totalRevenue = await _context.Appointments
+                .Where(a => a.Status == "Completed")
+                .Join(_context.AppointmentServices,
+                      appointment => appointment.AppointmentId,
+                      appointmentService => appointmentService.AppointmentId,
+                      (appointment, appointmentService) => new
+                      {
+                          appointmentService.Quantity,
+                          appointmentService.ServiceId
+                      })
+                .Join(_context.Services,
+                      appointmentService => appointmentService.ServiceId,
+                      service => service.ServiceId,
+                      (appointmentService, service) => new
+                      {
+                          Revenue = appointmentService.Quantity * service.Price
+                      })
+                .SumAsync(x => x.Revenue ?? 0);
+            
+            return new List<DailyServicesRevenueReportDto>
+                {
+                new DailyServicesRevenueReportDto
+                {
+                    Date = DateTime.Now,
+                    TotalRevenue = totalRevenue
+                }
+            };
         }
 
         public async Task<List<ServiceDto>> GetTopUsedServices(int topN)

@@ -137,5 +137,10 @@ namespace CarServ.Service.Services
         {
             return await _partsRepository.GenerateDashboardSummary(month, year);
         }
+
+        public async Task<List<PartUsageDto>> GetUsedParts()
+        {
+            return await _partsRepository.GetUsedParts();
+        }
     }
 }

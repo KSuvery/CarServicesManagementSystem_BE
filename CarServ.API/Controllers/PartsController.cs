@@ -186,6 +186,21 @@ namespace CarServ.API.Controllers
             }
         }
 
+        [HttpGet("used-parts")]
+        [Authorize(Roles = "1,3,4")]
+        public async Task<IActionResult> GetUsedParts()
+        {
+            try
+            {
+                var usedParts = await _partsService.GetUsedParts();
+                return Ok(usedParts);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
+            }
+        }
+
         private async Task<bool> PartExists(int id)
         {
             var part = await _partsService.GetPartByIdAsync(id);
