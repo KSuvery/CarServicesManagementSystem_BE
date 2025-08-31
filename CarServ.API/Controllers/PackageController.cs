@@ -197,11 +197,11 @@ namespace CarServ.API.Controllers
 
         [HttpGet("generate-daily-services-revenue-report")]
         [Authorize(Roles = "1,3,4")]
-        public async Task<IActionResult> GenerateDailyServicesRevenueReport(DateTime date)
+        public async Task<IActionResult> GenerateDailyServicesRevenueReport()
         {
             try
             {
-                var report = await _service.GenerateDailyServicesRevenueReport(date);
+                var report = await _service.GenerateDailyServicesRevenueReport();
                 return Ok(report);
             }
             catch (Exception ex)

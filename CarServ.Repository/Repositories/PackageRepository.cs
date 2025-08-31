@@ -426,9 +426,9 @@ namespace CarServ.Repository.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<DailyServicesRevenueReportDto>> GenerateDailyServicesRevenueReport(DateTime date)
+        public async Task<List<DailyServicesRevenueReportDto>> GenerateDailyServicesRevenueReport()
         {
-            var startDate = date.Date;
+            var startDate = DateTime.Now;
             var endDate = startDate.AddDays(1);
 
             var report = await _context.Appointments
@@ -457,6 +457,18 @@ namespace CarServ.Repository.Repositories
                     TotalRevenue = g.Sum(x => x.Revenue ?? 0)
                 })
                 .ToListAsync();
+
+            if(report.Count == 0)
+            {
+                report = new List<DailyServicesRevenueReportDto>
+                {
+                    new DailyServicesRevenueReportDto
+                    {
+                        Date = startDate.Date,
+                        TotalRevenue = 0
+                    }
+                };
+            }
 
             return report;
         }

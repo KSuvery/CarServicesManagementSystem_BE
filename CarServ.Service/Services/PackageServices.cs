@@ -103,9 +103,9 @@ namespace CarServ.service.Services
             return await _repository.UpdateServicePackageAsync(packageId, dto);
         }
 
-        public async Task<List<DailyServicesRevenueReportDto>> GenerateDailyServicesRevenueReport(DateTime date)
+        public async Task<List<DailyServicesRevenueReportDto>> GenerateDailyServicesRevenueReport()
         {
-            return await _repository.GenerateDailyServicesRevenueReport(date);
+            return await _repository.GenerateDailyServicesRevenueReport();
         }
 
         public async Task<List<ServiceDto>> GetTopUsedServices(int topN)
