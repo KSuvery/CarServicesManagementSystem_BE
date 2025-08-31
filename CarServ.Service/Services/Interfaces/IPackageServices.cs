@@ -31,6 +31,7 @@ namespace CarServ.service.Services.Interfaces
         Task<PaginationResult<List<ServiceDto>>> GetAllServicesWithPaging(int currentPage, int pageSize);
         Task<PaginationResult<List<ServicePackageDto>>> GetAllServicePackageWithPaging(int currentPage, int pageSize);
         Task<List<DailyServicesRevenueReportDto>> GenerateDailyServicesRevenueReport();
+        Task<List<DailyServicesRevenueReportDto>> GenerateServicesRevenueReportSum();
         Task<List<ServiceDto>> GetTopUsedServices(int topN);
         Task<List<RecentServiceDto>> GetMostRecentServices(int topN);
     }

@@ -108,6 +108,11 @@ namespace CarServ.service.Services
             return await _repository.GenerateDailyServicesRevenueReport();
         }
 
+        public async Task<List<DailyServicesRevenueReportDto>> GenerateServicesRevenueReportSum()
+        {
+            return await _repository.GenerateServicesRevenueReportSum();
+        }
+
         public async Task<List<ServiceDto>> GetTopUsedServices(int topN)
         {
             return await _repository.GetTopUsedServices(topN);
