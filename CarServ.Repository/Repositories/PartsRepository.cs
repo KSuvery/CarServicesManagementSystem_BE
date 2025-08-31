@@ -600,16 +600,20 @@ namespace CarServ.Repository.Repositories
                              {
                                  PartID = p.PartId,
                                  PartName = p.PartName,
+                                 Unit = p.Unit,
                                  QuantityUsed = sp.QuantityRequired,
-                                 ServiceID = asrv.ServiceId
+                                 ServiceID = asrv.ServiceId,
+                                 LastUsed = a.AppointmentDate ?? DateTime.MaxValue
                              })
                          .GroupBy(x => new { x.PartID, x.PartName, x.ServiceID })
                          .Select(g => new PartUsageDto
                          {
                              PartID = g.Key.PartID,
                              PartName = g.Key.PartName,
+                             Unit = g.First().Unit,
                              QuantityUsed = g.Sum(x => x.QuantityUsed),
-                             ServiceID = g.Key.ServiceID
+                             ServiceID = g.Key.ServiceID,
+                             LastUsed = g.Max(x => x.LastUsed)
                          })
                          .ToList();
 
