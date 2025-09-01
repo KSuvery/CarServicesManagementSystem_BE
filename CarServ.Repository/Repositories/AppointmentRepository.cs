@@ -167,6 +167,7 @@ namespace CarServ.Repository.Repositories
 
             var vehicle = await GetVehicleByIdAsync((int)dto.VehicleId);            
             vehicle.Status = "In Service";
+            vehicle.NextService = appointment.AppointmentDate;
             _context.Vehicles.Update(vehicle);
             await _context.SaveChangesAsync();
             // Create a new order as well
