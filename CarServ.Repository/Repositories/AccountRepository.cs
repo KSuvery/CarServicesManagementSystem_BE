@@ -68,6 +68,10 @@ namespace CarServ.Repository.Repositories
 
         public async Task<CustomerWithVehiclesDTO> GetAccountByMail(string mail)
         {
+            var customerId = await _context.Customers
+                .Where(c => c.User.Email == mail)
+                .Select(c => c.CustomerId)
+                .FirstOrDefaultAsync();
             var customer = await _context.Users.Include(m => m.Role).
                                     FirstOrDefaultAsync(m => m.Email == mail);                        
             if(customer != null)
@@ -78,6 +82,7 @@ namespace CarServ.Repository.Repositories
                 var userDTO = new CustomerWithVehiclesDTO
                 {
                     UserID = customer.UserId,
+                    CustomerId = customerId,
                     FullName = customer.FullName,
                     Email = customer.Email,
                     PhoneNumber = customer.PhoneNumber,
