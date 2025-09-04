@@ -108,6 +108,7 @@ namespace CarServ.service.Services
 
         public async Task<VnPaymentResponse> PaymentExecute(HttpContext context)
         {
+            _unitOfWork.BeginTransaction();
             var vnpay = new VnPayLibrary();
 
             // Retrieve vnp_TxnRef from the query string directly
@@ -189,8 +190,8 @@ namespace CarServ.service.Services
                 }
             }
 
-            await _unitOfWork.SaveChangesAsync();
             await _unitOfWork.CommitTransactionAsync();
+            await _unitOfWork.SaveChangesAsync();
             return new VnPaymentResponse()
             {
                 Success = true,
