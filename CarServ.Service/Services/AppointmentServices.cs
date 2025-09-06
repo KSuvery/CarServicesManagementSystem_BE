@@ -35,14 +35,14 @@ namespace CarServ.service.Services
             return await _appointmentRepository.GetAppointmentByOrderIdAsync(orderId);
         }
 
-        public async Task<List<Appointment>> GetAppointmentByCustomerIdAsync(int customerId)
+        public async Task<List<AppointmentDto>> GetAppointmentByCustomerIdAsync(int customerId)
         {
             return await _appointmentRepository.GetAppointmentsByCustomerIdAsync(customerId);
         }
 
-        public async Task<List<Appointment>> GetBookedAppointmentsByCustomerId(int customerid)
+        public async Task<List<AppointmentDto>> GetOngingAppointmentsByCustomerId(int customerid)
         {
-            return await _appointmentRepository.GetBookedAppointmentsByCustomerId(customerid);
+            return await _appointmentRepository.GetOngingAppointmentsByCustomerId(customerid);
         }
 
         public async Task<List<Appointment>> GetAppointmentByVehicleIdAsync(int vehicleId)

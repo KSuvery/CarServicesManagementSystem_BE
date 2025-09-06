@@ -15,8 +15,8 @@ namespace CarServ.Repository.Repositories.Interfaces
         Task<PaginationResult<List<AppointmentDto>>> GetAllApppointmentsWithPaging(int currentPage, int pageSize);
         Task<Appointment> GetAppointmentByIdAsync(int appointmentId);
         Task<Appointment> GetAppointmentByOrderIdAsync(int orderId);
-        Task<List<Appointment>> GetAppointmentsByCustomerIdAsync(int customerId);
-        Task<List<Appointment>> GetBookedAppointmentsByCustomerId(int customerid);
+        Task<List<AppointmentDto>> GetAppointmentsByCustomerIdAsync(int customerId);
+        Task<List<AppointmentDto>> GetOngingAppointmentsByCustomerId(int customerid);
         Task<List<Appointment>> GetAppointmentsByVehicleIdAsync(int vehicleId);
         Task<Appointment> ScheduleAppointment(int customerId, ScheduleAppointmentDto dto);
         Task<Appointment> ScheduleAppointmentAsync(
