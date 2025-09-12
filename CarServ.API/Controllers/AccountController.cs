@@ -155,8 +155,8 @@ namespace CarServ.API.Controllers
             try
             {
                 int roleID = 0;
-                if (dto.RoleName.Equals("ServiceStaff") || dto.RoleName.Equals("Staff")) roleID = 3;
-                if (dto.RoleName.Equals("InventoryManager")) roleID = 4;
+                if (dto.RoleName.Equals("Nhân viên dịch vụ")) roleID = 3;
+                if (dto.RoleName.Equals("Nhân viên quản lý kho")) roleID = 4;
                 var staff = await _accService.AddingNewStaff(dto.FullName, dto.Email, dto.PhoneNumber, dto.Password, dto.Address, roleID);
                 return CreatedAtAction(nameof(CreateStaffAccount), new { name = staff.FullName }, staff);
             }
