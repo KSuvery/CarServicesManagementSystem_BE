@@ -545,7 +545,7 @@ namespace CarServ.Repository.Repositories
                                       VehicleLicensePlate = a.Vehicle.LicensePlate,
                                       Name = s.Name,
                                       Status = sp.Status,
-                                      TimeSinceServiced = DateTime.Now - a.Vehicle.LastService.Value,
+                                      TimeSinceServiced = DateTime.Now - sp.UpdatedAt.Value,
                                   }).Take(topN).ToList();
             return recentServices;
         }

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using static CarServ.Repository.Repositories.AppointmentRepository;
 
 namespace CarServ.Repository.Repositories
@@ -34,6 +35,7 @@ namespace CarServ.Repository.Repositories
                     CustomerName = a.Customer.User.FullName, // Updated to use 'User' navigation property
                     CustomerPhone = a.Customer.User.PhoneNumber, // Updated to use 'User' navigation property
                     CustomerAddress = a.Customer.User.Address, // Updated to use 'User' navigation property
+                    StaffName = a.Staff.User.FullName,
                     VehicleLicensePlate = a.Vehicle.LicensePlate,
                     VehicleMake = a.Vehicle.Make,
                     VehicleModel = a.Vehicle.Model,
@@ -81,18 +83,62 @@ namespace CarServ.Repository.Repositories
             return order?.Appointment;
         }
 
-        public async Task<List<Appointment>> GetAppointmentsByCustomerIdAsync(int customerId)
+        public async Task<List<AppointmentDto>> GetAppointmentsByCustomerIdAsync(int customerId)
         {
-            return await _context.Appointments
+            var appointments = await _context.Appointments
                 .Where(a => a.CustomerId == customerId)
+                .Include(a => a.Vehicle)
+                .Include(a => a.Package)
+                .Include(a => a.AppointmentServices)
+                    .ThenInclude(s => s.Service)
+                .Select(a => new AppointmentDto
+                {
+                    AppointmentId = a.AppointmentId,
+                    CustomerName = a.Customer.User.FullName, // Updated to use 'User' navigation property
+                    CustomerPhone = a.Customer.User.PhoneNumber, // Updated to use 'User' navigation property
+                    CustomerAddress = a.Customer.User.Address, // Updated to use 'User' navigation property
+                    StaffName = a.Staff.User.FullName,
+                    VehicleLicensePlate = a.Vehicle.LicensePlate,
+                    VehicleMake = a.Vehicle.Make,
+                    VehicleModel = a.Vehicle.Model,
+                    services = a.AppointmentServices.Select(s => s.Service.Name).ToList(),
+                    Duration = (int)(a.AppointmentServices.Sum(s => s.Service.EstimatedLaborHours ?? 0) +
+                               (a.Package != null ? a.Package.Services.Sum(s => s.EstimatedLaborHours ?? 0) : 0)),
+                    AppointmentDate = a.AppointmentDate,
+                    Status = a.Status
+                })
                 .ToListAsync();
+
+            return appointments;
         }
 
-        public async Task<List<Appointment>> GetBookedAppointmentsByCustomerId(int customerid)
+        public async Task<List<AppointmentDto>> GetOngingAppointmentsByCustomerId(int customerid)
         {
-            return await _context.Appointments
-                .Where(a => a.CustomerId == customerid && a.Status == "Booked")
+            var appointments = await _context.Appointments
+                .Where(a => a.CustomerId == customerid && (a.Status == "Booked" || a.Status == "Vehicle Received"))
+                .Include(a => a.Vehicle)
+                .Include(a => a.Package)
+                .Include(a => a.AppointmentServices)
+                    .ThenInclude(s => s.Service)
+                .Select(a => new AppointmentDto
+                {
+                    AppointmentId = a.AppointmentId,
+                    CustomerName = a.Customer.User.FullName, // Updated to use 'User' navigation property
+                    CustomerPhone = a.Customer.User.PhoneNumber, // Updated to use 'User' navigation property
+                    CustomerAddress = a.Customer.User.Address, // Updated to use 'User' navigation property
+                    StaffName = a.Staff.User.FullName,
+                    VehicleLicensePlate = a.Vehicle.LicensePlate,
+                    VehicleMake = a.Vehicle.Make,
+                    VehicleModel = a.Vehicle.Model,
+                    services = a.AppointmentServices.Select(s => s.Service.Name).ToList(),
+                    Duration = (int)(a.AppointmentServices.Sum(s => s.Service.EstimatedLaborHours ?? 0) +
+                               (a.Package != null ? a.Package.Services.Sum(s => s.EstimatedLaborHours ?? 0) : 0)),
+                    AppointmentDate = a.AppointmentDate,
+                    Status = a.Status
+                })
                 .ToListAsync();
+
+            return appointments;
         }
 
         public async Task<List<Appointment>> GetAppointmentsByVehicleIdAsync(int vehicleId)
@@ -154,6 +200,7 @@ namespace CarServ.Repository.Repositories
                 var appointment = new Appointment
                 {
                     CustomerId = customerId,
+                    StaffId = dto.StaffId,
                     VehicleId = dto.VehicleId,
                     PackageId = dto.PackageId,
                     AppointmentDate = dto.AppointmentDate,
@@ -167,6 +214,7 @@ namespace CarServ.Repository.Repositories
 
             var vehicle = await GetVehicleByIdAsync((int)dto.VehicleId);            
             vehicle.Status = "In Service";
+            vehicle.NextService = appointment.AppointmentDate;
             _context.Vehicles.Update(vehicle);
             await _context.SaveChangesAsync();
             // Create a new order as well
@@ -266,7 +314,7 @@ namespace CarServ.Repository.Repositories
                 {
                     AppointmentId = appointment.AppointmentId,
                     Status = "Booked",
-                    Note = "Appointment confirmed for customer " + customerId,
+                    Note = "Đã xác nhận lịch cho khách hàng có ID: " + customerId,
                     UpdatedAt = DateTime.Now
                 };
 

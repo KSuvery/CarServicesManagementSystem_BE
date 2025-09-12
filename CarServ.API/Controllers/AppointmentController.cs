@@ -58,8 +58,8 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("GetByCustomerId/{customerId}")]
-        [Authorize(Roles = "1,2")]
-        public async Task<ActionResult<IEnumerable<Appointment>>> GetAppointmentByCustomerId(int customerId)
+        [Authorize(Roles = "1,2,3")]
+        public async Task<ActionResult<IEnumerable<AppointmentDto>>> GetAppointmentByCustomerId(int customerId)
         {
             var Appointment = await _Appointmentervices.GetAppointmentByCustomerIdAsync(customerId);
             if (Appointment == null || !Appointment.Any())
@@ -69,11 +69,11 @@ namespace CarServ.API.Controllers
             return Appointment;
         }
 
-        [HttpGet("GetBookedByCustomerId/{customerId}")]
-        [Authorize(Roles = "1,2")]
-        public async Task<ActionResult<IEnumerable<Appointment>>> GetBookedAppointmentByCustomerId(int customerId)
+        [HttpGet("GetOngoingByCustomerId/{customerId}")]
+        [Authorize(Roles = "1,2,3")]
+        public async Task<ActionResult<IEnumerable<AppointmentDto>>> GetOngingAppointmentsByCustomerId(int customerId)
         {
-            var Appointment = await _Appointmentervices.GetBookedAppointmentsByCustomerId(customerId);
+            var Appointment = await _Appointmentervices.GetOngingAppointmentsByCustomerId(customerId);
             if (Appointment == null || !Appointment.Any())
             {
                 return NotFound();
