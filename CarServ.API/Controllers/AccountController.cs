@@ -21,11 +21,11 @@ namespace CarServ.API.Controllers
     [ApiController]
     [Authorize]
     public class AccountController : ControllerBase
-    {        
+    {
         private readonly IAccountService _accService;
 
-        public AccountController( IAccountService accService)
-        {          
+        public AccountController(IAccountService accService)
+        {
             _accService = accService;
         }
 
@@ -165,6 +165,20 @@ namespace CarServ.API.Controllers
                 return BadRequest(ex.Message);
             }
 
+        }
+
+        [HttpGet("service-staff/get-work-schedules/{staffId}")]
+        [Authorize(Roles = "1, 3")]
+        public async Task<List<WorkScheduleDto>> GetWorkSchedulesForServiceStaff(int staffId)
+        {
+            try
+            {
+                return await _accService.GetWorkScheduleForServiceStaff(staffId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving work schedules: " + ex.Message);
+            }
         }
     }
 }
