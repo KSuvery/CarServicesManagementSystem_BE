@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using static CarServ.Repository.Repositories.AppointmentRepository;
 
 namespace CarServ.Repository.Repositories
@@ -34,6 +35,7 @@ namespace CarServ.Repository.Repositories
                     CustomerName = a.Customer.User.FullName, // Updated to use 'User' navigation property
                     CustomerPhone = a.Customer.User.PhoneNumber, // Updated to use 'User' navigation property
                     CustomerAddress = a.Customer.User.Address, // Updated to use 'User' navigation property
+                    StaffName = a.Staff.User.FullName,
                     VehicleLicensePlate = a.Vehicle.LicensePlate,
                     VehicleMake = a.Vehicle.Make,
                     VehicleModel = a.Vehicle.Model,
@@ -95,6 +97,7 @@ namespace CarServ.Repository.Repositories
                     CustomerName = a.Customer.User.FullName, // Updated to use 'User' navigation property
                     CustomerPhone = a.Customer.User.PhoneNumber, // Updated to use 'User' navigation property
                     CustomerAddress = a.Customer.User.Address, // Updated to use 'User' navigation property
+                    StaffName = a.Staff.User.FullName,
                     VehicleLicensePlate = a.Vehicle.LicensePlate,
                     VehicleMake = a.Vehicle.Make,
                     VehicleModel = a.Vehicle.Model,
@@ -123,6 +126,7 @@ namespace CarServ.Repository.Repositories
                     CustomerName = a.Customer.User.FullName, // Updated to use 'User' navigation property
                     CustomerPhone = a.Customer.User.PhoneNumber, // Updated to use 'User' navigation property
                     CustomerAddress = a.Customer.User.Address, // Updated to use 'User' navigation property
+                    StaffName = a.Staff.User.FullName,
                     VehicleLicensePlate = a.Vehicle.LicensePlate,
                     VehicleMake = a.Vehicle.Make,
                     VehicleModel = a.Vehicle.Model,
@@ -196,6 +200,7 @@ namespace CarServ.Repository.Repositories
                 var appointment = new Appointment
                 {
                     CustomerId = customerId,
+                    StaffId = dto.StaffId,
                     VehicleId = dto.VehicleId,
                     PackageId = dto.PackageId,
                     AppointmentDate = dto.AppointmentDate,
@@ -309,7 +314,7 @@ namespace CarServ.Repository.Repositories
                 {
                     AppointmentId = appointment.AppointmentId,
                     Status = "Booked",
-                    Note = "Appointment confirmed for customer " + customerId,
+                    Note = "Đã xác nhận lịch cho khách hàng có ID: " + customerId,
                     UpdatedAt = DateTime.Now
                 };
 

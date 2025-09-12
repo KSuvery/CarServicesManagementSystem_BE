@@ -8,6 +8,7 @@ namespace CarServ.Repository.Repositories.DTO.Booking_A_Service
 {
     public class ScheduleAppointmentDto
     {
+        public int StaffId { get; set; }
         public int? VehicleId { get; set; }
         public int? PackageId { get; set; }
         public List<int> ServiceIds { get; set; } = new List<int>();

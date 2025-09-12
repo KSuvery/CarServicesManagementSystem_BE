@@ -6,6 +6,7 @@
         public string CustomerName { get; set; }
         public string CustomerPhone { get; set; }
         public string CustomerAddress { get; set; }
+        public string StaffName { get; set; }
         public string VehicleLicensePlate { get; set; }
         public string VehicleMake { get; set; }
         public string VehicleModel { get; set; }
