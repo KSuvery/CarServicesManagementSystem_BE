@@ -9,7 +9,9 @@ public partial class Appointment
 {
     public int AppointmentId { get; set; }
 
-    public int? CustomerId { get; set; }
+    public int CustomerId { get; set; }
+
+    public int StaffId { get; set; }
 
     public int? VehicleId { get; set; }
 
@@ -36,6 +38,8 @@ public partial class Appointment
     public virtual ServiceHistory ServiceHistory { get; set; }
 
     public virtual ICollection<ServiceProgress> ServiceProgresses { get; set; } = new List<ServiceProgress>();
+
+    public virtual ServiceStaff Staff { get; set; }
 
     public virtual Vehicle Vehicle { get; set; }
 }
