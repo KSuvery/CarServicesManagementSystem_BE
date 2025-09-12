@@ -285,6 +285,26 @@ namespace CarServ.Repository.Repositories
                 .ToListAsync();
         }
 
+        public async Task<List<WorkScheduleDto>> GetWorkScheduleForServiceStaff(int staffId)
+        {
+            var schedule = await (from a in _context.Appointments
+                         .Include(a => a.ServiceHistory)
+                         join ss in _context.ServiceStaffs on a.StaffId equals ss.StaffId
+                         where ss.StaffId == staffId
+                         orderby a.AppointmentDate
+                         select new { a }).ToListAsync();
+
+            var result = schedule.Select(s => new WorkScheduleDto
+            {
+                AppointmentId = s.a.AppointmentId,
+                AppointmentDate = (DateTime)s.a.AppointmentDate,
+                Status = s.a.Status,
+                Service = s.a.ServiceHistory.Description
+            }).ToList();
+
+            return result;
+        }
+
         private string HashPassword(string password)
         {
             return BCrypt.Net.BCrypt.HashPassword(password);
