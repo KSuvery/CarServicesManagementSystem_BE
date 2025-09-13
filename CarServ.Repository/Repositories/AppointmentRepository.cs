@@ -86,7 +86,7 @@ namespace CarServ.Repository.Repositories
         public async Task<List<AppointmentDto>> GetAppointmentsByCustomerIdAsync(int customerId)
         {
             var appointments = await _context.Appointments
-                .Where(a => a.CustomerId == customerId)
+                .Where(a => a.CustomerId == customerId && a.Status != "Booked")
                 .Include(a => a.Vehicle)
                 .Include(a => a.Package)
                 .Include(a => a.AppointmentServices)
