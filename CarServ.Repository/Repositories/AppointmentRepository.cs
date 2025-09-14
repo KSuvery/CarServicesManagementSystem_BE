@@ -112,13 +112,18 @@ namespace CarServ.Repository.Repositories
                 })
                 .ToListAsync();
 
+            if (appointments == null || appointments.Count == 0)
+            {
+                throw new KeyNotFoundException($"No appointments found for customer with ID {customerId}.");
+            }
+
             return appointments;
         }
 
-        public async Task<List<AppointmentDto>> GetOngingAppointmentsByCustomerId(int customerid)
+        public async Task<List<AppointmentDto>> GetOngingAppointmentsByCustomerId(int customerId)
         {
             var appointments = await _context.Appointments
-                .Where(a => a.CustomerId == customerid && (a.Status == "Booked" || a.Status == "Vehicle Received"))
+                .Where(a => a.CustomerId == customerId && (a.Status == "Booked" || a.Status == "Vehicle Received"))
                 .Include(a => a.Vehicle)
                 .Include(a => a.Package)
                 .Include(a => a.Order.OrderDetails)
@@ -144,6 +149,11 @@ namespace CarServ.Repository.Repositories
                     Status = a.Status
                 })
                 .ToListAsync();
+
+            if (appointments == null || appointments.Count == 0)
+            {
+                throw new KeyNotFoundException($"No appointments found for customer with ID {customerId}.");
+            }
 
             return appointments;
         }
