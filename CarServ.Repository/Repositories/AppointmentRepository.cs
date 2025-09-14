@@ -94,6 +94,7 @@ namespace CarServ.Repository.Repositories
                 .Select(a => new AppointmentDto
                 {
                     AppointmentId = a.AppointmentId,
+                    OrderId = a.Order.OrderId,
                     CustomerName = a.Customer.User.FullName, // Updated to use 'User' navigation property
                     CustomerPhone = a.Customer.User.PhoneNumber, // Updated to use 'User' navigation property
                     CustomerAddress = a.Customer.User.Address, // Updated to use 'User' navigation property
@@ -101,9 +102,11 @@ namespace CarServ.Repository.Repositories
                     VehicleLicensePlate = a.Vehicle.LicensePlate,
                     VehicleMake = a.Vehicle.Make,
                     VehicleModel = a.Vehicle.Model,
+                    VehicleYear = a.Vehicle.Year ?? 0,
                     services = a.AppointmentServices.Select(s => s.Service.Name).ToList(),
                     Duration = (int)(a.AppointmentServices.Sum(s => s.Service.EstimatedLaborHours ?? 0) +
                                (a.Package != null ? a.Package.Services.Sum(s => s.EstimatedLaborHours ?? 0) : 0)),
+                    Price = a.Order.OrderDetails.Sum(od => od.LineTotal) ?? 0,
                     AppointmentDate = a.AppointmentDate,
                     Status = a.Status
                 })
@@ -118,11 +121,13 @@ namespace CarServ.Repository.Repositories
                 .Where(a => a.CustomerId == customerid && (a.Status == "Booked" || a.Status == "Vehicle Received"))
                 .Include(a => a.Vehicle)
                 .Include(a => a.Package)
+                .Include(a => a.Order.OrderDetails)
                 .Include(a => a.AppointmentServices)
                     .ThenInclude(s => s.Service)
                 .Select(a => new AppointmentDto
                 {
                     AppointmentId = a.AppointmentId,
+                    OrderId = a.Order.OrderId,
                     CustomerName = a.Customer.User.FullName, // Updated to use 'User' navigation property
                     CustomerPhone = a.Customer.User.PhoneNumber, // Updated to use 'User' navigation property
                     CustomerAddress = a.Customer.User.Address, // Updated to use 'User' navigation property
@@ -130,9 +135,11 @@ namespace CarServ.Repository.Repositories
                     VehicleLicensePlate = a.Vehicle.LicensePlate,
                     VehicleMake = a.Vehicle.Make,
                     VehicleModel = a.Vehicle.Model,
+                    VehicleYear = a.Vehicle.Year ?? 0,
                     services = a.AppointmentServices.Select(s => s.Service.Name).ToList(),
                     Duration = (int)(a.AppointmentServices.Sum(s => s.Service.EstimatedLaborHours ?? 0) +
                                (a.Package != null ? a.Package.Services.Sum(s => s.EstimatedLaborHours ?? 0) : 0)),
+                    Price = a.Order.OrderDetails.Sum(od => od.LineTotal) ?? 0,
                     AppointmentDate = a.AppointmentDate,
                     Status = a.Status
                 })
@@ -263,6 +270,7 @@ namespace CarServ.Repository.Repositories
                     {
                         OrderId = order.OrderId,
                         ServiceId = serviceId,
+                        UnitPrice = _context.Services.Find(serviceId)?.Price,
                         Quantity = 1,
                     };
                     _context.OrderDetails.Add(serviceDetail);
@@ -286,6 +294,7 @@ namespace CarServ.Repository.Repositories
                     {
                         OrderId = order.OrderId,
                         ServiceId = serviceId,
+                        UnitPrice = _context.Services.Find(serviceId)?.Price,
                         Quantity = 1,
                     };
                     _context.OrderDetails.Add(serviceDetail);
