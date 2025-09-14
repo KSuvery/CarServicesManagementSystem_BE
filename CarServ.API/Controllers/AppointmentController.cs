@@ -64,7 +64,7 @@ namespace CarServ.API.Controllers
             var Appointment = await _Appointmentervices.GetAppointmentByCustomerIdAsync(customerId);
             if (Appointment == null || !Appointment.Any())
             {
-                return NotFound();
+                return new List<AppointmentDto>();
             }
             return Appointment;
         }
@@ -76,7 +76,7 @@ namespace CarServ.API.Controllers
             var Appointment = await _Appointmentervices.GetOngingAppointmentsByCustomerId(customerId);
             if (Appointment == null || !Appointment.Any())
             {
-                return NotFound();
+                return new List<AppointmentDto>();
             }
             return Appointment;
         }

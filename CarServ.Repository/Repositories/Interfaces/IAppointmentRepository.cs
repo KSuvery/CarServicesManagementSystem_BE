@@ -16,7 +16,7 @@ namespace CarServ.Repository.Repositories.Interfaces
         Task<Appointment> GetAppointmentByIdAsync(int appointmentId);
         Task<Appointment> GetAppointmentByOrderIdAsync(int orderId);
         Task<List<AppointmentDto>> GetAppointmentsByCustomerIdAsync(int customerId);
-        Task<List<AppointmentDto>> GetOngingAppointmentsByCustomerId(int customerid);
+        Task<List<AppointmentDto>> GetOngingAppointmentsByCustomerId(int customerId);
         Task<List<Appointment>> GetAppointmentsByVehicleIdAsync(int vehicleId);
         Task<Appointment> ScheduleAppointment(int customerId, ScheduleAppointmentDto dto);
         Task<Appointment> ScheduleAppointmentAsync(

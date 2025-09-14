@@ -86,7 +86,7 @@ namespace CarServ.Repository.Repositories
         public async Task<List<AppointmentDto>> GetAppointmentsByCustomerIdAsync(int customerId)
         {
             var appointments = await _context.Appointments
-                .Where(a => a.CustomerId == customerId && a.Status != "Booked")
+                .Where(a => a.CustomerId == customerId)
                 .Include(a => a.Vehicle)
                 .Include(a => a.Package)
                 .Include(a => a.AppointmentServices)
@@ -115,10 +115,10 @@ namespace CarServ.Repository.Repositories
             return appointments;
         }
 
-        public async Task<List<AppointmentDto>> GetOngingAppointmentsByCustomerId(int customerid)
+        public async Task<List<AppointmentDto>> GetOngingAppointmentsByCustomerId(int customerId)
         {
             var appointments = await _context.Appointments
-                .Where(a => a.CustomerId == customerid && (a.Status == "Booked" || a.Status == "Vehicle Received"))
+                .Where(a => a.CustomerId == customerId && (a.Status == "Booked" || a.Status == "Vehicle Received"))
                 .Include(a => a.Vehicle)
                 .Include(a => a.Package)
                 .Include(a => a.Order.OrderDetails)
