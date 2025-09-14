@@ -86,7 +86,7 @@ namespace CarServ.Repository.Repositories
         public async Task<List<AppointmentDto>> GetAppointmentsByCustomerIdAsync(int customerId)
         {
             var appointments = await _context.Appointments
-                .Where(a => a.CustomerId == customerId && a.Status != "Booked")
+                .Where(a => a.CustomerId == customerId)
                 .Include(a => a.Vehicle)
                 .Include(a => a.Package)
                 .Include(a => a.AppointmentServices)
@@ -111,11 +111,6 @@ namespace CarServ.Repository.Repositories
                     Status = a.Status
                 })
                 .ToListAsync();
-
-            if (appointments == null || appointments.Count == 0)
-            {
-                throw new KeyNotFoundException($"No appointments found for customer with ID {customerId}.");
-            }
 
             return appointments;
         }
@@ -149,11 +144,6 @@ namespace CarServ.Repository.Repositories
                     Status = a.Status
                 })
                 .ToListAsync();
-
-            if (appointments == null || appointments.Count == 0)
-            {
-                throw new KeyNotFoundException($"No appointments found for customer with ID {customerId}.");
-            }
 
             return appointments;
         }
