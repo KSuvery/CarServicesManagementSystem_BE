@@ -39,10 +39,13 @@ namespace CarServ.Repository.Repositories
                     VehicleLicensePlate = a.Vehicle.LicensePlate,
                     VehicleMake = a.Vehicle.Make,
                     VehicleModel = a.Vehicle.Model,
+                    VehicleYear = a.Vehicle.Year ?? 0,
                     services = a.AppointmentServices.Select(s => s.Service.Name).ToList(),
                     Duration = (int)(a.AppointmentServices.Sum(s => s.Service.EstimatedLaborHours ?? 0) +
                                (a.Package != null ? a.Package.Services.Sum(s => s.EstimatedLaborHours ?? 0) : 0)),
                     AppointmentDate = a.AppointmentDate,
+                    BookedTime = a.AppointmentDate.HasValue ? TimeOnly.FromDateTime(a.AppointmentDate.Value) : default,
+                    BookedDate = a.AppointmentDate.HasValue ? DateOnly.FromDateTime(a.AppointmentDate.Value) : default,
                     Status = a.Status
                 })
                 .ToListAsync();
@@ -108,6 +111,8 @@ namespace CarServ.Repository.Repositories
                                (a.Package != null ? a.Package.Services.Sum(s => s.EstimatedLaborHours ?? 0) : 0)),
                     Price = a.Order.OrderDetails.Sum(od => od.LineTotal) ?? 0,
                     AppointmentDate = a.AppointmentDate,
+                    BookedTime = a.AppointmentDate.HasValue ? TimeOnly.FromDateTime(a.AppointmentDate.Value) : default,
+                    BookedDate = a.AppointmentDate.HasValue ? DateOnly.FromDateTime(a.AppointmentDate.Value) : default,
                     Status = a.Status
                 })
                 .ToListAsync();
@@ -141,6 +146,8 @@ namespace CarServ.Repository.Repositories
                                (a.Package != null ? a.Package.Services.Sum(s => s.EstimatedLaborHours ?? 0) : 0)),
                     Price = a.Order.OrderDetails.Sum(od => od.LineTotal) ?? 0,
                     AppointmentDate = a.AppointmentDate,
+                    BookedTime = a.AppointmentDate.HasValue ? TimeOnly.FromDateTime(a.AppointmentDate.Value) : default,
+                    BookedDate = a.AppointmentDate.HasValue ? DateOnly.FromDateTime(a.AppointmentDate.Value) : default,
                     Status = a.Status
                 })
                 .ToListAsync();
