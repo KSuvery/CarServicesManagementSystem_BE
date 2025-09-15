@@ -12,12 +12,10 @@ namespace CarServ.Service.Services
 {
     public class ChatbotService : IChatbotService
     {
-        private readonly HttpClient _httpClient;
         private readonly AzureOpenAiSetting _settings;
 
         public ChatbotService(HttpClient httpClient, IOptions<AzureOpenAiSetting> options)
         {
-            _httpClient = httpClient;
             _settings = options.Value;
         }
 
@@ -30,11 +28,8 @@ namespace CarServ.Service.Services
                 [
                 new SystemChatMessage("You are a helpful assistant."),
                 new UserChatMessage(userInput),
-                new AssistantChatMessage("Hello! How can I assist you today?"),
-                new UserChatMessage(userInput)
                 ]);
 
-            Console.WriteLine($"{completion.Role}: {completion.Content[0].Text}");
             return completion.Content[0].Text;
         }
     }
