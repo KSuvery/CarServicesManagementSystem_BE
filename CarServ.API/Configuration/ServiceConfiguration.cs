@@ -27,6 +27,7 @@ namespace CarServ.API.Configuration
             services.AddScoped<ICarTypesService, CarTypesService>();
             services.AddScoped<IPromotionService, PromotionService>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddHttpClient<IChatbotService, ChatbotService>();
 
             return services;
         }
