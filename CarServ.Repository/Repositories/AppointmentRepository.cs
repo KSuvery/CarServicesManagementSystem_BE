@@ -45,6 +45,7 @@ namespace CarServ.Repository.Repositories
                                (a.Package != null ? a.Package.Services.Sum(s => s.EstimatedLaborHours ?? 0) : 0)),
                     AppointmentDate = a.AppointmentDate,
                     BookedTime = a.AppointmentDate.HasValue ? TimeOnly.FromDateTime(a.AppointmentDate.Value) : default,
+                    BookedDate = a.AppointmentDate.HasValue ? DateOnly.FromDateTime(a.AppointmentDate.Value) : default,
                     Status = a.Status
                 })
                 .ToListAsync();
@@ -111,6 +112,7 @@ namespace CarServ.Repository.Repositories
                     Price = a.Order.OrderDetails.Sum(od => od.LineTotal) ?? 0,
                     AppointmentDate = a.AppointmentDate,
                     BookedTime = a.AppointmentDate.HasValue ? TimeOnly.FromDateTime(a.AppointmentDate.Value) : default,
+                    BookedDate = a.AppointmentDate.HasValue ? DateOnly.FromDateTime(a.AppointmentDate.Value) : default,
                     Status = a.Status
                 })
                 .ToListAsync();
@@ -145,6 +147,7 @@ namespace CarServ.Repository.Repositories
                     Price = a.Order.OrderDetails.Sum(od => od.LineTotal) ?? 0,
                     AppointmentDate = a.AppointmentDate,
                     BookedTime = a.AppointmentDate.HasValue ? TimeOnly.FromDateTime(a.AppointmentDate.Value) : default,
+                    BookedDate = a.AppointmentDate.HasValue ? DateOnly.FromDateTime(a.AppointmentDate.Value) : default,
                     Status = a.Status
                 })
                 .ToListAsync();
