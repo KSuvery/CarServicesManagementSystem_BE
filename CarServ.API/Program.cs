@@ -1,20 +1,12 @@
-using Serilog;
 using CarServ.API.Configuration;
-
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text.Json.Serialization;
-using System.Text;
-using Microsoft.OpenApi.Models;
-
-using DotNetEnv;
 using CarServ.Repository.Repositories.DTO;
+using CarServ.service.Services.Configuration;
 using CarServ.service.WorkerService;
-using CarServ.service.Services.Interfaces;
-using CarServ.service.Services;
-using System.Net.Mail;
-using System.Net;
 using CarServ.Service.Services;
+using DotNetEnv;
+using Microsoft.Extensions.AI;
+using Serilog;
+using System.Text.Json.Serialization;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -60,14 +52,8 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.Never;
 });
 
-
-
-
-
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-
-
 
 
 var app = builder.Build();

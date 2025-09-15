@@ -43,24 +43,24 @@ namespace CarServ.service.Services.Configuration
         public string Locale { get; set; }
     }
 
-    public class VietQRSetting
-    {
-        public static VietQRSetting Instance { get; set; }
-        public string ClientID { get; set; }
-        public string APIKey { get; set; }
-    }
-
-    public class PayOSSetting
-    {
-        public static PayOSSetting Instance { get; set; }
-        public string ClientID { get; set; }
-        public string ApiKey { get; set; }
-        public string ChecksumKey { get; set; }
-    }
-
     public class CloudinarySetting
     {
         public static CloudinarySetting Instance { get; set; }
         public string CloudinaryUrl { get; set; }
     }
+
+    public class OpenAiSetting
+    {
+        public static OpenAiSetting Instance { get; set; }
+        public string ApiKey { get; set; }
+    }
+
+    public class AzureOpenAiSetting
+    {
+        public static AzureOpenAiSetting Instance { get; set; }
+        public string ApiKey { get; set; }
+        public string Endpoint { get; set; }
+        public string DeploymentName { get; set; }
+        public string ApiVersion { get; set; }
+        }
 }

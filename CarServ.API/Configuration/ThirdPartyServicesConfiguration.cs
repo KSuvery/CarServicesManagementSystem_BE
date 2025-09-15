@@ -29,6 +29,15 @@ namespace CarServ.API.Configuration
                 options.CloudinaryUrl = configuration["Cloudinary:CloudinaryUrl"];
             });
             CloudinarySetting.Instance = services.BuildServiceProvider().GetService<IOptions<CloudinarySetting>>().Value;
+
+            services.Configure<AzureOpenAiSetting>(options =>
+            {
+                options.Endpoint = configuration["AzureOpenAI:Endpoint"];
+                options.ApiKey = configuration["AzureOpenAI:ApiKey"];
+                options.DeploymentName = configuration["AzureOpenAI:DeploymentName"];
+                options.ApiVersion = configuration["AzureOpenAI:ApiVersion"];
+            });
+            AzureOpenAiSetting.Instance = services.BuildServiceProvider().GetService<IOptions<AzureOpenAiSetting>>().Value;
         }
     }
 }
