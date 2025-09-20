@@ -78,5 +78,10 @@ namespace CarServ.service.Services
         {
             return await _paymentRepository.CreatePayment(dto);
         }
+
+        public async Task<Payment> UpdatePaymentStatus(int paymentId, string status)
+        {
+            return await _paymentRepository.UpdatePaymentStatus(paymentId, status);
+        }
     }
 }

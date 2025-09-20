@@ -22,5 +22,6 @@ namespace CarServ.service.Services.Interfaces
         Task<List<Payment>> GetPendingPayments(string status = "Pending");
         Task<List<Payment>> GetPaidPayments(string status = "Paid");
         Task<Payment> CreatePayment(PaymentDto dto);
+        Task<Payment> UpdatePaymentStatus(int paymentId, string status);
     }
 }

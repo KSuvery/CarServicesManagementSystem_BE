@@ -30,7 +30,7 @@ namespace CarServ.service.Services
 
         public async Task<string> CreatePaymentUrl(HttpContext context, VnPaymentRequest request)
         {
-            string returnUrl = $"http://localhost:5110/api/Payment/payment/vnpay/payment-execute";
+            string returnUrl = $"https://keysurv-d5hqbafbhfejebh7.southeastasia-01.azurewebsites.net/api/Payment/payment/vnpay/payment-execute";
             string hostName = System.Net.Dns.GetHostName();
             string clientIPAddress = System.Net.Dns.GetHostAddresses(hostName).GetValue(0).ToString();
 
