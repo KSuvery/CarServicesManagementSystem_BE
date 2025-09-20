@@ -29,7 +29,8 @@ namespace CarServ.Repository.Repositories
                LicensePlate = p.LicensePlate,
                Make = p.Make,
                Model = p.Model,
-               Year = p.Year
+               Year = p.Year,
+               Status = p.Status,
             }).ToList();
             return vehicleDtos;
         }
