@@ -126,5 +126,30 @@ namespace CarServ.Repository.Repositories
                 throw new Exception("Error creating payment", ex);
             }
         }
+
+        public async Task<Payment> UpdatePaymentStatus(int paymentId, string status)
+        {
+            var payment = await GetPaymentByIdAsync(paymentId);
+
+            if (payment == null)
+            {
+                throw new Exception($"Payment with ID {paymentId} not found.");
+            }
+
+            string formattedStatus = string.IsNullOrWhiteSpace(status)
+                ? status
+                : char.ToUpper(status.Trim()[0]) + status.Trim().Substring(1).ToLower();
+
+            payment.Status = formattedStatus;
+
+            if (formattedStatus.Equals("Paid", StringComparison.OrdinalIgnoreCase))
+            {
+                payment.PaidAt = DateTime.UtcNow;
+            }
+
+            _context.Payments.Update(payment);
+            await _context.SaveChangesAsync();
+            return payment;
+        }
     }
 }

@@ -10,6 +10,7 @@ using CarServ.service.Services.Interfaces;
 using CarServ.Repository.Repositories.DTO.Payment;
 using CarServ.service.Services;
 using CarServ.service.Services.ApiModels.VNPay;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CarServ.API.Controllers
 {
@@ -172,6 +173,22 @@ namespace CarServ.API.Controllers
             }
 
             return Ok(response);
+        }
+
+        [HttpPut("{id}/update-status")]
+        [Authorize(Roles = "1, 3")]
+        public async Task<IActionResult> UpdatePaymentStatus(int id, [FromBody] string status)
+        {
+            if (!await PaymentExists(id))
+            {
+                return NotFound();
+            }
+            var updatedPayment = await _PaymentService.UpdatePaymentStatus(id, status);
+            if (updatedPayment == null)
+            {
+                return BadRequest("Failed to update payment status.");
+            }
+            return Ok(updatedPayment);
         }
 
         private async Task<bool> PaymentExists(int id)
