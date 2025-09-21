@@ -98,18 +98,20 @@ namespace CarServ.Repository.Repositories
                 {
                     AppointmentId = a.AppointmentId,
                     OrderId = a.Order.OrderId,
-                    CustomerName = a.Customer.User.FullName, // Updated to use 'User' navigation property
-                    CustomerPhone = a.Customer.User.PhoneNumber, // Updated to use 'User' navigation property
-                    CustomerAddress = a.Customer.User.Address, // Updated to use 'User' navigation property
+                    CustomerName = a.Customer.User.FullName,
+                    CustomerPhone = a.Customer.User.PhoneNumber,
+                    CustomerAddress = a.Customer.User.Address,
                     StaffName = a.Staff.User.FullName,
                     VehicleLicensePlate = a.Vehicle.LicensePlate,
                     VehicleMake = a.Vehicle.Make,
                     VehicleModel = a.Vehicle.Model,
-                    VehicleYear = a.Vehicle.Year ?? 0,
+                    VehicleYear = a.Vehicle.Year ?? 0,                    
                     services = a.AppointmentServices.Select(s => s.Service.Name).ToList(),
                     Duration = (int)(a.AppointmentServices.Sum(s => s.Service.EstimatedLaborHours ?? 0) +
-                               (a.Package != null ? a.Package.Services.Sum(s => s.EstimatedLaborHours ?? 0) : 0)),
-                    Price = a.Order.OrderDetails.Sum(od => od.LineTotal) ?? 0,
+                           (a.Package != null ? a.Package.Services.Sum(s => s.EstimatedLaborHours ?? 0) : 0)),
+                    Price = a.PackageId != null
+                            ? (a.Package.Price ?? 0)
+                            : a.AppointmentServices.Sum(s => s.Service.Price ?? 0),
                     AppointmentDate = a.AppointmentDate,
                     BookedTime = a.AppointmentDate.HasValue ? TimeOnly.FromDateTime(a.AppointmentDate.Value) : default,
                     BookedDate = a.AppointmentDate.HasValue ? DateOnly.FromDateTime(a.AppointmentDate.Value) : default,
@@ -144,7 +146,9 @@ namespace CarServ.Repository.Repositories
                     services = a.AppointmentServices.Select(s => s.Service.Name).ToList(),
                     Duration = (int)(a.AppointmentServices.Sum(s => s.Service.EstimatedLaborHours ?? 0) +
                                (a.Package != null ? a.Package.Services.Sum(s => s.EstimatedLaborHours ?? 0) : 0)),
-                    Price = a.Order.OrderDetails.Sum(od => od.LineTotal) ?? 0,
+                    Price = a.PackageId != null
+                            ? (a.Package.Price ?? 0)
+                            : a.AppointmentServices.Sum(s => s.Service.Price ?? 0),
                     AppointmentDate = a.AppointmentDate,
                     BookedTime = a.AppointmentDate.HasValue ? TimeOnly.FromDateTime(a.AppointmentDate.Value) : default,
                     BookedDate = a.AppointmentDate.HasValue ? DateOnly.FromDateTime(a.AppointmentDate.Value) : default,
