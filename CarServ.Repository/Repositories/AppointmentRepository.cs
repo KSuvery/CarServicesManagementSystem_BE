@@ -109,7 +109,9 @@ namespace CarServ.Repository.Repositories
                     services = a.AppointmentServices.Select(s => s.Service.Name).ToList(),
                     Duration = (int)(a.AppointmentServices.Sum(s => s.Service.EstimatedLaborHours ?? 0) +
                                (a.Package != null ? a.Package.Services.Sum(s => s.EstimatedLaborHours ?? 0) : 0)),
-                    Price = a.Order.OrderDetails.Sum(od => od.LineTotal) ?? 0,
+                    Price = (a.AppointmentServices.Any()
+                        ? a.Order.OrderDetails.Sum(od => od.LineTotal) ?? 0
+                        : (a.Package != null ? a.Package.Price ?? 0 : 0)),
                     AppointmentDate = a.AppointmentDate,
                     BookedTime = a.AppointmentDate.HasValue ? TimeOnly.FromDateTime(a.AppointmentDate.Value) : default,
                     BookedDate = a.AppointmentDate.HasValue ? DateOnly.FromDateTime(a.AppointmentDate.Value) : default,
