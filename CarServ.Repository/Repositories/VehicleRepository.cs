@@ -71,6 +71,7 @@ namespace CarServ.Repository.Repositories
                 LicensePlate = p.LicensePlate,
                 Make = p.Make,
                 Model = p.Model,
+                Status = p.Status,
                 Year = p.Year
             }).ToList();
             return vehicleDtos;
@@ -89,6 +90,7 @@ namespace CarServ.Repository.Repositories
                 LicensePlate = p.LicensePlate,
                 Make = p.Make,
                 Model = p.Model,
+                Status = p.Status,
                 Year = p.Year
             }).ToList();
             return vehicleDtos;
@@ -107,6 +109,7 @@ namespace CarServ.Repository.Repositories
                 LicensePlate = vehicle.LicensePlate,
                 Make = vehicle.Make,
                 Model = vehicle.Model,
+                Status = vehicle.Status,
                 Year = vehicle.Year
             };
             return vehicleDtos;
