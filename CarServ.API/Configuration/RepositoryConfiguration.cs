@@ -19,6 +19,7 @@ namespace CarServ.API.Configuration
             services.AddScoped<ICarTypesRepository, CarTypesRepository>();
             services.AddScoped<IVehicleRepository, VehicleRepository>();
             services.AddScoped<IPromotionRepository, PromotionRepository>();
+            services.AddScoped<IScheduleRepository, ScheduleRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;
