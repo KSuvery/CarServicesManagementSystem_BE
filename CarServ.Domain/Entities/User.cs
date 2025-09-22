@@ -27,6 +27,8 @@ public partial class User
 
     public virtual ICollection<Customer> Customers { get; set; } = new List<Customer>();
 
+    public virtual ICollection<DayOffRequest> DayOffRequests { get; set; } = new List<DayOffRequest>();
+
     public virtual ICollection<InventoryManager> InventoryManagers { get; set; } = new List<InventoryManager>();
 
     public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();

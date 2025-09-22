@@ -3,7 +3,7 @@
    "ContextClassName": "CarServicesManagementSystemContext",
    "ContextNamespace": null,
    "FilterSchemas": false,
-   "IncludeConnectionString": true,
+   "IncludeConnectionString": false,
    "ModelNamespace": null,
    "OutputContextPath": null,
    "OutputPath": "Entities",
@@ -28,6 +28,10 @@
       },
       {
          "Name": "[dbo].[Customers]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[DayOffRequests]",
          "ObjectType": 0
       },
       {

@@ -25,6 +25,8 @@ public partial class CarServicesManagementSystemContext : DbContext
 
     public virtual DbSet<Customer> Customers { get; set; }
 
+    public virtual DbSet<DayOffRequest> DayOffRequests { get; set; }
+
     public virtual DbSet<InventoryManager> InventoryManagers { get; set; }
 
     public virtual DbSet<Notification> Notifications { get; set; }
@@ -64,7 +66,7 @@ public partial class CarServicesManagementSystemContext : DbContext
     public virtual DbSet<Vehicle> Vehicles { get; set; }
 
     public virtual DbSet<WarrantyClaim> WarrantyClaims { get; set; }
-   
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Appointment>(entity =>
@@ -147,6 +149,30 @@ public partial class CarServicesManagementSystemContext : DbContext
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Customers__UserI__75A278F5");
+        });
+
+        modelBuilder.Entity<DayOffRequest>(entity =>
+        {
+            entity.HasKey(e => e.RequestId).HasName("PK__DayOffRe__33A8517A2EFC4EA2");
+
+            entity.Property(e => e.AdminNotes).HasMaxLength(1000);
+            entity.Property(e => e.Reason)
+                .IsRequired()
+                .HasMaxLength(500);
+            entity.Property(e => e.RequestedAt).HasDefaultValueSql("(sysutcdatetime())");
+            entity.Property(e => e.Status)
+                .IsRequired()
+                .HasMaxLength(50)
+                .HasDefaultValue("Pending");
+
+            entity.HasOne(d => d.ApprovedByUser).WithMany(p => p.DayOffRequests)
+                .HasForeignKey(d => d.ApprovedByUserId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("FK_DayOffRequests_ApprovedBy");
+
+            entity.HasOne(d => d.Staff).WithMany(p => p.DayOffRequests)
+                .HasForeignKey(d => d.StaffId)
+                .HasConstraintName("FK_DayOffRequests_Staff");
         });
 
         modelBuilder.Entity<InventoryManager>(entity =>
@@ -434,7 +460,7 @@ public partial class CarServicesManagementSystemContext : DbContext
 
         modelBuilder.Entity<StaffSchedule>(entity =>
         {
-            entity.HasKey(e => e.ScheduleId).HasName("PK__StaffSch__9C8A5B492BD4CAD0");
+            entity.HasKey(e => e.ScheduleId).HasName("PK__StaffSch__9C8A5B494E9000B9");
 
             entity.ToTable("StaffSchedule");
 

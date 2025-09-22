@@ -23,6 +23,8 @@ public partial class ServiceStaff
 
     public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
 
+    public virtual ICollection<DayOffRequest> DayOffRequests { get; set; } = new List<DayOffRequest>();
+
     public virtual ICollection<ServiceHistory> ServiceHistories { get; set; } = new List<ServiceHistory>();
 
     public virtual ICollection<StaffSchedule> StaffSchedules { get; set; } = new List<StaffSchedule>();
