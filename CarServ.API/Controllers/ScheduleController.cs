@@ -16,7 +16,7 @@ namespace CarServ.API.Controllers
         {
             _scheduleService = services;
         }
-        [HttpGet("{staffId}/schedule")]
+        [HttpGet("{staffId}/working-schedule")]
         [Authorize(Roles = "1")]
         public async Task<ActionResult<List<StaffScheduleDto>>> GetStaffSchedule(int staffId)
         {
