@@ -3,8 +3,7 @@
    "ContextClassName": "CarServicesManagementSystemContext",
    "ContextNamespace": null,
    "FilterSchemas": false,
-   "IncludeConnectionString": false,
-   "MinimumProductVersion": "2.6.0",
+   "IncludeConnectionString": true,
    "ModelNamespace": null,
    "OutputContextPath": null,
    "OutputPath": "Entities",
@@ -93,6 +92,10 @@
       },
       {
          "Name": "[dbo].[ServiceStaff]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[StaffSchedule]",
          "ObjectType": 0
       },
       {
