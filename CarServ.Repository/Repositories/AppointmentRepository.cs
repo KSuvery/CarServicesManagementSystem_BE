@@ -197,44 +197,53 @@ namespace CarServ.Repository.Repositories
         }
 
         public async Task<Appointment> ScheduleAppointment(int customerId, ScheduleAppointmentDto dto)
+        {
+            if (dto.VehicleId == null)
             {
-                if (dto.VehicleId == null)
-                {
-                    throw new ArgumentException("Vehicle must be selected.");
-                }
+                throw new ArgumentException("Vehicle must be selected.");
+            }
 
-                if (dto.AppointmentDate == default)
-                {
-                    throw new ArgumentException("Appointment date must be provided.");
-                }
+            if (dto.AppointmentDate == default)
+            {
+                throw new ArgumentException("Appointment date must be provided.");
+            }
 
-                // Check time
-                var isAvailable = await CheckAvailability(dto.AppointmentDate, customerId);
-                if (!isAvailable)
-                {
-                    throw new InvalidOperationException("Selected time is not available.");
-                }
+            // Check time
+            var isAvailable = await CheckAvailability(dto.AppointmentDate, customerId);
+            if (!isAvailable)
+            {
+                throw new InvalidOperationException("Selected time is not available.");
+            }
 
-                var appointment = new Appointment
-                {
-                    CustomerId = customerId,
-                    StaffId = dto.StaffId,
-                    VehicleId = dto.VehicleId,
-                    PackageId = dto.PackageId,
-                    AppointmentDate = dto.AppointmentDate,
-                    Status = "Booked",
-                    PromotionId = dto.PromotionId
-                };
+            var appointment = new Appointment
+            {
+                CustomerId = customerId,
+                StaffId = dto.StaffId,
+                VehicleId = dto.VehicleId,
+                PackageId = dto.PackageId,
+                AppointmentDate = dto.AppointmentDate,
+                Status = "Booked",
+                PromotionId = dto.PromotionId
+            };
 
-                _context.Appointments.Add(appointment);
-                await _context.SaveChangesAsync();
+            _context.Appointments.Add(appointment);
+            await _context.SaveChangesAsync();
 
 
-            var vehicle = await GetVehicleByIdAsync((int)dto.VehicleId);            
+            var vehicle = await GetVehicleByIdAsync((int)dto.VehicleId);
             vehicle.Status = "In Service";
-            vehicle.NextService = appointment.AppointmentDate;
+            if (vehicle.NextService != null)
+            {
+                vehicle.LastService = vehicle.NextService;
+                vehicle.NextService = appointment.AppointmentDate;
+            }
+            else
+            {
+                vehicle.NextService = appointment.AppointmentDate;
+            }
             _context.Vehicles.Update(vehicle);
             await _context.SaveChangesAsync();
+            
             // Create a new order as well
             var order = new Order
             {
