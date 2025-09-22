@@ -15,6 +15,7 @@ namespace CarServ.Repository.Repositories.DTO.Booking_A_Service
         public int? Year { get; set; }
         public string CustomerName { get; set; }
         public string Status { get; set; }
+        public string Color { get; set; }
         public DateTime LastService { get; set; }
         public DateTime NextServiceDue { get; set; }
     }

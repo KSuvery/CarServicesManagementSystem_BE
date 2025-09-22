@@ -1,10 +1,8 @@
 ﻿using CarServ.Domain.Entities;
 using CarServ.Repository.Repositories.DTO;
 using CarServ.Repository.Repositories.DTO.Booking_A_Service;
-using CarServ.Repository.Repositories.DTO.Logging_part_usage;
 using CarServ.Repository.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.IO;
 
 namespace CarServ.Repository.Repositories
 {
@@ -26,11 +24,14 @@ namespace CarServ.Repository.Repositories
             {
                 VehicleId = p.VehicleId,
                 CustomerName = p.Customer.User.FullName,
-               LicensePlate = p.LicensePlate,
-               Make = p.Make,
-               Model = p.Model,
-               Year = p.Year,
-               Status = p.Status,
+                LicensePlate = p.LicensePlate,
+                Make = p.Make,
+                Model = p.Model,
+                Year = p.Year,
+                Status = p.Status,
+                Color = p.Color,
+                LastService = p.LastService ?? DateTime.MinValue,
+                NextServiceDue = p.NextService ?? DateTime.MinValue
             }).ToList();
             return vehicleDtos;
         }
@@ -42,7 +43,7 @@ namespace CarServ.Repository.Repositories
             .ThenInclude(c => c.User)
             .Where(v => v.VehicleId == id)
                 .FirstOrDefaultAsync();
-            var vehicleDtos =  new VehicleDto
+            var vehicleDtos = new VehicleDto
             {
                 VehicleId = vehicle.VehicleId,
                 CustomerName = vehicle.Customer.User.FullName,
@@ -51,6 +52,7 @@ namespace CarServ.Repository.Repositories
                 Model = vehicle.Model,
                 Year = vehicle.Year,
                 Status = vehicle.Status,
+                Color = vehicle.Color,
                 LastService = vehicle.LastService ?? DateTime.MinValue,
                 NextServiceDue = vehicle.NextService ?? DateTime.MinValue
             };
@@ -72,7 +74,10 @@ namespace CarServ.Repository.Repositories
                 Make = p.Make,
                 Model = p.Model,
                 Status = p.Status,
-                Year = p.Year
+                Year = p.Year,
+                Color = p.Color,
+                LastService = p.LastService ?? DateTime.MinValue,
+                NextServiceDue = p.NextService ?? DateTime.MinValue
             }).ToList();
             return vehicleDtos;
         }
@@ -85,13 +90,17 @@ namespace CarServ.Repository.Repositories
            .Where(v => v.Make == make)
                .ToListAsync();
             var vehicleDtos = vehicles.Select(p => new VehicleDto
-            {VehicleId = p.VehicleId,
+            {
+                VehicleId = p.VehicleId,
                 CustomerName = p.Customer.User.FullName,
                 LicensePlate = p.LicensePlate,
                 Make = p.Make,
                 Model = p.Model,
                 Status = p.Status,
-                Year = p.Year
+                Year = p.Year,
+                Color = p.Color,
+                LastService = p.LastService ?? DateTime.MinValue,
+                NextServiceDue = p.NextService ?? DateTime.MinValue
             }).ToList();
             return vehicleDtos;
         }
@@ -104,13 +113,17 @@ namespace CarServ.Repository.Repositories
             .Where(v => v.LicensePlate == licensePlate)
                 .FirstOrDefaultAsync();
             var vehicleDtos = new VehicleDto
-            {VehicleId = vehicle.VehicleId,
+            {
+                VehicleId = vehicle.VehicleId,
                 CustomerName = vehicle.Customer.User.FullName,
                 LicensePlate = vehicle.LicensePlate,
                 Make = vehicle.Make,
                 Model = vehicle.Model,
                 Status = vehicle.Status,
-                Year = vehicle.Year
+                Year = vehicle.Year,
+                Color = vehicle.Color,
+                LastService = vehicle.LastService ?? DateTime.MinValue,
+                NextServiceDue = vehicle.NextService ?? DateTime.MinValue
             };
             return vehicleDtos;
         }
@@ -184,7 +197,8 @@ namespace CarServ.Repository.Repositories
                 Model = dto.Model,
                 Year = dto.Year,
                 CarTypeId = dto.CarTypeId,
-                Status = "Available" // Default status
+                Status = "Available", // Default status
+                Color = dto.Color
             };
 
             // Add the vehicle to the context
