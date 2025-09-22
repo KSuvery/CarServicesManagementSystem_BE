@@ -107,6 +107,7 @@ namespace CarServ.Repository.Repositories
                     VehicleLicensePlate = a.Vehicle.LicensePlate,
                     VehicleMake = a.Vehicle.Make,
                     VehicleModel = a.Vehicle.Model,
+                    VehicleColor = a.Vehicle.Color,
                     VehicleYear = a.Vehicle.Year ?? 0,                    
                     services = a.AppointmentServices.Select(s => s.Service.Name).ToList(),
                     Duration = (int)(a.AppointmentServices.Sum(s => s.Service.EstimatedLaborHours ?? 0) +
@@ -144,6 +145,7 @@ namespace CarServ.Repository.Repositories
                     VehicleLicensePlate = a.Vehicle.LicensePlate,
                     VehicleMake = a.Vehicle.Make,
                     VehicleModel = a.Vehicle.Model,
+                    VehicleColor = a.Vehicle.Color,
                     VehicleYear = a.Vehicle.Year ?? 0,
                     services = a.AppointmentServices.Select(s => s.Service.Name).ToList(),
                     Duration = (int)(a.AppointmentServices.Sum(s => s.Service.EstimatedLaborHours ?? 0) +

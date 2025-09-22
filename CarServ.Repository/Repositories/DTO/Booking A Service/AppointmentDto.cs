@@ -11,6 +11,7 @@
         public string VehicleLicensePlate { get; set; }
         public string VehicleMake { get; set; }
         public string VehicleModel { get; set; }
+        public string VehicleColor { get; set; }
         public int VehicleYear { get; set; }
         public List<string> services { get; set; }
         public decimal Price { get; set; }
