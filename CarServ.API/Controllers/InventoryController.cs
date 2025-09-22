@@ -27,14 +27,14 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "1,3")]
+        [Authorize(Roles = "1,4")]
         public async Task<ActionResult<IEnumerable<PartDto>>> GetPartItems()
         {
             return await _PartServices.GetAllPartsAsync();
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "1,3")]
+        [Authorize(Roles = "1,4")]
         public async Task<ActionResult<PartDto>> GetPartItemById(int id)
         {
             var PartItem = await _PartServices.GetPartByIdAsync(id);
@@ -46,7 +46,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("GetByName/{partName}")]
-        [Authorize(Roles = "1,3")]
+        [Authorize(Roles = "1,4")]
         public async Task<ActionResult<IEnumerable<Part>>> GetPartItemsByName(string partName)
         {
             var PartItems = await _PartServices.GetPartsByPartName(partName);
@@ -58,7 +58,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpPost("Create")]
-        [Authorize(Roles = "1,3")]
+        [Authorize(Roles = "1,4")]
         public async Task<ActionResult<Part>> CreatePartItem(
             string partName,
             int quantity,
@@ -77,7 +77,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpPut("Update/{id}")]
-        [Authorize(Roles = "1,3")]
+        [Authorize(Roles = "1,4")]
         public async Task<ActionResult<Part>> UpdatePartItem(
             int id,
             string partName,
@@ -107,7 +107,7 @@ namespace CarServ.API.Controllers
         
 
         [HttpPost("track-parts-used")]
-        [Authorize(Roles = "1,2,3")]
+        [Authorize(Roles = "1,3,4")]
         public IActionResult TrackPartsUsed([FromBody] PartUsageDto partsUsedDTO)
         {
             if (partsUsedDTO == null)

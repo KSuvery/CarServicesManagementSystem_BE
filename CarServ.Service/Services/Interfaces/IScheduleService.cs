@@ -10,5 +10,6 @@ namespace CarServ.Service.Services.Interfaces
     public interface IScheduleService
     {
         Task<List<StaffScheduleDto>> GetStaffScheduleAsync(int staffId);
+        Task<int> CreateDayOffRequestAsync(int staffId, CreateDayOffRequestDto dto);
     }
 }

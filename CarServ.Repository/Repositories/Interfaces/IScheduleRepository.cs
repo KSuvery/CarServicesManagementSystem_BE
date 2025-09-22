@@ -10,5 +10,7 @@ namespace CarServ.Repository.Repositories.Interfaces
     public interface IScheduleRepository
     {
         Task<List<StaffScheduleDto>> GetStaffScheduleAsync(int staffId);
+        Task<int> CreateDayOffRequestAsync(int staffId, CreateDayOffRequestDto dto);
+        Task<List<DayOffRequestDto>> GetAllDayOffRequestsAsync(string? status = null, int page = 1, int size = 10);
     }
 }

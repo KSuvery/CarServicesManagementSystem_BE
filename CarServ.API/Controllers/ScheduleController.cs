@@ -30,5 +30,20 @@ namespace CarServ.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpPost("dayoff/request/{userId}")]
+        [Authorize(Roles = "3")]  
+        public async Task<ActionResult<int>> CreateDayOffRequest(int userId, [FromBody] CreateDayOffRequestDto dto)
+        {
+            try
+            {                
+                var requestId = await _scheduleService.CreateDayOffRequestAsync(userId, dto);
+                return Ok(new { RequestId = requestId, Message = "Request submitted successfully." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }
