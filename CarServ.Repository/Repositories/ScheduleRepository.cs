@@ -24,11 +24,13 @@ namespace CarServ.Repository.Repositories
                 .OrderBy(s => s.DayOfWeek)  
                 .Select(s => new StaffScheduleDto
                 {
+                    ScheduleId = s.ScheduleId,
                     DayOfWeek = s.DayOfWeek,
                     DayName = ((DayOfWeek)s.DayOfWeek).ToString(),
                     StartTime = s.StartTime,
                     EndTime = s.EndTime,
-                    IsActive = s.IsActive
+                    IsActive = s.IsActive,
+                    UpdatedAt = s.UpdatedAt
                 })
                 .ToListAsync();
 
@@ -148,6 +150,156 @@ namespace CarServ.Repository.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task<StaffScheduleDto> CreateOrUpdateStaffScheduleAsync(int staffId, CreateStaffScheduleDto dto)
+        {            
+            var staff = await _context.ServiceStaffs.FindAsync(staffId);
+            if (staff == null)
+            {
+                throw new Exception($"Staff with ID {staffId} not found.");
+            }
+
+            // Validate DayOfWeek (1-7)
+            if (dto.DayOfWeek < 1 || dto.DayOfWeek > 7)
+            {
+                throw new ArgumentException("DayOfWeek must be between 1 (Monday) and 7 (Sunday).");
+            }
+
+            // Validate times: End > Start
+            if (dto.EndTime <= dto.StartTime)
+            {
+                throw new ArgumentException("End time must be after start time.");
+            }
+            var existingSchedule = await _context.StaffSchedules
+                .FirstOrDefaultAsync(s => s.StaffId == staffId && s.DayOfWeek == dto.DayOfWeek);
+
+            StaffSchedule schedule;
+            if (existingSchedule != null)
+            {
+                existingSchedule.StartTime = dto.StartTime;
+                existingSchedule.EndTime = dto.EndTime;
+                existingSchedule.IsActive = dto.IsActive;
+                existingSchedule.UpdatedAt = DateTime.Now;
+                schedule = existingSchedule;
+            }
+            else
+            {
+                schedule = new StaffSchedule
+                {
+                    StaffId = staffId,
+                    DayOfWeek = (byte)dto.DayOfWeek,
+                    StartTime = dto.StartTime,
+                    EndTime = dto.EndTime,
+                    IsActive = dto.IsActive,
+                    UpdatedAt = DateTime.Now
+                };
+                _context.StaffSchedules.Add(schedule);
+            }
+
+            await _context.SaveChangesAsync();
+
+            // Return DTO (reuse GetStaffScheduleAsync logic or map here)
+            return new StaffScheduleDto
+            {
+                ScheduleId = schedule.ScheduleId,
+                DayOfWeek = schedule.DayOfWeek,
+                DayName = ((DayOfWeek)schedule.DayOfWeek).ToString(),
+                StartTime = schedule.StartTime,
+                EndTime = schedule.EndTime,
+                IsActive = schedule.IsActive,
+                UpdatedAt = schedule.UpdatedAt
+            };
+        }
+
+        public async Task<WeeklyStaffScheduleDto> CreateOrUpdateWeeklyStaffScheduleAsync(int staffId, CreateWeeklyStaffScheduleDto dto)
+        {
+            var staff = await _context.ServiceStaffs.FindAsync(staffId);
+            if (staff == null)
+            {
+                throw new Exception($"Staff with ID {staffId} not found.");
+            }
+
+            if (dto.DailySchedules == null || !dto.DailySchedules.Any())
+            {
+                throw new ArgumentException("At least one daily schedule must be provided.");
+            }
+
+            var dayGroups = dto.DailySchedules.GroupBy(s => s.DayOfWeek);
+            if (dayGroups.Any(g => g.Count() > 1))
+            {
+                throw new ArgumentException("Duplicate DayOfWeek entries found. Each day can only be specified once.");
+            }
+
+            var invalidDays = new List<int>();
+            foreach (var daily in dto.DailySchedules)
+            {
+                if (daily.DayOfWeek < 1 || daily.DayOfWeek > 7)
+                {
+                    invalidDays.Add(daily.DayOfWeek);
+                }
+                else if (daily.EndTime <= daily.StartTime)
+                {
+                    throw new ArgumentException($"Invalid times for DayOfWeek {daily.DayOfWeek}: End time must be after start time.");
+                }
+            }
+            if (invalidDays.Any())
+            {
+                throw new ArgumentException($"Invalid DayOfWeek values: {string.Join(", ", invalidDays)}. Must be 1-7.");
+            }
+            var updatedSchedules = new List<StaffScheduleDto>();
+            var updatedCount = 0;
+            using var transaction = await _context.Database.BeginTransactionAsync();  
+            try
+            {
+                foreach (var dailyDto in dto.DailySchedules)
+                {
+                    var singleDto = new CreateStaffScheduleDto
+                    {
+                        DayOfWeek = dailyDto.DayOfWeek,
+                        StartTime = dailyDto.StartTime,
+                        EndTime = dailyDto.EndTime,
+                        IsActive = dailyDto.IsActive,
+                        Notes = dailyDto.Notes
+                    };
+                    var updatedSchedule = await CreateOrUpdateStaffScheduleAsync(staffId, singleDto);  
+                    updatedSchedules.Add(updatedSchedule);
+                    updatedCount++;
+                }
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+                var fullWeek = await GetStaffScheduleAsync(staffId); 
+                return new WeeklyStaffScheduleDto
+                {
+                    Schedules = fullWeek,  
+                    UpdatedDays = updatedCount
+                };
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                //Throw lại để debug
+                throw;  
+            }
+        }
+
+
+        public async Task DeleteStaffScheduleAsync(int staffId, int dayOfWeek)
+        {
+            var schedule = await _context.StaffSchedules
+                .FirstOrDefaultAsync(s => s.StaffId == staffId && s.DayOfWeek == dayOfWeek);
+
+            if (schedule == null)
+            {
+                throw new Exception($"No schedule found for staff {staffId} on day {dayOfWeek}.");
+            }
+            schedule.IsActive = false;
+            schedule.UpdatedAt = DateTime.Now;
+            // _context.StaffSchedules.Remove(schedule);
+
+            await _context.SaveChangesAsync();
+        }
+
+
         private async Task AdjustScheduleForDayOffAsync(int staffId, DateOnly requestedDate)
         {
             var dayOfWeek = (int)requestedDate.DayOfWeek;  
@@ -169,7 +321,7 @@ namespace CarServ.Repository.Repositories
             {
                 schedule.IsActive = false;  // Toggle off
                 schedule.UpdatedAt = DateTime.Now;
-                // Optional: Add a Note field to StaffSchedule for reason (e.g., "Day off approved on [date]")
+               
             }            
         }
 
