@@ -27,7 +27,6 @@ namespace CarServ.Repository.Repositories.Interfaces
         Task<List<InventoryManager>> GetAllInventoryManagers();
         Task<InventoryManager> GetInventoryManagerById(int id);
         Task<List<Customer>> GetAllCustomers();
-        Task<List<WorkScheduleDto>> GetWorkScheduleForServiceStaff(int staffId);
         Task<CustomerDashboard> GetCustomerDashboard(int customerId);
     }
 }

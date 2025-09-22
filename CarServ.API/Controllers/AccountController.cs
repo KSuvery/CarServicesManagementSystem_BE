@@ -167,20 +167,6 @@ namespace CarServ.API.Controllers
 
         }
 
-        [HttpGet("service-staff/get-work-schedules/{staffId}")]
-        [Authorize(Roles = "1, 3")]
-        public async Task<List<WorkScheduleDto>> GetWorkSchedulesForServiceStaff(int staffId)
-        {
-            try
-            {
-                return await _accService.GetWorkScheduleForServiceStaff(staffId);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error occurred while retrieving work schedules: " + ex.Message);
-            }
-        }
-
         [HttpGet("customer-dashboard/{customerId}")]
         public async Task<ActionResult<CustomerDashboard>> GetCustomerDashboard(int customerId)
         {

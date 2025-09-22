@@ -294,26 +294,6 @@ namespace CarServ.Repository.Repositories
                 .ToListAsync();
         }
 
-        public async Task<List<WorkScheduleDto>> GetWorkScheduleForServiceStaff(int staffId)
-        {
-            var schedule = await (from a in _context.Appointments
-                         .Include(a => a.ServiceHistory)
-                         join ss in _context.ServiceStaffs on a.StaffId equals ss.StaffId
-                         where ss.StaffId == staffId
-                         orderby a.AppointmentDate
-                         select new { a }).ToListAsync();
-
-            var result = schedule.Select(s => new WorkScheduleDto
-            {
-                AppointmentId = s.a.AppointmentId,
-                AppointmentDate = (DateTime)s.a.AppointmentDate,
-                Status = s.a.Status,
-                Service = s.a.ServiceHistory.Description
-            }).ToList();
-
-            return result;
-        }
-
         public async Task<CustomerDashboard> GetCustomerDashboard(int customerId)
         {
             //var totalServices = await _context.Appointments
@@ -335,11 +315,13 @@ namespace CarServ.Repository.Repositories
                                        .ThenInclude(v => v.Vehicle)
                                        where a.Appointment.Vehicle.CustomerId == customerId
                                        select a).CountAsync();
+
             var completedServices = await (from a in _context.AppointmentServices
                                            .Include(a => a.Appointment)
                                            .ThenInclude(v => v.Vehicle)
                                            where a.Appointment.Vehicle.CustomerId == customerId && a.Appointment.Status == "Completed"
                                            select a).CountAsync();
+
             var totalSpent = await (from a in _context.Appointments
                                     .Include(a => a.Vehicle)
                                     join p in _context.Payments on a.AppointmentId equals p.AppointmentId
