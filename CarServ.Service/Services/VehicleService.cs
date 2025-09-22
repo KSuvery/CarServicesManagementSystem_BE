@@ -29,6 +29,11 @@ namespace CarServ.Service.Services
             return await _vehicleRepository.GetVehiclesByCustomerIdAsync(customerId);
         }
 
+        public async Task<VehicleDto> GetVehicleByAppointmentIdAsync(int appointmentId)
+        {
+            return await _vehicleRepository.GetVehicleByAppointmentIdAsync(appointmentId);
+        }
+
         public async Task<List<VehicleDto>> GetVehiclesByMakeAsync(string make)
         {
             return await _vehicleRepository.GetVehiclesByMakeAsync(make);

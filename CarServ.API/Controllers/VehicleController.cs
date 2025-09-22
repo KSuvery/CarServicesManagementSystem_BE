@@ -140,6 +140,28 @@ namespace CarServ.API.Controllers
             }
         }
 
+        [HttpGet("appointment/{appointmentId}")]
+        public async Task<IActionResult> GetVehicleByAppointmentId(int appointmentId)
+        {
+            if (appointmentId <= 0)
+            {
+                return BadRequest("Invalid appointment ID.");
+            }
+            try
+            {
+                var vehicle = await _vehicleService.GetVehicleByAppointmentIdAsync(appointmentId);
+                if (vehicle == null)
+                {
+                    return NotFound($"No vehicle found for appointment ID {appointmentId}.");
+                }
+                return Ok(vehicle);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
+            }
+        }
+
         [HttpGet("car-type/{carTypeId}")]
         public async Task<IActionResult> GetVehiclesByCarTypeId(int carTypeId)
         {

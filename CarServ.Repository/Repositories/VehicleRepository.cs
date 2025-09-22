@@ -82,6 +82,30 @@ namespace CarServ.Repository.Repositories
             return vehicleDtos;
         }
 
+        public async Task<VehicleDto> GetVehicleByAppointmentIdAsync(int appointmentId)
+        {
+            var vehicle = await _context.Vehicles
+            .Include(v => v.Customer)
+            .ThenInclude(c => c.User)
+            .Include(v => v.Appointments)
+            .Where(v => v.Appointments.Any(a => a.AppointmentId == appointmentId))
+                .FirstOrDefaultAsync();
+            var vehicleDtos = new VehicleDto
+            {
+                VehicleId = vehicle.VehicleId,
+                CustomerName = vehicle.Customer.User.FullName,
+                LicensePlate = vehicle.LicensePlate,
+                Make = vehicle.Make,
+                Model = vehicle.Model,
+                Status = vehicle.Status,
+                Year = vehicle.Year,
+                Color = vehicle.Color,
+                LastService = vehicle.LastService ?? DateTime.MinValue,
+                NextServiceDue = vehicle.NextService ?? DateTime.MinValue
+            };
+            return vehicleDtos;
+        }
+
         public async Task<List<VehicleDto>> GetVehiclesByMakeAsync(string make)
         {
             var vehicles = await _context.Vehicles

@@ -14,6 +14,7 @@ namespace CarServ.Repository.Repositories.Interfaces
         Task<List<VehicleDto>> GetAllVehiclesAsync();
         Task<VehicleDto> GetVehicleByIdAsync(int id);
         Task<List<VehicleDto>> GetVehiclesByCustomerIdAsync(int customerId);
+        Task<VehicleDto> GetVehicleByAppointmentIdAsync(int appointmentId);
         Task<List<VehicleDto>> GetVehiclesByMakeAsync(string make);
         Task<VehicleDto> GetVehicleByLicensePlateAsync(string licensePlate);
         Task<List<Vehicle>> GetVehiclesByModelAsync(string model);
