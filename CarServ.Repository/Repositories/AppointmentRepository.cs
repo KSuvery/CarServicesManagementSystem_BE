@@ -16,9 +16,11 @@ namespace CarServ.Repository.Repositories
     public class AppointmentRepository : GenericRepository<Appointment>, IAppointmentRepository
     {
         private readonly CarServicesManagementSystemContext _context;
-        public AppointmentRepository(CarServicesManagementSystemContext context) : base(context)
+        private readonly IVehicleRepository _vehicleRepository;
+        public AppointmentRepository(CarServicesManagementSystemContext context, IVehicleRepository vehicleRepository) : base(context)
         {
             _context = context;
+            _vehicleRepository = vehicleRepository;
         }
 
         public async Task<List<AppointmentDto>> GetAllAppointmentsAsync()
@@ -371,12 +373,25 @@ namespace CarServ.Repository.Repositories
             string status)
         {
             var appointment = await GetAppointmentByIdAsync(appointmentId);
+            var vehicleDto = await _vehicleRepository.GetVehicleByAppointmentIdAsync(appointmentId);
 
             if (appointment == null)
             {
                 throw new KeyNotFoundException($"Appointment with ID {appointmentId} not found.");
             }
+
             appointment.Status = status;
+
+            if (status == "Completed" && vehicleDto != null)
+            {
+                var vehicle = await _context.Vehicles.FirstOrDefaultAsync(v => v.VehicleId == vehicleDto.VehicleId);
+                if (vehicle != null)
+                {
+                    vehicle.Status = "Available";
+                    await _vehicleRepository.UpdateAsync(vehicle);
+                }
+            }
+
             await UpdateAsync(appointment);
             await _context.SaveChangesAsync();
             return appointment;
