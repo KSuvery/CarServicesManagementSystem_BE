@@ -64,7 +64,7 @@ public partial class CarServicesManagementSystemContext : DbContext
     public virtual DbSet<Vehicle> Vehicles { get; set; }
 
     public virtual DbSet<WarrantyClaim> WarrantyClaims { get; set; }
-    
+   
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Appointment>(entity =>
@@ -497,7 +497,7 @@ public partial class CarServicesManagementSystemContext : DbContext
 
             entity.Property(e => e.VehicleId).HasColumnName("VehicleID");
             entity.Property(e => e.CarTypeId).HasColumnName("CarTypeID");
-
+            entity.Property(e => e.Color).HasMaxLength(100);
             entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
             entity.Property(e => e.LastService).HasColumnType("datetime");
             entity.Property(e => e.LicensePlate)

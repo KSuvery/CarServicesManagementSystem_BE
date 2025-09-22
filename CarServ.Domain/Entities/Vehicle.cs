@@ -27,6 +27,8 @@ public partial class Vehicle
 
     public DateTime? NextService { get; set; }
 
+    public string Color { get; set; }
+
     public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
 
     public virtual CarType CarType { get; set; }
