@@ -72,7 +72,24 @@ namespace CarServ.API.Controllers
             }
         }
 
-
+        [HttpPost("weekly-schedule/{staffId}")]
+        [Authorize(Roles = "1")]
+        public async Task<ActionResult<WeeklyStaffScheduleDto>> CreateOrUpdateWeeklyStaffSchedule(int staffId, [FromBody] CreateWeeklyStaffScheduleDto dto)
+        {
+            try
+            {                
+                var result = await _scheduleService.CreateOrUpdateWeeklyStaffScheduleAsync(staffId, dto);
+                return Ok(new
+                {
+                    Message = $"Weekly schedule updated successfully. {result.UpdatedDays} days modified.",
+                    Data = result
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         private string GetCurrentUser()
         {
             if (User?.Identity == null || !User.Identity.IsAuthenticated)
