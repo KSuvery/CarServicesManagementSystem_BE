@@ -180,5 +180,23 @@ namespace CarServ.API.Controllers
                 throw new Exception("An error occurred while retrieving work schedules: " + ex.Message);
             }
         }
+
+        [HttpGet("customer-dashboard/{customerId}")]
+        public async Task<ActionResult<CustomerDashboard>> GetCustomerDashboard(int customerId)
+        {
+            try
+            {
+                var dashboard = await _accService.GetCustomerDashboard(customerId);
+                if (dashboard == null)
+                {
+                    return NotFound();
+                }
+                return Ok(dashboard);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

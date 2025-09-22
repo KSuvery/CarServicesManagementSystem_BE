@@ -105,5 +105,10 @@ namespace CarServ.service.Services
         {
             return await _accRepository.GetWorkScheduleForServiceStaff(staffId);
         }
+
+        public async Task<CustomerDashboard> GetCustomerDashboard(int customerId)
+        {
+            return await _accRepository.GetCustomerDashboard(customerId);
+        }
     }
 }

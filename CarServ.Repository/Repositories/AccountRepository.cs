@@ -3,15 +3,24 @@ using CarServ.Repository.Repositories.DTO;
 using CarServ.Repository.Repositories.DTO.User_return_DTO;
 using CarServ.Repository.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
 namespace CarServ.Repository.Repositories
 {
     public class AccountRepository : GenericRepository<User>, IAccountRepository
     {
         private readonly CarServicesManagementSystemContext _context;
-        public AccountRepository(CarServicesManagementSystemContext context) : base(context)
+        private readonly IPackageRepository _packageRepository;
+        private readonly IVehicleRepository _vehicleRepository;
+        private readonly IPaymentRepository _paymentRepository;
+        private readonly IAppointmentRepository _appointmentRepository;
+        public AccountRepository(CarServicesManagementSystemContext context, IPackageRepository packageRepository, IVehicleRepository vehicleRepository, IPaymentRepository paymentRepository, IAppointmentRepository appointmentRepository) : base(context)
         {
             _context = context;
+            _packageRepository = packageRepository;
+            _vehicleRepository = vehicleRepository;
+            _paymentRepository = paymentRepository;
+            _appointmentRepository = appointmentRepository;
         }
 
         public async Task<User> UpdateProfileAsync(int userId, UpdateProfileDto dto)
@@ -303,6 +312,47 @@ namespace CarServ.Repository.Repositories
             }).ToList();
 
             return result;
+        }
+
+        public async Task<CustomerDashboard> GetCustomerDashboard(int customerId)
+        {
+            //var totalServices = await _context.Appointments
+            //    .Include(a => a.Vehicle)
+            //    .Where(a => a.Vehicle.CustomerId == customerId)
+            //    .CountAsync();
+            //var completedServices = await _context.Appointments
+            //    .Include(a => a.Vehicle)
+            //    .Where(a => a.Vehicle.CustomerId == customerId && a.Status == "Completed")
+            //    .CountAsync();
+            //var totalSpent = await (from a in _context.Appointments
+            //                        .Include(a => a.Vehicle)
+            //                        join p in _context.Payments on a.AppointmentId equals p.AppointmentId
+            //                        where a.Vehicle.CustomerId == customerId && a.Status == "Completed"
+            //                        select p.Amount).SumAsync();
+
+            var totalServices = await (from a in _context.AppointmentServices
+                                       .Include(a => a.Appointment)
+                                       .ThenInclude(v => v.Vehicle)
+                                       where a.Appointment.Vehicle.CustomerId == customerId
+                                       select a).CountAsync();
+            var completedServices = await (from a in _context.AppointmentServices
+                                           .Include(a => a.Appointment)
+                                           .ThenInclude(v => v.Vehicle)
+                                           where a.Appointment.Vehicle.CustomerId == customerId && a.Appointment.Status == "Completed"
+                                           select a).CountAsync();
+            var totalSpent = await (from a in _context.Appointments
+                                    .Include(a => a.Vehicle)
+                                    join p in _context.Payments on a.AppointmentId equals p.AppointmentId
+                                    where a.Vehicle.CustomerId == customerId && p.Status == "Paid"
+                                    select p.Amount).SumAsync();
+
+            var dashboard = new CustomerDashboard
+            {
+                TotalServices = totalServices,
+                CompletedServices = completedServices,
+                TotalSpent = (decimal)totalSpent
+            };
+            return dashboard;
         }
 
         private string HashPassword(string password)
