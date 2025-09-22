@@ -23,9 +23,19 @@ namespace CarServ.Service.Services
             return await _scheduleRepository.CreateDayOffRequestAsync(staffId, dto);
         }
 
+        public async Task<List<DayOffRequestDto>> GetAllDayOffRequestsAsync(int page = 1, int size = 10)
+        {
+            return await _scheduleRepository.GetAllDayOffRequestsAsync(page, size);
+        }
+
         public async Task<List<StaffScheduleDto>> GetStaffScheduleAsync(int staffId)
         {
             return await _scheduleRepository.GetStaffScheduleAsync(staffId);
+        }
+
+        public async Task UpdateDayOffRequestStatusAsync(int requestId, string adminEmail, UpdateDayOffRequestDto dto)
+        {
+            await _scheduleRepository.UpdateDayOffRequestStatusAsync(requestId, adminEmail, dto);
         }
     }
 }

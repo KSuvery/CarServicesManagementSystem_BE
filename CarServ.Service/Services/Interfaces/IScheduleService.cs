@@ -11,5 +11,7 @@ namespace CarServ.Service.Services.Interfaces
     {
         Task<List<StaffScheduleDto>> GetStaffScheduleAsync(int staffId);
         Task<int> CreateDayOffRequestAsync(int staffId, CreateDayOffRequestDto dto);
+        Task<List<DayOffRequestDto>> GetAllDayOffRequestsAsync(int page = 1, int size = 10);
+        Task UpdateDayOffRequestStatusAsync(int requestId, string adminEmail, UpdateDayOffRequestDto dto);
     }
 }
