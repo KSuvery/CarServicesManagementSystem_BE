@@ -532,9 +532,12 @@ namespace CarServ.Repository.Repositories
         public async Task DeletePartAsync(int partId)
         {
             var part = await _context.Parts
-            .Include(p => p.ServiceParts)
-                .ThenInclude(a => a.Service)
-            .FirstOrDefaultAsync(p => p.PartId == partId);
+                .Include(p => p.ServiceParts)
+                    .ThenInclude(sp => sp.Service)
+                        .ThenInclude(s => s.AppointmentServices)
+                            .ThenInclude(a => a.Appointment)
+                                .ThenInclude(a => a.ServiceProgresses)
+                .FirstOrDefaultAsync(p => p.PartId == partId);
 
             if (part == null)
             {
@@ -542,11 +545,7 @@ namespace CarServ.Repository.Repositories
             }
             foreach (var servicePart in part.ServiceParts)
             {
-                var service = await _context.Services
-                     .Include(s => s.AppointmentServices)
-                         .ThenInclude(a => a.Appointment)
-                         .ThenInclude(a => a.ServiceProgresses)
-                     .FirstOrDefaultAsync(s => s.ServiceId == servicePart.ServiceId);
+                var service = servicePart.Service; 
                 if (service == null)
                 {
                     throw new Exception("Service not found.");
@@ -555,14 +554,20 @@ namespace CarServ.Repository.Repositories
                 var hasInProgressAppointments = service.AppointmentServices
                     .Any(a => a.Appointment.ServiceProgresses
                         .Any(sp => sp.Status != "Completed"));
+
                 if (hasInProgressAppointments)
                 {
-                    throw new Exception("Cannot delete this part! It is being used in another service. To delete this part, any appointment with this service has to be completed!");
+                    throw new Exception($"Cannot delete this part! It is being used in service '{service.Name ?? "Unknown"}'. To delete this part, any appointment with this service has to be completed!");
                 }
+            }
+            foreach (var servicePart in part.ServiceParts.ToList()) 
+            {
+                _context.ServiceParts.Remove(servicePart);
             }
             _context.Parts.Remove(part);
             await _context.SaveChangesAsync();
         }
+
 
         public async Task TrackPartsUsed(PartUsageDto partsUsedDTO)
         {
