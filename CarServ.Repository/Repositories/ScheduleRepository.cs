@@ -299,6 +299,105 @@ namespace CarServ.Repository.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task<SystemWeeklyScheduleDto> GetSystemWeeklyScheduleAsync(DateOnly? weekStart = null, TimeOnly businessStart = default, TimeOnly businessEnd = default)
+        {
+            weekStart ??= DateOnly.FromDateTime(DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + 1));  
+            var weekEnd = DateOnly.FromDateTime(DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + 1)).AddDays(6); 
+
+            businessStart = businessStart == default ? new TimeOnly(8, 0) : businessStart;
+            businessEnd = businessEnd == default ? new TimeOnly(18, 0) : businessEnd;
+
+            var allSchedules = await _context.StaffSchedules
+                .Include(s => s.Staff).ThenInclude(ss => ss.User)  
+                .Where(s => s.IsActive)
+                .OrderBy(s => s.DayOfWeek)
+                .ThenBy(s => s.StartTime)
+                .ToListAsync();
+
+            var daysByDayOfWeek = allSchedules.GroupBy(s => s.DayOfWeek).ToDictionary(g => g.Key, g => g.ToList());
+
+            var slots = GenerateHourlySlots(businessStart, businessEnd);
+
+            var response = new SystemWeeklyScheduleDto
+            {
+                WeekStart = (DateOnly)weekStart,
+                WeekEnd = weekEnd,
+                Days = new Dictionary<int, DayScheduleDto>()
+            };
+
+            for (int day = 1; day <= 7; day++)
+            {
+                List<StaffSchedule> daySchedules;
+                if (!daysByDayOfWeek.TryGetValue((byte)day, out daySchedules))
+                {
+                    daySchedules = new List<StaffSchedule>(); 
+                }
+                var dayDto = new DayScheduleDto
+                {
+                    DayOfWeek = day,
+                    DayName = ((DayOfWeek)day).ToString(),
+                    TimeSlots = new List<SystemTimeSlotDto>()
+                };
+
+                foreach (var slot in slots)
+                {
+                    var availableStaff = new List<StaffAvailabilityDto>();
+                    var uniqueStaffIds = new HashSet<int>();  
+
+                    foreach (var schedule in daySchedules)
+                    {
+                        var staff = schedule.Staff;
+                        if (staff == null) continue;
+
+                        if (Overlaps(slot.Start, slot.End, schedule.StartTime, schedule.EndTime) &&
+                            !uniqueStaffIds.Contains(staff.StaffId))
+                        {
+                            uniqueStaffIds.Add(staff.StaffId);
+                            availableStaff.Add(new StaffAvailabilityDto
+                            {
+                                StaffId = staff.StaffId,
+                                StaffName = staff.User?.FullName ?? "Unknown",
+                                Specialty = staff.Specialty,
+                                Rating = staff.Rating
+                            });
+                        }
+                    }
+
+                    dayDto.TimeSlots.Add(new SystemTimeSlotDto
+                    {
+                        StartTime = slot.Item1,
+                        EndTime = slot.Item2,
+                        AvailableStaff = availableStaff.OrderBy(s => s.StaffName).ToList()  
+                    });
+                }
+
+                dayDto.TotalAvailableStaff = daySchedules.Select(s => s.StaffId).Distinct().Count();
+
+                response.Days[day] = dayDto;
+            }
+
+            return response;
+        }
+
+        private List<(TimeOnly Start, TimeOnly End)> GenerateHourlySlots(TimeOnly businessStart, TimeOnly businessEnd)
+        {
+            var slots = new List<(TimeOnly, TimeOnly)>();
+            var current = businessStart;
+            while (current < businessEnd)
+            {
+                var next = current.AddHours(1);
+                if (next > businessEnd) next = businessEnd;  
+                slots.Add((current, next));
+                current = next;
+            }
+            return slots;
+        }
+        private bool Overlaps(TimeOnly slotStart, TimeOnly slotEnd, TimeOnly shiftStart, TimeOnly shiftEnd)
+        {
+            return slotStart < shiftEnd && slotEnd > shiftStart;
+        }
+
+
 
         private async Task AdjustScheduleForDayOffAsync(int staffId, DateOnly requestedDate)
         {

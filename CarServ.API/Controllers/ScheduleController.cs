@@ -90,6 +90,24 @@ namespace CarServ.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("system-schedule")]
+        [Authorize(Roles = "1")]
+        public async Task<ActionResult<SystemWeeklyScheduleDto>> GetSystemWeeklySchedule(
+        [FromQuery] DateOnly? startDate = null,
+        [FromQuery] TimeOnly? businessHoursStart = null,
+        [FromQuery] TimeOnly? businessHoursEnd = null)
+        {
+            try
+            {
+                var schedule = await _scheduleService.GetSystemWeeklyScheduleAsync(startDate, businessHoursStart ?? default, businessHoursEnd ?? default);
+                return Ok(new { Message = "System weekly timetable retrieved successfully.", Data = schedule });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);  
+            }
+        }
         private string GetCurrentUser()
         {
             if (User?.Identity == null || !User.Identity.IsAuthenticated)
