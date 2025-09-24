@@ -43,6 +43,11 @@ namespace CarServ.Service.Services
             return await _scheduleRepository.GetStaffScheduleAsync(staffId);
         }
 
+        public async Task<SystemWeeklyScheduleDto> GetSystemWeeklyScheduleAsync(DateOnly? weekStart = null, TimeOnly businessStart = default, TimeOnly businessEnd = default)
+        {
+            return await _scheduleRepository.GetSystemWeeklyScheduleAsync(weekStart, businessStart, businessEnd);
+        }
+
         public async Task UpdateDayOffRequestStatusAsync(int requestId, string adminEmail, UpdateDayOffRequestDto dto)
         {
             await _scheduleRepository.UpdateDayOffRequestStatusAsync(requestId, adminEmail, dto);

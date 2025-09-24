@@ -15,5 +15,6 @@ namespace CarServ.Repository.Repositories.Interfaces
         Task UpdateDayOffRequestStatusAsync(int requestId, string adminEmail, UpdateDayOffRequestDto dto);
         Task DeleteStaffScheduleAsync(int staffId, int dayOfWeek);
         Task<WeeklyStaffScheduleDto> CreateOrUpdateWeeklyStaffScheduleAsync(int staffId, CreateWeeklyStaffScheduleDto dto);
+        Task<SystemWeeklyScheduleDto> GetSystemWeeklyScheduleAsync(DateOnly? weekStart = null, TimeOnly businessStart = default, TimeOnly businessEnd = default);
     }
 }
