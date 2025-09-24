@@ -18,13 +18,13 @@ namespace CarServ.API.Controllers
         {
             _scheduleService = services;
         }
-        [HttpGet("working-schedule/{staffId}")]
+        [HttpGet("working-schedule/{userId}")]
         [Authorize(Roles = "1")]
-        public async Task<ActionResult<List<StaffScheduleDto>>> GetStaffSchedule(int staffId)
+        public async Task<ActionResult<List<StaffScheduleDto>>> GetStaffSchedule(int userId)
         {
             try
             {
-                var schedule = await _scheduleService.GetStaffScheduleAsync(staffId);
+                var schedule = await _scheduleService.GetStaffScheduleAsync(userId);
                 return Ok(schedule);
             }
             catch (Exception ex)
@@ -32,13 +32,13 @@ namespace CarServ.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPost("dayoff/make-request/{staffId}")]
+        [HttpPost("dayoff/make-request/{userId}")]
         [Authorize(Roles = "3")]  
-        public async Task<ActionResult<int>> CreateDayOffRequest(int staffId, [FromBody] CreateDayOffRequestDto dto)
+        public async Task<ActionResult<int>> CreateDayOffRequest(int userId, [FromBody] CreateDayOffRequestDto dto)
         {
             try
             {                
-                var requestId = await _scheduleService.CreateDayOffRequestAsync(staffId, dto);
+                var requestId = await _scheduleService.CreateDayOffRequestAsync(userId, dto);
                 return Ok(new { RequestId = requestId, Message = "Request submitted successfully." });
             }
             catch (Exception ex)
@@ -72,13 +72,13 @@ namespace CarServ.API.Controllers
             }
         }
 
-        [HttpPost("weekly-schedule/{staffId}")]
+        [HttpPost("weekly-schedule/{userId}")]
         [Authorize(Roles = "1")]
-        public async Task<ActionResult<WeeklyStaffScheduleDto>> CreateOrUpdateWeeklyStaffSchedule(int staffId, [FromBody] CreateWeeklyStaffScheduleDto dto)
+        public async Task<ActionResult<WeeklyStaffScheduleDto>> CreateOrUpdateWeeklyStaffSchedule(int userId, [FromBody] CreateWeeklyStaffScheduleDto dto)
         {
             try
             {                
-                var result = await _scheduleService.CreateOrUpdateWeeklyStaffScheduleAsync(staffId, dto);
+                var result = await _scheduleService.CreateOrUpdateWeeklyStaffScheduleAsync(userId, dto);
                 return Ok(new
                 {
                     Message = $"Weekly schedule updated successfully. {result.UpdatedDays} days modified.",

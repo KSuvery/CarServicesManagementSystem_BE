@@ -19,20 +19,26 @@ namespace CarServ.Repository.Repositories
         }
         public async Task<List<StaffScheduleDto>> GetStaffScheduleAsync(int staffId)
         {
+            var staff = await _context.ServiceStaffs
+                        .FirstOrDefaultAsync(ss => ss.UserId == staffId);
+            if (staff == null)
+            {
+                throw new Exception($"No staff record found for UserId {staffId}.");
+            }
             var schedules = await _context.StaffSchedules
-                .Where(s => s.StaffId == staffId && s.IsActive)
-                .OrderBy(s => s.DayOfWeek)  
-                .Select(s => new StaffScheduleDto
-                {
-                    ScheduleId = s.ScheduleId,
-                    DayOfWeek = s.DayOfWeek,
-                    DayName = ((DayOfWeek)s.DayOfWeek).ToString(),
-                    StartTime = s.StartTime,
-                    EndTime = s.EndTime,
-                    IsActive = s.IsActive,
-                    UpdatedAt = s.UpdatedAt
-                })
-                .ToListAsync();
+            .Where(s => s.StaffId == staff.StaffId && s.IsActive)
+            .OrderBy(s => s.DayOfWeek)
+            .Select(s => new StaffScheduleDto
+            {
+                ScheduleId = s.ScheduleId,
+                DayOfWeek = s.DayOfWeek,
+                DayName = ((DayOfWeek)s.DayOfWeek).ToString(),
+                StartTime = s.StartTime,
+                EndTime = s.EndTime,
+                IsActive = s.IsActive,
+                UpdatedAt = s.UpdatedAt
+            })
+            .ToListAsync();
 
             var fullWeek = new List<StaffScheduleDto>();
             for (int day = 1; day <= 7; day++)
@@ -59,9 +65,15 @@ namespace CarServ.Repository.Repositories
         }
 
         public async Task<int> CreateDayOffRequestAsync(int staffId, CreateDayOffRequestDto dto)
-        {      
+        {
+            var staff = await _context.ServiceStaffs
+                        .FirstOrDefaultAsync(ss => ss.UserId == staffId);
+            if (staff == null)
+            {
+                throw new Exception($"No staff record found for UserId {staffId}.");
+            }
             var existing = await _context.DayOffRequests
-                .AnyAsync(r => r.StaffId == staffId && r.RequestedDate == dto.RequestedDate && r.Status == "Pending");
+                .AnyAsync(r => r.StaffId == staff.StaffId && r.RequestedDate == dto.RequestedDate && r.Status == "Pending");
             if (existing)
             {
                 throw new InvalidOperationException("A pending request already exists for this date.");
@@ -151,8 +163,10 @@ namespace CarServ.Repository.Repositories
         }
 
         public async Task<StaffScheduleDto> CreateOrUpdateStaffScheduleAsync(int staffId, CreateStaffScheduleDto dto)
-        {            
-            var staff = await _context.ServiceStaffs.FindAsync(staffId);
+        {
+
+            var staff = await _context.ServiceStaffs
+                        .FirstOrDefaultAsync(ss => ss.UserId == staffId);            
             if (staff == null)
             {
                 throw new Exception($"Staff with ID {staffId} not found.");
@@ -170,7 +184,7 @@ namespace CarServ.Repository.Repositories
                 throw new ArgumentException("End time must be after start time.");
             }
             var existingSchedule = await _context.StaffSchedules
-                .FirstOrDefaultAsync(s => s.StaffId == staffId && s.DayOfWeek == dto.DayOfWeek);
+                .FirstOrDefaultAsync(s => s.StaffId == staff.StaffId && s.DayOfWeek == dto.DayOfWeek);
 
             StaffSchedule schedule;
             if (existingSchedule != null)
@@ -185,7 +199,7 @@ namespace CarServ.Repository.Repositories
             {
                 schedule = new StaffSchedule
                 {
-                    StaffId = staffId,
+                    StaffId = staff.StaffId,
                     DayOfWeek = (byte)dto.DayOfWeek,
                     StartTime = dto.StartTime,
                     EndTime = dto.EndTime,
@@ -197,7 +211,7 @@ namespace CarServ.Repository.Repositories
 
             await _context.SaveChangesAsync();
 
-            // Return DTO (reuse GetStaffScheduleAsync logic or map here)
+
             return new StaffScheduleDto
             {
                 ScheduleId = schedule.ScheduleId,
@@ -212,7 +226,8 @@ namespace CarServ.Repository.Repositories
 
         public async Task<WeeklyStaffScheduleDto> CreateOrUpdateWeeklyStaffScheduleAsync(int staffId, CreateWeeklyStaffScheduleDto dto)
         {
-            var staff = await _context.ServiceStaffs.FindAsync(staffId);
+            var staff = await _context.ServiceStaffs
+                        .FirstOrDefaultAsync(ss => ss.UserId == staffId);            
             if (staff == null)
             {
                 throw new Exception($"Staff with ID {staffId} not found.");
@@ -285,8 +300,14 @@ namespace CarServ.Repository.Repositories
 
         public async Task DeleteStaffScheduleAsync(int staffId, int dayOfWeek)
         {
+            var staff = await _context.ServiceStaffs
+                        .FirstOrDefaultAsync(ss => ss.UserId == staffId);
+            if (staff == null)
+            {
+                throw new Exception($"No staff record found for UserId {staffId}.");
+            }
             var schedule = await _context.StaffSchedules
-                .FirstOrDefaultAsync(s => s.StaffId == staffId && s.DayOfWeek == dayOfWeek);
+                .FirstOrDefaultAsync(s => s.StaffId == staff.StaffId && s.DayOfWeek == dayOfWeek);
 
             if (schedule == null)
             {
