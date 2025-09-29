@@ -532,6 +532,8 @@ namespace CarServ.Repository.Repositories
         public async Task DeletePartAsync(int partId)
         {
             var part = await _context.Parts
+                .Include(p => p.PartPrices)
+                .Include(p => p.WarrantyClaims)
                 .Include(p => p.ServiceParts)
                     .ThenInclude(sp => sp.Service)
                         .ThenInclude(s => s.AppointmentServices)
@@ -563,6 +565,14 @@ namespace CarServ.Repository.Repositories
             foreach (var servicePart in part.ServiceParts.ToList()) 
             {
                 _context.ServiceParts.Remove(servicePart);
+            }
+            foreach (var claim in part.WarrantyClaims.ToList())
+            {
+                _context.WarrantyClaims.Remove(claim);
+            }
+            foreach (var price in part.PartPrices.ToList())
+            {
+                _context.PartPrices.Remove(price);
             }
             _context.Parts.Remove(part);
             await _context.SaveChangesAsync();
