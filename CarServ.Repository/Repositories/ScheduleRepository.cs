@@ -85,7 +85,7 @@ namespace CarServ.Repository.Repositories
             }
             var request = new DayOffRequest
             {
-                StaffId = staffId,
+                StaffId = staff.StaffId,
                 RequestedDate = dto.RequestedDate,
                 Reason = dto.Reason,
                 Status = "Pending",
