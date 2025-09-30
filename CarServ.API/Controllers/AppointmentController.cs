@@ -27,14 +27,14 @@ namespace CarServ.API.Controllers
 
         // GET: api/Appointment
         [HttpGet]
-        [Authorize(Roles = "1")]
+        [Authorize(Roles = "1,3")]
         public async Task<PaginationResult<List<AppointmentDto>>> GetAppointment(int currentPage = 1, int pageSize = 5)
         {
             return await _Appointmentervices.GetAllApppointmentsWithPaging(currentPage, pageSize);
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "1")]
+        [Authorize(Roles = "1,3")]
         public async Task<ActionResult<Appointment>> GetAppointmentById(int id)
         {
             var appointment = await _Appointmentervices.GetAppointmentByIdAsync(id);
