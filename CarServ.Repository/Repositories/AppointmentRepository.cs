@@ -51,10 +51,10 @@ namespace CarServ.Repository.Repositories
                     BookedDate = a.AppointmentDate.HasValue ? DateOnly.FromDateTime(a.AppointmentDate.Value) : default,
                     Status = a.Status,
                     StaffId = a.StaffId,
-                    VehicleId = (int)a.VehicleId,
-                    PackageId = (int)a.PackageId,
+                    VehicleId = a.VehicleId,
+                    PackageId = a.PackageId,
                     ServideIds = a.AppointmentServices.Select(s => s.Service.ServiceId).ToList(),
-                    PromotionId = (int)a.PromotionId
+                    PromotionId = a.PromotionId
                 })
                 .ToListAsync();
 
