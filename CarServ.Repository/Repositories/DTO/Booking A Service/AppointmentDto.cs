@@ -4,11 +4,11 @@
     {
         public int AppointmentId { get; set; }
         public int CustomerId { get; set; }
-        public int StaffId { get; set; }
-        public int VehicleId { get; set; }
-        public int PackageId { get; set; }
+        public int? StaffId { get; set; }
+        public int? VehicleId { get; set; }
+        public int? PackageId { get; set; }
         public List<int> ServideIds { get; set; }
-        public int PromotionId { get; set; }
+        public int? PromotionId { get; set; }
 
         public int OrderId { get; set; }
         public string CustomerName { get; set; }
