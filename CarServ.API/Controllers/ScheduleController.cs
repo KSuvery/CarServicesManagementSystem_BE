@@ -19,7 +19,7 @@ namespace CarServ.API.Controllers
             _scheduleService = services;
         }
         [HttpGet("working-schedule/{userId}")]
-        [Authorize(Roles = "1")]
+        [Authorize(Roles = "1,3")]
         public async Task<ActionResult<List<StaffScheduleDto>>> GetStaffSchedule(int userId)
         {
             try
@@ -33,7 +33,7 @@ namespace CarServ.API.Controllers
             }
         }
         [HttpPost("dayoff/make-request/{userId}")]
-        [Authorize(Roles = "3")]  
+        [Authorize(Roles = "1,3")]  
         public async Task<ActionResult<int>> CreateDayOffRequest(int userId, [FromBody] CreateDayOffRequestDto dto)
         {
             try
@@ -48,7 +48,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpGet("dayoff/view-requests")]
-        [Authorize(Roles = "1")]
+        [Authorize(Roles = "1,3")]
         public async Task<ActionResult<List<DayOffRequestDto>>> GetAllDayOffRequests([FromQuery] int page = 1,
                                                                                      [FromQuery] int size = 10)
         {
@@ -57,7 +57,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpPut("dayoff/{requestId}/status")]
-        [Authorize(Roles = "1")]
+        [Authorize(Roles = "1,3")]
         public async Task<ActionResult> UpdateDayOffRequestStatus(int requestId, [FromBody] UpdateDayOffRequestDto dto)
         {
             try
@@ -73,7 +73,7 @@ namespace CarServ.API.Controllers
         }
 
         [HttpPost("weekly-schedule/{userId}")]
-        [Authorize(Roles = "1")]
+        [Authorize(Roles = "1,3")]
         public async Task<ActionResult<WeeklyStaffScheduleDto>> CreateOrUpdateWeeklyStaffSchedule(int userId, [FromBody] CreateWeeklyStaffScheduleDto dto)
         {
             try
