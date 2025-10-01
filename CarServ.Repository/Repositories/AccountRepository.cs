@@ -27,7 +27,7 @@ namespace CarServ.Repository.Repositories
         {
             
             var user = await _context.Users
-                .Include(u => u.UserId) 
+                .Include(u => u.Customers) 
                 .FirstOrDefaultAsync(u => u.UserId == userId);
 
             if (user == null)
