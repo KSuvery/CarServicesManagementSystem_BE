@@ -201,6 +201,21 @@ namespace CarServ.API.Controllers
             }
         }
 
+        [HttpGet("latest-price-sum")]
+        [Authorize(Roles = "1,3,4")]
+        public async Task<IActionResult> GetSumOfLatestPartPrices()
+        {
+            try
+            {
+                var sum = await _partsService.GetSumOfLatestPartPricesAsync();
+                return Ok(new { TotalLatestPrice = sum });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         private async Task<bool> PartExists(int id)
         {
             var part = await _partsService.GetPartByIdAsync(id);

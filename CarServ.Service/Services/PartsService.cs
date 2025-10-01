@@ -142,5 +142,10 @@ namespace CarServ.Service.Services
         {
             return await _partsRepository.GetUsedParts();
         }
+
+        public async Task<decimal> GetSumOfLatestPartPricesAsync()
+        {
+            return await _partsRepository.GetSumOfLatestPartPricesAsync();
+        }
     }
 }

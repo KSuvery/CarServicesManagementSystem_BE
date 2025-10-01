@@ -119,6 +119,26 @@ namespace CarServ.Repository.Repositories
 
             return parts;
         }
+        public async Task<decimal> GetSumOfLatestPartPricesAsync()
+        {
+            var latestEffectiveDates = _context.PartPrices
+                .GroupBy(pp => pp.PartId)
+                .Select(g => new
+                {
+                    PartId = g.Key,
+                    LatestEffectiveFrom = g.Max(pp => pp.EffectiveFrom)
+                });
+
+            var latestPrices = from pp in _context.PartPrices
+                               join led in latestEffectiveDates
+                               on new { pp.PartId, pp.EffectiveFrom } equals new { led.PartId, EffectiveFrom = led.LatestEffectiveFrom }
+                               select pp.Price;
+
+            var sum = await latestPrices.SumAsync();
+
+            return sum;
+        }
+
 
         public async Task<PartDto> GetPartByIdAsync(int partId)
         {
