@@ -227,7 +227,8 @@ namespace CarServ.Repository.Repositories
         public async Task<WeeklyStaffScheduleDto> CreateOrUpdateWeeklyStaffScheduleAsync(int staffId, CreateWeeklyStaffScheduleDto dto)
         {
             var staff = await _context.ServiceStaffs
-                        .FirstOrDefaultAsync(ss => ss.UserId == staffId);            
+                .Include(s => s.StaffSchedules) 
+                .FirstOrDefaultAsync(ss => ss.UserId == staffId);
             if (staff == null)
             {
                 throw new Exception($"Staff with ID {staffId} not found.");
@@ -265,6 +266,20 @@ namespace CarServ.Repository.Repositories
             using var transaction = await _context.Database.BeginTransactionAsync();  
             try
             {
+                var incomingDays = dto.DailySchedules.Select(d => d.DayOfWeek).ToHashSet();
+                foreach (var existingSchedule in staff.StaffSchedules)
+                {
+                    if (!incomingDays.Contains(existingSchedule.DayOfWeek))
+                    {
+                        if (existingSchedule.IsActive)
+                        {
+                            existingSchedule.IsActive = false;
+                            existingSchedule.UpdatedAt = DateTime.Now;
+                            updatedCount++;
+                        }
+                    }
+                }
+
                 foreach (var dailyDto in dto.DailySchedules)
                 {
                     var singleDto = new CreateStaffScheduleDto
@@ -275,7 +290,7 @@ namespace CarServ.Repository.Repositories
                         IsActive = dailyDto.IsActive,
                         Notes = dailyDto.Notes
                     };
-                    var updatedSchedule = await CreateOrUpdateStaffScheduleAsync(staffId, singleDto);  
+                    var updatedSchedule = await CreateOrUpdateStaffScheduleAsync(staffId, singleDto);
                     updatedSchedules.Add(updatedSchedule);
                     updatedCount++;
                 }
