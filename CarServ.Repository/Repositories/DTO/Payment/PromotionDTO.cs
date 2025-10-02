@@ -20,6 +20,10 @@ namespace CarServ.Repository.Repositories.DTO.Payment
         public DateOnly? StartDate { get; set; }
         public DateOnly? EndDate { get; set; }
     }
+    public class TogglePromotionDTO
+    {
+        public string status { get; set; }       
+    }
 
 
 }
