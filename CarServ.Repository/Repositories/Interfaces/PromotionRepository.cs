@@ -55,8 +55,21 @@ namespace CarServ.Repository.Repositories.Interfaces
                 await _context.SaveChangesAsync();
                 return promotion;
             }
+        public async Task<Promotion> TogglePromotionStatus(int promotionId, string status)
+        {
+            var promotion = await _context.Promotions.FindAsync(promotionId);
 
-            public async Task<List<Promotion>> GetAllPromotionsAsync()
+            if (promotion == null)
+            {
+                throw new Exception("Promotion not found.");
+            }
+            promotion.Status = status;
+
+            await _context.SaveChangesAsync();
+            return promotion;
+        }
+
+        public async Task<List<Promotion>> GetAllPromotionsAsync()
             {
                 return await _context.Promotions.ToListAsync();
             }

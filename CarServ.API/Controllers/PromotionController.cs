@@ -49,6 +49,21 @@ namespace CarServ.API.Controllers
             }
         }
 
+        [HttpPut("toggle-status/{promotionId}")]
+        [Authorize(Roles = "1,2")]
+        public async Task<IActionResult> TogglePromotionStatus(int promotionId, [FromBody] TogglePromotionDTO status)
+        {
+            try
+            {
+                var updatedPromotion = await _promotionService.TogglePromotionStatus(promotionId, status.status);
+                return Ok(updatedPromotion);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet("retrieve-all-promotion")]
         [Authorize(Roles = "1,2")] 
         public async Task<PaginationResult<List<Promotion>>> GetAllPromotions(int currentPage = 1, int pageSize = 5)

@@ -39,9 +39,16 @@ namespace CarServ.Service.Services
             return await _repository.GetPromotionByIdAsync(promotionId);    
         }
 
+        public async Task<Promotion> TogglePromotionStatus(int promotionId, string status)
+        {
+            return await _repository.TogglePromotionStatus(promotionId, status);
+        }
+
         public async Task<Promotion> UpdatePromotionAsync(int promotionId, UpdatePromotionDto dto)
         {
             return await _repository.UpdatePromotionAsync(promotionId, dto);
         }
+
+
     }
 }

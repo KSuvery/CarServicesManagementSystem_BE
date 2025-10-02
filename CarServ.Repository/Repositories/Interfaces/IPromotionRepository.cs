@@ -16,5 +16,6 @@ namespace CarServ.Repository.Repositories.Interfaces
         Task<PaginationResult<List<Promotion>>> GetAllPromotionsWithPaging(int currentPage, int pageSize);
         Task<Promotion> UpdatePromotionAsync(int promotionId, UpdatePromotionDto dto);
         Task<Promotion> CreatePromotionAsync(CreatePromotionDto dto);
+        Task<Promotion> TogglePromotionStatus(int promotionId, string status);
     }
 }
