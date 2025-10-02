@@ -29,5 +29,8 @@ namespace CarServ.Repository.Repositories.Interfaces
         Task<Appointment> UpdateAppointmentAsync(
             int appointmentId,
             string status);
+        Task<Appointment> AssignStaffForAppointment(
+            int appointmentId,
+            int staffId);
     }
 }

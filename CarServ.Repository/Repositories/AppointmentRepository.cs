@@ -404,5 +404,24 @@ namespace CarServ.Repository.Repositories
             await _context.SaveChangesAsync();
             return appointment;
         }
+        public async Task<Appointment> AssignStaffForAppointment(
+            int appointmentId,
+            int staffId)
+        {
+            var appointment = await GetAppointmentByIdAsync(appointmentId);
+            /*var staff = await _accountRepository.GetAccountById(staffId);*/
+
+            if (appointment == null)
+            {
+                throw new KeyNotFoundException($"Appointment with ID {appointmentId} not found.");
+            }
+            /*if (staff.RoleId != 3) throw new Exception($"There is no stasff with ID {staffId}.");*/
+
+            appointment.StaffId = staffId;
+
+            await UpdateAsync(appointment);
+            await _context.SaveChangesAsync();
+            return appointment;
+        }
     }
 }

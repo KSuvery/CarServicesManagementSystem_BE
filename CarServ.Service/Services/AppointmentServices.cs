@@ -83,5 +83,10 @@ namespace CarServ.service.Services
         {
             return await _appointmentRepository.GetAllApppointmentsWithPaging(currentPage, pageSize);
         }
+
+        public async Task<Appointment> AssignStaffForAppointment(int appointmentId, int staffId)
+        {
+            return await _appointmentRepository.AssignStaffForAppointment(appointmentId, staffId);  
+        }
     }
 }

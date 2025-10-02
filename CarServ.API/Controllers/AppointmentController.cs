@@ -123,6 +123,21 @@ namespace CarServ.API.Controllers
             }
             return Ok(updatedAppointment);
         }
+        [HttpPut("{appointmentId},{staffId}")]
+        [Authorize(Roles = "1")]
+        public async Task<ActionResult<Appointment>> AssignStaff(int appointmentId, int staffId)
+        {
+            if (!await AppointmentExists(appointmentId))
+            {
+                return NotFound();
+            }
+            var updatedAppointment = await _Appointmentervices.AssignStaffForAppointment(appointmentId, staffId);
+            if (updatedAppointment == null)
+            {
+                return BadRequest("Unable to update appointment.");
+            }
+            return Ok(updatedAppointment);
+        }
 
         private async Task<bool> AppointmentExists(int id)
         {
