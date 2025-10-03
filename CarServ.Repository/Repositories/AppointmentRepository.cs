@@ -353,15 +353,6 @@ namespace CarServ.Repository.Repositories
                 UpdatedAt = DateTime.Now
             };
 
-            var notification = new Notification
-            {
-                UserId = vehicle.Customer.UserId,
-                Title = "Lịch hẹn đã được xác nhận",
-                Message = $"Lịch hẹn của bạn vào ngày {appointment.AppointmentDate?.ToString("f")} đã được xác nhận.",
-                IsRead = false,
-                SentAt = DateTime.Now
-            };
-
             _context.ServiceProgresses.Add(serviceProgress);
 
 
