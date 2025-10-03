@@ -32,7 +32,7 @@ namespace CarServ.Repository.Repositories
             {
                 ScheduleId = s.ScheduleId,
                 DayOfWeek = s.DayOfWeek,
-                DayName = ((DayOfWeek)s.DayOfWeek).ToString(),
+                DayName = ((DayOfWeekViet)s.DayOfWeek).ToVietnamese(),
                 StartTime = s.StartTime,
                 EndTime = s.EndTime,
                 IsActive = s.IsActive,
@@ -53,7 +53,7 @@ namespace CarServ.Repository.Repositories
                     fullWeek.Add(new StaffScheduleDto
                     {
                         DayOfWeek = day,
-                        DayName = ((DayOfWeek)day).ToString(),
+                        DayName = ((DayOfWeekViet)day).ToVietnamese(),
                         StartTime = default, 
                         EndTime = default,
                         IsActive = false
@@ -216,7 +216,7 @@ namespace CarServ.Repository.Repositories
             {
                 ScheduleId = schedule.ScheduleId,
                 DayOfWeek = schedule.DayOfWeek,
-                DayName = ((DayOfWeek)schedule.DayOfWeek).ToString(),
+                DayName = ((DayOfWeekViet)schedule.DayOfWeek).ToVietnamese(),
                 StartTime = schedule.StartTime,
                 EndTime = schedule.EndTime,
                 IsActive = schedule.IsActive,
@@ -371,7 +371,7 @@ namespace CarServ.Repository.Repositories
                 var dayDto = new DayScheduleDto
                 {
                     DayOfWeek = day,
-                    DayName = ((DayOfWeek)day).ToString(),
+                    DayName = ((DayOfWeekViet)day).ToVietnamese(),
                     TimeSlots = new List<SystemTimeSlotDto>()
                 };
 

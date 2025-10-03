@@ -36,5 +36,15 @@ namespace CarServ.Repository.Repositories.DTO.Staff_s_timetable
         public int TotalAvailableStaff { get; set; }  
     }
 
+    public enum DayOfWeekViet
+    {
+        Sunday = 7,
+        Monday = 1,
+        Tuesday = 2,
+        Wednesday = 3,
+        Thursday = 4,
+        Friday = 5,
+        Saturday = 6
+    }
 
 }
