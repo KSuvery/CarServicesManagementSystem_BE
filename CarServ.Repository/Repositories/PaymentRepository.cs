@@ -2,24 +2,16 @@
 using CarServ.Repository.Repositories.DTO.Payment;
 using CarServ.Repository.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Json;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CarServ.Repository.Repositories
 {
     public class PaymentRepository : GenericRepository<Payment>, IPaymentRepository
     {
         private readonly CarServicesManagementSystemContext _context;
-        private readonly IUnitOfWork _unitOfWork;
 
-        public PaymentRepository(CarServicesManagementSystemContext context, IUnitOfWork unitOfWork) : base(context)
+        public PaymentRepository(CarServicesManagementSystemContext context) : base(context)
         {
             _context = context;
-            _unitOfWork = unitOfWork;
         }
 
         public async Task<Payment> GetPaymentByIdAsync(int paymentId)

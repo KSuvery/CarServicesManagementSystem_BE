@@ -1,13 +1,14 @@
 ﻿using Azure;
 using Azure.AI.OpenAI;
-using OpenAI.Chat;
+using CarServ.Repository.Repositories.Interfaces;
 using CarServ.service.Services.Configuration;
 using CarServ.Service.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Options;
+using OpenAI.Chat;
 using System.ClientModel;
-using Microsoft.AspNetCore.Mvc;
-using CarServ.Repository.Repositories.Interfaces;
+using System.Text.RegularExpressions;
 
 namespace CarServ.Service.Services
 {
@@ -24,42 +25,66 @@ namespace CarServ.Service.Services
 
         public async Task<string> GetChatbotResponseAsync(string userInput)
         {
-            if (userInput.Contains("appointment details for appointment ID", StringComparison.OrdinalIgnoreCase) || userInput.Contains("cho tôi thông tin về cuộc hẹn ID", StringComparison.OrdinalIgnoreCase))
+            try
             {
-                int appointmentId = ExtractAppointmentId(userInput);
-                if (appointmentId != -1)
+                if (IsAppointmentQuery(userInput))
                 {
+                    int appointmentId = ExtractAppointmentId(userInput);
+                    if (appointmentId <= 0)
+                    {
+                        throw new ArgumentException("ID cuộc hẹn không khả dụng.");
+                    }
+
                     var appointment = await _appointmentRepository.GetAppointmentByIdAsync(appointmentId);
                     if (appointment != null)
                     {
-                        return $"Appointment ID: {appointment.AppointmentId}, Date: {appointment.AppointmentDate}, Status: {appointment.Status}";
+                        return $"ID: {appointment.AppointmentId}, Thời gian: {appointment.AppointmentDate}, Trạng thái: {appointment.Status}";
                     }
                     else
                     {
-                        return "I'm sorry, I couldn't find any details for that appointment ID.";
+                        throw new KeyNotFoundException("Không có cuộc hẹn nào tồn tại với ID đó.");
                     }
                 }
-                else
-                {
-                    return "Please provide a valid appointment ID.";
-                }
+
+                AzureOpenAIClient client = new AzureOpenAIClient(new Uri(_settings.Endpoint), new AzureKeyCredential(_settings.ApiKey));
+                ChatClient chatClient = client.GetChatClient(_settings.DeploymentName);
+
+                ChatCompletion completion = chatClient.CompleteChat(
+                    [
+                    new SystemChatMessage("You are a helpful assistant."),
+                    new UserChatMessage(userInput),
+                    ]);
+
+                return completion.Content[0].Text;
             }
-
-            AzureOpenAIClient client = new AzureOpenAIClient(new Uri(_settings.Endpoint), new AzureKeyCredential(_settings.ApiKey));
-            ChatClient chatClient = client.GetChatClient(_settings.DeploymentName);
-
-            ChatCompletion completion = chatClient.CompleteChat(
-                [
-                new SystemChatMessage("You are a helpful assistant."),
-                new UserChatMessage(userInput),
-                ]);
-
-            return completion.Content[0].Text;
+            catch (ArgumentException ex)
+            {
+                return ex.Message;
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return ex.Message;
+            }
+            catch (Exception ex)
+            {
+                return "An unexpected error occurred. Please try again later.";
+            }
         }
 
         private int ExtractAppointmentId(string input)
         {
             return int.TryParse(input.Split(' ').Last(), out var id) ? id : 0;
+        }
+
+        private bool IsAppointmentQuery(string userInput)
+        {
+            string[] appointmentKeywords = [
+                "appointment details", "details for appointment", "show appointment",
+        "get appointment info", "cuộc hẹn", "thông tin cuộc hẹn", "lịch hẹn",
+        "appointment information", "info about appointment", "appointment ID"
+            ];
+            return appointmentKeywords.Any(k => userInput.Contains(k, StringComparison.OrdinalIgnoreCase))
+                || Regex.IsMatch(userInput, @"(appointment|cuộc hẹn|lịch hẹn).*(details|info|information|thông tin)", RegexOptions.IgnoreCase);
         }
     }
 }

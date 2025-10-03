@@ -3,13 +3,6 @@ using CarServ.Repository.Repositories.DTO;
 using CarServ.Repository.Repositories.DTO.Booking_A_Service;
 using CarServ.Repository.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-using static CarServ.Repository.Repositories.AppointmentRepository;
 
 namespace CarServ.Repository.Repositories
 {
@@ -17,10 +10,13 @@ namespace CarServ.Repository.Repositories
     {
         private readonly CarServicesManagementSystemContext _context;
         private readonly IVehicleRepository _vehicleRepository;
-        public AppointmentRepository(CarServicesManagementSystemContext context, IVehicleRepository vehicleRepository) : base(context)
+        private readonly INotificationRepository _notificationRepository;
+
+        public AppointmentRepository(CarServicesManagementSystemContext context, IVehicleRepository vehicleRepository, INotificationRepository notificationRepository) : base(context)
         {
             _context = context;
             _vehicleRepository = vehicleRepository;
+            _notificationRepository = notificationRepository;
         }
 
         public async Task<List<AppointmentDto>> GetAllAppointmentsAsync()
@@ -114,7 +110,7 @@ namespace CarServ.Repository.Repositories
                     VehicleMake = a.Vehicle.Make,
                     VehicleModel = a.Vehicle.Model,
                     VehicleColor = a.Vehicle.Color,
-                    VehicleYear = a.Vehicle.Year ?? 0,                    
+                    VehicleYear = a.Vehicle.Year ?? 0,
                     services = a.AppointmentServices.Select(s => s.Service.Name).ToList(),
                     Duration = (int)(a.AppointmentServices.Sum(s => s.Service.EstimatedLaborHours ?? 0) +
                            (a.Package != null ? a.Package.Services.Sum(s => s.EstimatedLaborHours ?? 0) : 0)),
@@ -253,7 +249,7 @@ namespace CarServ.Repository.Repositories
             }
             _context.Vehicles.Update(vehicle);
             await _context.SaveChangesAsync();
-            
+
             // Create a new order as well
             var order = new Order
             {
@@ -270,8 +266,8 @@ namespace CarServ.Repository.Repositories
                 {
                     OrderId = order.OrderId,
                     PackageId = dto.PackageId,
-                    Quantity = 1                    
-        };
+                    Quantity = 1
+                };
                 _context.OrderDetails.Add(packageDetail);
             }
             //Retrieve services included in the selected package
@@ -286,25 +282,25 @@ namespace CarServ.Repository.Repositories
             }
             foreach (var serviceId in packageServiceIds)
             {
-                
-                
-                    var appointmentService = new AppointmentService
-                    {
-                        AppointmentId = appointment.AppointmentId,
-                        ServiceId = serviceId,
-                        Quantity = 1
-                    };
-                    _context.AppointmentServices.Add(appointmentService);
-                    // Also add the service detail to the order
-                    var serviceDetail = new OrderDetail
-                    {
-                        OrderId = order.OrderId,
-                        ServiceId = serviceId,
-                        UnitPrice = _context.Services.Find(serviceId)?.Price,
-                        Quantity = 1,
-                    };
-                    _context.OrderDetails.Add(serviceDetail);
-                
+
+
+                var appointmentService = new AppointmentService
+                {
+                    AppointmentId = appointment.AppointmentId,
+                    ServiceId = serviceId,
+                    Quantity = 1
+                };
+                _context.AppointmentServices.Add(appointmentService);
+                // Also add the service detail to the order
+                var serviceDetail = new OrderDetail
+                {
+                    OrderId = order.OrderId,
+                    ServiceId = serviceId,
+                    UnitPrice = _context.Services.Find(serviceId)?.Price,
+                    Quantity = 1,
+                };
+                _context.OrderDetails.Add(serviceDetail);
+
             }
 
             // Add multiple services, skipping those already included in the package
@@ -350,30 +346,39 @@ namespace CarServ.Repository.Repositories
 
 
             var serviceProgress = new ServiceProgress
-                {
-                    AppointmentId = appointment.AppointmentId,
-                    Status = "Booked",
-                    Note = "Đã xác nhận lịch cho khách hàng có ID: " + customerId,
-                    UpdatedAt = DateTime.Now
-                };
-
-                _context.ServiceProgresses.Add(serviceProgress);
-
-             
-                await _context.SaveChangesAsync();
-
-                return appointment;
-            }
-
-            private async Task<bool> CheckAvailability(DateTime appointmentDate, int customerId)
             {
-                // if there are any existing appointments for the same time
-                var existingAppointments = await _context.Appointments
-                    .AnyAsync(a => a.AppointmentDate == appointmentDate && a.CustomerId == customerId);
+                AppointmentId = appointment.AppointmentId,
+                Status = "Booked",
+                Note = "Đã xác nhận lịch cho khách hàng có ID: " + customerId,
+                UpdatedAt = DateTime.Now
+            };
 
-                return !existingAppointments;
-            }
-        
+            var notification = new Notification
+            {
+                UserId = customerId,
+                Title = "Lịch hẹn đã được xác nhận",
+                Message = $"Lịch hẹn của bạn vào ngày {appointment.AppointmentDate?.ToString("f")} đã được xác nhận.",
+                IsRead = false,
+                SentAt = DateTime.Now
+            };
+
+            _context.ServiceProgresses.Add(serviceProgress);
+
+
+            await _context.SaveChangesAsync();
+
+            return appointment;
+        }
+
+        private async Task<bool> CheckAvailability(DateTime appointmentDate, int customerId)
+        {
+            // if there are any existing appointments for the same time
+            var existingAppointments = await _context.Appointments
+                .AnyAsync(a => a.AppointmentDate == appointmentDate && a.CustomerId == customerId);
+
+            return !existingAppointments;
+        }
+
 
 
         public async Task<Appointment> UpdateAppointmentAsync(
