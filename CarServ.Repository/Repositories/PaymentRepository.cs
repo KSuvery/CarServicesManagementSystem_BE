@@ -110,6 +110,14 @@ namespace CarServ.Repository.Repositories
                 };
 
                 _context.Payments.Add(payment);
+
+                var appointment = await _context.Appointments
+                    .FirstOrDefaultAsync(a => a.AppointmentId == dto.AppointmentId);
+                if (appointment != null)
+                {
+                    appointment.Status = "Vehicle Received";
+                }
+
                 await _context.SaveChangesAsync();
                 return payment;
             }

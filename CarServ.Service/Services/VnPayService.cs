@@ -187,19 +187,9 @@ namespace CarServ.service.Services
                 {
                     payment.Status = "Paid";
                     payment.PaidAt = DateTime.Now;
-                    appointment.Status = "Completed";
+                    appointment.Status = "Vehicle Received";
                     await _paymentRepository.UpdateAsync(payment);
                     await _appointmentRepository.UpdateAsync(appointment);
-
-                    var notification = new Notification
-                    {
-                        UserId = appointment.Customer.UserId,
-                        Title = "Thanh toán thành công.",
-                        Message = $"Giao dịch của bạn cho cuộc hẹn có ID {appointment.AppointmentId} đã được hoàn thành.",
-                        SentAt = DateTime.Now,
-                        IsRead = false,
-                        Type = "System"
-                    };
                 }
             }
 
