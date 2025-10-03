@@ -197,7 +197,8 @@ namespace CarServ.service.Services
                         Title = "Thanh toán thành công.",
                         Message = $"Giao dịch của bạn cho cuộc hẹn có ID {appointment.AppointmentId} đã được hoàn thành.",
                         SentAt = DateTime.Now,
-                        IsRead = false
+                        IsRead = false,
+                        Type = "System"
                     };
                 }
             }

@@ -359,7 +359,8 @@ namespace CarServ.Repository.Repositories
                 Title = "Lịch hẹn đã được xác nhận",
                 Message = $"Lịch hẹn của bạn vào ngày {appointment.AppointmentDate?.ToString("f")} đã được xác nhận.",
                 IsRead = false,
-                SentAt = DateTime.Now
+                SentAt = DateTime.Now,
+                Type = "System"
             };
 
             _context.ServiceProgresses.Add(serviceProgress);
