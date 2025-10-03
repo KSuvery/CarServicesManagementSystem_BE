@@ -355,7 +355,7 @@ namespace CarServ.Repository.Repositories
 
             var notification = new Notification
             {
-                UserId = customerId,
+                UserId = vehicle.Customer.UserId,
                 Title = "Lịch hẹn đã được xác nhận",
                 Message = $"Lịch hẹn của bạn vào ngày {appointment.AppointmentDate?.ToString("f")} đã được xác nhận.",
                 IsRead = false,

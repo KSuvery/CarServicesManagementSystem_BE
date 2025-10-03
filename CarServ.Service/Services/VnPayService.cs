@@ -193,9 +193,9 @@ namespace CarServ.service.Services
 
                     var notification = new Notification
                     {
-                        UserId = appointment.CustomerId,
+                        UserId = appointment.Customer.UserId,
                         Title = "Thanh toán thành công.",
-                        Message = $"Giao dịch của bạn cho đơn có ID {order.OrderId} đã được hoàn thành.",
+                        Message = $"Giao dịch của bạn cho cuộc hẹn có ID {appointment.AppointmentId} đã được hoàn thành.",
                         SentAt = DateTime.Now,
                         IsRead = false
                     };
