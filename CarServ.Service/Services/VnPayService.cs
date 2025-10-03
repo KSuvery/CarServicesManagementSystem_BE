@@ -1,4 +1,5 @@
-﻿using CarServ.Repository.Repositories.DTO.Payment;
+﻿using CarServ.Domain.Entities;
+using CarServ.Repository.Repositories.DTO.Payment;
 using CarServ.Repository.Repositories.Interfaces;
 using CarServ.service.Services.ApiModels.VNPay;
 using CarServ.service.Services.Configuration;
@@ -16,6 +17,7 @@ namespace CarServ.service.Services
         private readonly IOrderRepository _orderRepository;
         private readonly IPaymentRepository _paymentRepository;
         private readonly IAppointmentRepository _appointmentRepository;
+        private readonly INotificationRepository _notificationRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<VnPayService> _logger;
 
@@ -25,6 +27,7 @@ namespace CarServ.service.Services
             _orderRepository = serviceProvider.GetRequiredService<IOrderRepository>();
             _paymentRepository = serviceProvider.GetRequiredService<IPaymentRepository>();
             _appointmentRepository = serviceProvider.GetRequiredService<IAppointmentRepository>();
+            _notificationRepository = serviceProvider.GetRequiredService<INotificationRepository>();
             _unitOfWork = serviceProvider.GetRequiredService<IUnitOfWork>();
         }
 
@@ -187,6 +190,15 @@ namespace CarServ.service.Services
                     appointment.Status = "Completed";
                     await _paymentRepository.UpdateAsync(payment);
                     await _appointmentRepository.UpdateAsync(appointment);
+
+                    var notification = new Notification
+                    {
+                        UserId = appointment.CustomerId,
+                        Title = "Thanh toán thành công.",
+                        Message = $"Giao dịch của bạn cho đơn có ID {order.OrderId} đã được hoàn thành.",
+                        SentAt = DateTime.Now,
+                        IsRead = false
+                    };
                 }
             }
 
