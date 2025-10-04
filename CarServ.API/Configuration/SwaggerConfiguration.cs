@@ -1,4 +1,6 @@
 ﻿using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 
 namespace CarServ.API.Configuration
 {
@@ -19,19 +21,35 @@ namespace CarServ.API.Configuration
                     Scheme = "bearer"
                 });
                 options.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
                 {
-                    new OpenApiSecurityScheme
                     {
-                        Reference = new OpenApiReference
+                        new OpenApiSecurityScheme
                         {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
-                        }
-                    },
-                    new string[] {}
-                }
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] {}
+                    }
+                });
             });
+        }
+
+        public static void UseSwaggerWithUtf8(this IApplicationBuilder app)
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI();
+
+            // Ensure UTF-8 encoding for Swagger JSON and UI responses
+            app.Use(async (context, next) =>
+            {
+                if (context.Request.Path.StartsWithSegments("/swagger"))
+                {
+                    context.Response.Headers["Content-Type"] = "application/json; charset=utf-8";
+                }
+                await next();
             });
         }
     }
