@@ -187,7 +187,7 @@ namespace CarServ.service.Services
                 {
                     payment.Status = "Paid";
                     payment.PaidAt = DateTime.Now;
-                    appointment.Status = "Vehicle Received";
+                    appointment.Status = "Completed";
                     await _paymentRepository.UpdateAsync(payment);
                     await _appointmentRepository.UpdateAsync(appointment);
                 }
